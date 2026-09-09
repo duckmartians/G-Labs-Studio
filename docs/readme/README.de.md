@@ -20,6 +20,12 @@
   <a href="README.ko.md">한국어</a>
 </p>
 
+<p align="center">
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="Download for Windows" src="https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="Download for macOS (Apple Silicon)" src="https://img.shields.io/badge/Download-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="Download for macOS (Intel)" src="https://img.shields.io/badge/Download-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
+</p>
+
 ![G-Labs Studio](../screenshots/01-image.png)
 
 ---
@@ -30,9 +36,9 @@ Lade den neuesten Build von **[Releases](https://github.com/duckmartians/G-Labs-
 
 | Plattform | Datei |
 |---|---|
-| 🪟 **Windows** | `G-Labs-Studio-v<version>-win.exe` — führe den Installer aus (Admin/UAC) |
-| 🍎 **macOS (Apple Silicon)** | `G-Labs-Studio-v<version>-mac-arm64.dmg` |
-| 🍎 **macOS (Intel)** | `G-Labs-Studio-v<version>-mac-intel.dmg` |
+| 🪟 **Windows** | `G-Labs-Studio-win.exe` — führe den Installer aus (Admin/UAC) |
+| 🍎 **macOS (Apple Silicon)** | `G-Labs-Studio-mac-arm64.dmg` |
+| 🍎 **macOS (Intel)** | `G-Labs-Studio-mac-intel.dmg` |
 
 **Erster Start unter macOS** — die App ist nicht von Apple signiert, deshalb wird sie von macOS in Quarantäne gesetzt. Öffne sie beim ersten Mal mit **Rechtsklick → Öffnen**, oder entferne die Markierung über das Terminal:
 

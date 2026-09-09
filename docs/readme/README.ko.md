@@ -20,6 +20,12 @@
   <b>한국어</b>
 </p>
 
+<p align="center">
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="Download for Windows" src="https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="Download for macOS (Apple Silicon)" src="https://img.shields.io/badge/Download-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="Download for macOS (Intel)" src="https://img.shields.io/badge/Download-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
+</p>
+
 ![G-Labs Studio](../screenshots/01-image.png)
 
 ---
@@ -30,9 +36,9 @@
 
 | 플랫폼 | 파일 |
 |---|---|
-| 🪟 **Windows** | `G-Labs-Studio-v<version>-win.exe` — 설치 프로그램 실행 (관리자/UAC) |
-| 🍎 **macOS (Apple Silicon)** | `G-Labs-Studio-v<version>-mac-arm64.dmg` |
-| 🍎 **macOS (Intel)** | `G-Labs-Studio-v<version>-mac-intel.dmg` |
+| 🪟 **Windows** | `G-Labs-Studio-win.exe` — 설치 프로그램 실행 (관리자/UAC) |
+| 🍎 **macOS (Apple Silicon)** | `G-Labs-Studio-mac-arm64.dmg` |
+| 🍎 **macOS (Intel)** | `G-Labs-Studio-mac-intel.dmg` |
 
 **macOS 최초 실행** — 이 앱은 Apple 서명이 없어서 macOS가 격리합니다. 처음에는 **마우스 오른쪽 클릭 → 열기**로 열거나, 터미널에서 플래그를 제거하세요:
 

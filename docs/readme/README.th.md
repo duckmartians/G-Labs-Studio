@@ -20,6 +20,12 @@
   <a href="README.ko.md">한국어</a>
 </p>
 
+<p align="center">
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="Download for Windows" src="https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="Download for macOS (Apple Silicon)" src="https://img.shields.io/badge/Download-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="Download for macOS (Intel)" src="https://img.shields.io/badge/Download-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
+</p>
+
 ![G-Labs Studio](../screenshots/01-image.png)
 
 ---
@@ -30,9 +36,9 @@
 
 | แพลตฟอร์ม | ไฟล์ |
 |---|---|
-| 🪟 **Windows** | `G-Labs-Studio-v<version>-win.exe` — รันตัวติดตั้ง (admin/UAC) |
-| 🍎 **macOS (Apple Silicon)** | `G-Labs-Studio-v<version>-mac-arm64.dmg` |
-| 🍎 **macOS (Intel)** | `G-Labs-Studio-v<version>-mac-intel.dmg` |
+| 🪟 **Windows** | `G-Labs-Studio-win.exe` — รันตัวติดตั้ง (admin/UAC) |
+| 🍎 **macOS (Apple Silicon)** | `G-Labs-Studio-mac-arm64.dmg` |
+| 🍎 **macOS (Intel)** | `G-Labs-Studio-mac-intel.dmg` |
 
 **การเปิดครั้งแรกบน macOS** — แอปนี้ไม่ได้เซ็นโดย Apple ดังนั้น macOS จึงกักกันไว้ ให้เปิดครั้งแรกด้วย **คลิกขวา → Open** หรือลบแฟล็กออกจาก Terminal:
 
