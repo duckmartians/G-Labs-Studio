@@ -285,6 +285,7 @@ Omni Flash example — edit video (restyle a ≤10s clip per the prompt):
   "aspect_ratio": "16:9",
   "video_length": 6,
   "resolution": "720p",
+  "first_frame": false,
   "reference_images": ["data:image/png;base64,iVBORw0KGgo..."]
 }
 ```

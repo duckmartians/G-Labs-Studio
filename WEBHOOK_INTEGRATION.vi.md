@@ -278,6 +278,7 @@ Ví dụ Omni Flash — edit video (dựng lại clip ≤10s theo prompt):
   "aspect_ratio": "16:9",
   "video_length": 6,
   "resolution": "720p",
+  "first_frame": false,
   "reference_images": ["data:image/png;base64,iVBORw0KGgo..."]
 }
 ```
