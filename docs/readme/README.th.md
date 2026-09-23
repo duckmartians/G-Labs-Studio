@@ -3,8 +3,8 @@
 <p align="center"><b>แอปเดสก์ท็อปเดียวสำหรับสร้างภาพและวิดีโอแบบเป็นชุดข้าม AI รายใหญ่ทุกเจ้า — Google Flow (Veo 3.1, Omni Flash, Nano Banana), Grok Imagine, Meta AI และ ChatGPT GPT Image 2</b></p>
 
 <p align="center">
-  <a href="../../README.md">English</a> ·
-  <a href="README.vi.md">Tiếng Việt</a> ·
+  <a href="README.en.md">English</a> ·
+  <a href="../../README.md">Tiếng Việt</a> ·
   <a href="README.zh.md">简体中文</a> ·
   <a href="README.es.md">Español</a> ·
   <a href="README.pt.md">Português</a> ·
@@ -135,7 +135,7 @@ xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
 
 ![Webhook API](../screenshots/09-webhook.png)
 
-เปลี่ยนแอปให้เป็นเซิร์ฟเวอร์อัตโนมัติในเครื่อง เริ่มมัน คัดลอก API key ของคุณ แล้ว POST งานไปยัง `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` หรือ `/api/openai/generate` จากนั้นดึงสถานะที่ `/api/status/<id>` หน้านี้แสดงรายการทุกโมเดลและอัตราส่วนภาพที่รองรับ สคีมาฉบับเต็ม: [`docs/WEBHOOK_INTEGRATION.en.md`](../WEBHOOK_INTEGRATION.en.md)
+เปลี่ยนแอปให้เป็นเซิร์ฟเวอร์อัตโนมัติในเครื่อง เริ่มมัน คัดลอก API key ของคุณ แล้ว POST งานไปยัง `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` หรือ `/api/openai/generate` จากนั้นดึงสถานะที่ `/api/status/<id>` หน้านี้แสดงรายการทุกโมเดลและอัตราส่วนภาพที่รองรับ สคีมาฉบับเต็ม: [`document/WEBHOOK_INTEGRATION.en.md`](../../document/WEBHOOK_INTEGRATION.en.md)
 
 ---
 

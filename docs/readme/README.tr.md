@@ -3,8 +3,8 @@
 <p align="center"><b>Her büyük yapay zekâda toplu görüntü ve video üretmek için tek bir masaüstü uygulaması — Google Flow (Veo 3.1, Omni Flash, Nano Banana), Grok Imagine, Meta AI ve ChatGPT GPT Image 2.</b></p>
 
 <p align="center">
-  <a href="../../README.md">English</a> ·
-  <a href="README.vi.md">Tiếng Việt</a> ·
+  <a href="README.en.md">English</a> ·
+  <a href="../../README.md">Tiếng Việt</a> ·
   <a href="README.zh.md">简体中文</a> ·
   <a href="README.es.md">Español</a> ·
   <a href="README.pt.md">Português</a> ·
@@ -135,7 +135,7 @@ Görsel bir düğüm tuvali. Bir düğümün soketine sağ tıklayın, menü yal
 
 ![Webhook API](../screenshots/09-webhook.png)
 
-Uygulamayı yerel bir otomasyon sunucusuna dönüştürün. Başlatın, API anahtarınızı kopyalayın ve `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` veya `/api/openai/generate` adreslerine iş POST edin, ardından `/api/status/<id>` sorgulayın. Sayfa her modeli ve desteklediği en boy oranlarını listeler. Tam şema: [`docs/WEBHOOK_INTEGRATION.en.md`](../WEBHOOK_INTEGRATION.en.md).
+Uygulamayı yerel bir otomasyon sunucusuna dönüştürün. Başlatın, API anahtarınızı kopyalayın ve `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` veya `/api/openai/generate` adreslerine iş POST edin, ardından `/api/status/<id>` sorgulayın. Sayfa her modeli ve desteklediği en boy oranlarını listeler. Tam şema: [`document/WEBHOOK_INTEGRATION.en.md`](../../document/WEBHOOK_INTEGRATION.en.md).
 
 ---
 

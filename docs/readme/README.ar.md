@@ -3,8 +3,8 @@
 <p align="center"><b>تطبيق سطح مكتب واحد لتوليد الصور ومقاطع الفيديو دفعةً واحدة عبر كل نماذج الذكاء الاصطناعي الكبرى — Google Flow (Veo 3.1 وOmni Flash وNano Banana) وGrok Imagine وMeta AI وChatGPT GPT Image 2.</b></p>
 
 <p align="center">
-  <a href="../../README.md">English</a> ·
-  <a href="README.vi.md">Tiếng Việt</a> ·
+  <a href="README.en.md">English</a> ·
+  <a href="../../README.md">Tiếng Việt</a> ·
   <a href="README.zh.md">简体中文</a> ·
   <a href="README.es.md">Español</a> ·
   <a href="README.pt.md">Português</a> ·
@@ -135,7 +135,7 @@ xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
 
 ![Webhook API](../screenshots/09-webhook.png)
 
-حوّل التطبيق إلى خادم أتمتة محلي. شغّله، وانسخ مفتاح API الخاص بك، وأرسِل المهام عبر POST إلى `/api/image/generate` أو `/api/video/generate` أو `/api/grok/generate` أو `/api/meta/generate` أو `/api/openai/generate`، ثم استطلِع `/api/status/<id>`. تسرد الصفحة كل نموذج ونسب العرض إلى الارتفاع التي يدعمها. المخطط الكامل: [`docs/WEBHOOK_INTEGRATION.en.md`](../WEBHOOK_INTEGRATION.en.md).
+حوّل التطبيق إلى خادم أتمتة محلي. شغّله، وانسخ مفتاح API الخاص بك، وأرسِل المهام عبر POST إلى `/api/image/generate` أو `/api/video/generate` أو `/api/grok/generate` أو `/api/meta/generate` أو `/api/openai/generate`، ثم استطلِع `/api/status/<id>`. تسرد الصفحة كل نموذج ونسب العرض إلى الارتفاع التي يدعمها. المخطط الكامل: [`document/WEBHOOK_INTEGRATION.en.md`](../../document/WEBHOOK_INTEGRATION.en.md).
 
 ---
 

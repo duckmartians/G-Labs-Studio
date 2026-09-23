@@ -3,8 +3,8 @@
 <p align="center"><b>Una sola app de escritorio para generar por lotes imágenes y videos en todas las grandes IA — Google Flow (Veo 3.1, Omni Flash, Nano Banana), Grok Imagine, Meta AI y ChatGPT GPT Image 2.</b></p>
 
 <p align="center">
-  <a href="../../README.md">English</a> ·
-  <a href="README.vi.md">Tiếng Việt</a> ·
+  <a href="README.en.md">English</a> ·
+  <a href="../../README.md">Tiếng Việt</a> ·
   <a href="README.zh.md">简体中文</a> ·
   <b>Español</b> ·
   <a href="README.pt.md">Português</a> ·
@@ -135,7 +135,7 @@ Un lienzo de nodos visual. Haz clic derecho en el conector de un nodo y el menú
 
 ![Webhook API](../screenshots/09-webhook.png)
 
-Convierte la app en un servidor de automatización local. Inícialo, copia tu API key, y haz POST de trabajos a `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` o `/api/openai/generate`, y luego consulta `/api/status/<id>`. La página lista cada modelo y sus proporciones admitidas. Esquema completo: [`docs/WEBHOOK_INTEGRATION.en.md`](../WEBHOOK_INTEGRATION.en.md).
+Convierte la app en un servidor de automatización local. Inícialo, copia tu API key, y haz POST de trabajos a `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` o `/api/openai/generate`, y luego consulta `/api/status/<id>`. La página lista cada modelo y sus proporciones admitidas. Esquema completo: [`document/WEBHOOK_INTEGRATION.en.md`](../../document/WEBHOOK_INTEGRATION.en.md).
 
 ---
 

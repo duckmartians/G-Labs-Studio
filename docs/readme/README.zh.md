@@ -3,8 +3,8 @@
 <p align="center"><b>一款桌面应用，在所有主流 AI 上批量生成图像与视频 —— Google Flow（Veo 3.1、Omni Flash、Nano Banana）、Grok Imagine、Meta AI 和 ChatGPT GPT Image 2。</b></p>
 
 <p align="center">
-  <a href="../../README.md">English</a> ·
-  <a href="README.vi.md">Tiếng Việt</a> ·
+  <a href="README.en.md">English</a> ·
+  <a href="../../README.md">Tiếng Việt</a> ·
   <b>简体中文</b> ·
   <a href="README.es.md">Español</a> ·
   <a href="README.pt.md">Português</a> ·
@@ -135,7 +135,7 @@ xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
 
 ![Webhook API](../screenshots/09-webhook.png)
 
-把应用变成一个本地自动化服务器。启动它，复制你的 API key，向 `/api/image/generate`、`/api/video/generate`、`/api/grok/generate`、`/api/meta/generate` 或 `/api/openai/generate` POST 任务，然后轮询 `/api/status/<id>`。该页面列出每个模型及其支持的宽高比。完整架构：[`docs/WEBHOOK_INTEGRATION.en.md`](../WEBHOOK_INTEGRATION.en.md)。
+把应用变成一个本地自动化服务器。启动它，复制你的 API key，向 `/api/image/generate`、`/api/video/generate`、`/api/grok/generate`、`/api/meta/generate` 或 `/api/openai/generate` POST 任务，然后轮询 `/api/status/<id>`。该页面列出每个模型及其支持的宽高比。完整架构：[`document/WEBHOOK_INTEGRATION.en.md`](../../document/WEBHOOK_INTEGRATION.en.md)。
 
 ---
 

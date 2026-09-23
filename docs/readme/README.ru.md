@@ -3,8 +3,8 @@
 <p align="center"><b>Одно настольное приложение для пакетной генерации изображений и видео во всех крупных ИИ — Google Flow (Veo 3.1, Omni Flash, Nano Banana), Grok Imagine, Meta AI и ChatGPT GPT Image 2.</b></p>
 
 <p align="center">
-  <a href="../../README.md">English</a> ·
-  <a href="README.vi.md">Tiếng Việt</a> ·
+  <a href="README.en.md">English</a> ·
+  <a href="../../README.md">Tiếng Việt</a> ·
   <a href="README.zh.md">简体中文</a> ·
   <a href="README.es.md">Español</a> ·
   <a href="README.pt.md">Português</a> ·
@@ -135,7 +135,7 @@ xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
 
 ![Webhook API](../screenshots/09-webhook.png)
 
-Превратите приложение в локальный сервер автоматизации. Запустите его, скопируйте свой API-ключ и отправляйте задачи POST на `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` или `/api/openai/generate`, затем опрашивайте `/api/status/<id>`. На странице перечислены все модели и поддерживаемые ими соотношения сторон. Полная схема: [`docs/WEBHOOK_INTEGRATION.en.md`](../WEBHOOK_INTEGRATION.en.md).
+Превратите приложение в локальный сервер автоматизации. Запустите его, скопируйте свой API-ключ и отправляйте задачи POST на `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` или `/api/openai/generate`, затем опрашивайте `/api/status/<id>`. На странице перечислены все модели и поддерживаемые ими соотношения сторон. Полная схема: [`document/WEBHOOK_INTEGRATION.en.md`](../../document/WEBHOOK_INTEGRATION.en.md).
 
 ---
 

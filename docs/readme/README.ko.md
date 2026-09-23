@@ -3,8 +3,8 @@
 <p align="center"><b>모든 주요 AI에서 이미지 &amp; 비디오를 일괄 생성하는 하나의 데스크톱 앱 — Google Flow (Veo 3.1, Omni Flash, Nano Banana), Grok Imagine, Meta AI 및 ChatGPT GPT Image 2.</b></p>
 
 <p align="center">
-  <a href="../../README.md">English</a> ·
-  <a href="README.vi.md">Tiếng Việt</a> ·
+  <a href="README.en.md">English</a> ·
+  <a href="../../README.md">Tiếng Việt</a> ·
   <a href="README.zh.md">简体中文</a> ·
   <a href="README.es.md">Español</a> ·
   <a href="README.pt.md">Português</a> ·
@@ -135,7 +135,7 @@ ChatGPT 계정을 사용하여 OpenAI **GPT Image 2** 로 생성하며, 최대 5
 
 ![Webhook API](../screenshots/09-webhook.png)
 
-앱을 로컬 자동화 서버로 바꾸세요. 서버를 시작하고 API 키를 복사한 뒤, `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` 또는 `/api/openai/generate` 로 작업을 POST하고, `/api/status/<id>` 를 폴링하세요. 이 페이지는 모든 모델과 지원되는 종횡비를 나열합니다. 전체 스키마: [`docs/WEBHOOK_INTEGRATION.en.md`](../WEBHOOK_INTEGRATION.en.md).
+앱을 로컬 자동화 서버로 바꾸세요. 서버를 시작하고 API 키를 복사한 뒤, `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` 또는 `/api/openai/generate` 로 작업을 POST하고, `/api/status/<id>` 를 폴링하세요. 이 페이지는 모든 모델과 지원되는 종횡비를 나열합니다. 전체 스키마: [`document/WEBHOOK_INTEGRATION.en.md`](../../document/WEBHOOK_INTEGRATION.en.md).
 
 ---
 

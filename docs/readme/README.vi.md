@@ -3,8 +3,8 @@
 <p align="center"><b>Một ứng dụng desktop để tạo hàng loạt ảnh &amp; video trên mọi nền tảng AI lớn — Google Flow (Veo 3.1, Omni Flash, Nano Banana), Grok Imagine, Meta AI và ChatGPT GPT Image 2.</b></p>
 
 <p align="center">
-  <a href="../../README.md">English</a> ·
   <b>Tiếng Việt</b> ·
+  <a href="README.en.md">English</a> ·
   <a href="README.zh.md">简体中文</a> ·
   <a href="README.es.md">Español</a> ·
   <a href="README.pt.md">Português</a> ·
@@ -32,19 +32,48 @@
 
 ## Cài đặt
 
-Tải bản mới nhất từ **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)**:
+### Bước 1 — Chọn đúng bản cho máy của bạn
 
-| Nền tảng | Tệp |
-|---|---|
-| 🪟 **Windows** | `G-Labs-Studio-win.exe` — chạy trình cài đặt (admin/UAC) |
-| 🍎 **macOS (Apple Silicon)** | `G-Labs-Studio-mac-arm64.dmg` |
-| 🍎 **macOS (Intel)** | `G-Labs-Studio-mac-intel.dmg` |
+Tải bản mới nhất từ **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)**, rồi chọn tệp theo đúng máy:
 
-**Lần mở đầu tiên trên macOS** — ứng dụng chưa được Apple ký nên macOS sẽ cách ly nó. Mở lần đầu bằng **chuột phải → Open**, hoặc gỡ cờ cách ly từ Terminal:
+| Máy của bạn | Tải tệp | Ghi chú |
+|---|---|---|
+| 🪟 **Windows 10/11 (64-bit)** | `G-Labs-Studio-win.exe` | Dùng cho mọi PC Windows |
+| 🍎 **Mac chip Apple (M1/M2/M3/M4)** | `G-Labs-Studio-mac-arm64.dmg` | Mac từ khoảng cuối 2020 về sau |
+| 🍎 **Mac chip Intel** | `G-Labs-Studio-mac-intel.dmg` | Mac đời cũ (trước 2020) |
 
-```bash
-xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
-```
+**Không chắc Mac của bạn chip gì?** Bấm biểu tượng  ở góc trên bên trái → **About This Mac**:
+- Có dòng **Chip** ghi "Apple M1 / M2 / M3…" → tải bản **arm64**.
+- Có dòng **Processor** ghi "Intel…" → tải bản **intel**.
+
+> Tải nhầm bản **Intel** cho máy Apple thì vẫn chạy được nhưng chậm hơn; còn tải nhầm bản **arm64** cho máy Intel sẽ **không mở được**. Nên chọn đúng.
+
+### Bước 2 — Cài đặt
+
+<details open>
+<summary><b>🪟 Trên Windows</b></summary>
+
+1. Mở tệp **`G-Labs-Studio-win.exe`** vừa tải.
+2. Nếu hiện bảng **"Windows protected your PC"** (SmartScreen): bấm **More info** → **Run anyway**. *(App chưa mua chứng chỉ ký của Microsoft nên bị cảnh báo — không phải virus.)*
+3. Bấm **Yes** khi Windows hỏi quyền admin (UAC), rồi làm theo trình cài đặt tới khi xong.
+4. Mở app từ **Start Menu** hoặc lối tắt trên **Desktop**.
+
+</details>
+
+<details open>
+<summary><b>🍎 Trên macOS</b></summary>
+
+1. Mở tệp **`.dmg`** vừa tải, rồi **kéo biểu tượng G-Labs Studio thả vào thư mục Applications**.
+2. Vào **Applications**, **bấm chuột phải** (hoặc giữ Control rồi bấm) lên **G-Labs Studio** → chọn **Open** → bấm **Open** lần nữa ở hộp xác nhận. *(App chưa được Apple ký nên phải mở kiểu này ở **lần đầu**; những lần sau mở bình thường như mọi app.)*
+3. Nếu macOS báo **"bị hỏng / không thể mở"** hoặc không thấy nút Open, mở **Terminal** và dán lệnh sau rồi Enter:
+   ```bash
+   xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
+   ```
+   Sau đó mở lại app.
+
+</details>
+
+### Bước 3 — Đăng nhập & chọn gói
 
 **Bạn cần một tài khoản G-Labs.** Mở ứng dụng, đăng nhập bằng Google và chọn gói. Các gói (**FREE / PLUS / MAX**) mở khóa những công cụ và mô hình khác nhau; bạn có thể mua ngay trong ứng dụng (QR ngân hàng, PayPal hoặc USDT). Một tài khoản chỉ chạy trên **một máy tại một thời điểm** — đăng nhập ở nơi khác sẽ đăng xuất máy trước đó. Huy hiệu ở góc dưới bên trái thanh bên hiển thị hạng hiện tại của bạn.
 
@@ -135,7 +164,7 @@ Một canvas node trực quan. Nhấp chuột phải vào socket của một nod
 
 ![Webhook API](../screenshots/09-webhook.png)
 
-Biến ứng dụng thành máy chủ tự động hóa cục bộ. Khởi chạy nó, sao chép API key, và POST các tác vụ tới `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` hoặc `/api/openai/generate`, rồi truy vấn `/api/status/<id>`. Trang liệt kê mọi mô hình và các tỷ lệ khung hình được hỗ trợ. Lược đồ đầy đủ: [`docs/WEBHOOK_INTEGRATION.vi.md`](../WEBHOOK_INTEGRATION.vi.md).
+Biến ứng dụng thành máy chủ tự động hóa cục bộ. Khởi chạy nó, sao chép API key, và POST các tác vụ tới `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` hoặc `/api/openai/generate`, rồi truy vấn `/api/status/<id>`. Trang liệt kê mọi mô hình và các tỷ lệ khung hình được hỗ trợ. Lược đồ đầy đủ: [`document/WEBHOOK_INTEGRATION.vi.md`](../../document/WEBHOOK_INTEGRATION.vi.md).
 
 ---
 
@@ -157,6 +186,8 @@ Cài đặt, danh sách prompt, phiên làm việc, kho nhân vật và danh sá
 **Một bản tạo Grok không làm gì cả** — Grok chạy qua tab `grok.com` của bạn. Cài đặt/bật tiện ích trình duyệt **Auth Helper** (Settings → Grok) và đảm bảo bạn đã đăng nhập grok.com.
 
 **"Active: 0 accounts" trên một trang** — thêm hoặc bật lại một tài khoản trong tab tài khoản của trang đó (Settings), hoặc token của nó đã hết hạn — nhấn **Refresh all**.
+
+**Windows chặn ở "Windows protected your PC"** — bấm **More info → Run anyway**. App chưa mua chứng chỉ ký của Microsoft nên bị cảnh báo, không phải virus.
 
 **macOS báo ứng dụng bị hỏng / không mở được** — nó chưa được Apple ký. Chuột phải → **Open** ở lần đầu, hoặc chạy `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"`.
 

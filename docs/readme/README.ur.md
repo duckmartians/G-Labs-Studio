@@ -3,8 +3,8 @@
 <p align="center"><b>ہر بڑے AI پر بیک وقت بہت سی تصاویر اور ویڈیوز بنانے کے لیے ایک ڈیسک ٹاپ ایپ — Google Flow (Veo 3.1، Omni Flash، Nano Banana)، Grok Imagine، Meta AI اور ChatGPT GPT Image 2۔</b></p>
 
 <p align="center">
-  <a href="../../README.md">English</a> ·
-  <a href="README.vi.md">Tiếng Việt</a> ·
+  <a href="README.en.md">English</a> ·
+  <a href="../../README.md">Tiếng Việt</a> ·
   <a href="README.zh.md">简体中文</a> ·
   <a href="README.es.md">Español</a> ·
   <a href="README.pt.md">Português</a> ·
@@ -135,7 +135,7 @@ Meta AI کے ذریعے تصویر اور ویڈیو جنریشن۔ موڈز: te
 
 ![Webhook API](../screenshots/09-webhook.png)
 
-ایپ کو ایک مقامی آٹومیشن سرور میں بدل دیں۔ اسے شروع کریں، اپنی API کلید کاپی کریں، اور `/api/image/generate`، `/api/video/generate`، `/api/grok/generate`، `/api/meta/generate` یا `/api/openai/generate` پر جابز POST کریں، پھر `/api/status/<id>` پول کریں۔ صفحہ ہر ماڈل اور اس کے سپورٹ کردہ ایسپیکٹ ریشوز کی فہرست دیتا ہے۔ مکمل شیما: [`docs/WEBHOOK_INTEGRATION.en.md`](../WEBHOOK_INTEGRATION.en.md)۔
+ایپ کو ایک مقامی آٹومیشن سرور میں بدل دیں۔ اسے شروع کریں، اپنی API کلید کاپی کریں، اور `/api/image/generate`، `/api/video/generate`، `/api/grok/generate`، `/api/meta/generate` یا `/api/openai/generate` پر جابز POST کریں، پھر `/api/status/<id>` پول کریں۔ صفحہ ہر ماڈل اور اس کے سپورٹ کردہ ایسپیکٹ ریشوز کی فہرست دیتا ہے۔ مکمل شیما: [`document/WEBHOOK_INTEGRATION.en.md`](../../document/WEBHOOK_INTEGRATION.en.md)۔
 
 ---
 

@@ -3,8 +3,8 @@
 <p align="center"><b>Eine Desktop-App zur Stapelerzeugung von Bildern &amp; Videos über alle großen KI-Anbieter hinweg — Google Flow (Veo 3.1, Omni Flash, Nano Banana), Grok Imagine, Meta AI und ChatGPT GPT Image 2.</b></p>
 
 <p align="center">
-  <a href="../../README.md">English</a> ·
-  <a href="README.vi.md">Tiếng Việt</a> ·
+  <a href="README.en.md">English</a> ·
+  <a href="../../README.md">Tiếng Việt</a> ·
   <a href="README.zh.md">简体中文</a> ·
   <a href="README.es.md">Español</a> ·
   <a href="README.pt.md">Português</a> ·
@@ -135,7 +135,7 @@ Eine visuelle Node-Leinwand. Klicke mit der rechten Maustaste auf den Anschluss 
 
 ![Webhook API](../screenshots/09-webhook.png)
 
-Verwandle die App in einen lokalen Automatisierungsserver. Starte ihn, kopiere deinen API-Schlüssel und sende POST-Aufträge an `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` oder `/api/openai/generate`, und frage dann `/api/status/<id>` ab. Die Seite listet jedes Modell und seine unterstützten Seitenverhältnisse auf. Vollständiges Schema: [`docs/WEBHOOK_INTEGRATION.en.md`](../WEBHOOK_INTEGRATION.en.md).
+Verwandle die App in einen lokalen Automatisierungsserver. Starte ihn, kopiere deinen API-Schlüssel und sende POST-Aufträge an `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` oder `/api/openai/generate`, und frage dann `/api/status/<id>` ab. Die Seite listet jedes Modell und seine unterstützten Seitenverhältnisse auf. Vollständiges Schema: [`document/WEBHOOK_INTEGRATION.en.md`](../../document/WEBHOOK_INTEGRATION.en.md).
 
 ---
 

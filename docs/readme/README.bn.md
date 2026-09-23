@@ -3,8 +3,8 @@
 <p align="center"><b>প্রতিটি প্রধান AI-তে ছবি ও ভিডিও ব্যাচ-জেনারেট করার জন্য একটিই ডেস্কটপ অ্যাপ — Google Flow (Veo 3.1, Omni Flash, Nano Banana), Grok Imagine, Meta AI এবং ChatGPT GPT Image 2।</b></p>
 
 <p align="center">
-  <a href="../../README.md">English</a> ·
-  <a href="README.vi.md">Tiếng Việt</a> ·
+  <a href="README.en.md">English</a> ·
+  <a href="../../README.md">Tiếng Việt</a> ·
   <a href="README.zh.md">简体中文</a> ·
   <a href="README.es.md">Español</a> ·
   <a href="README.pt.md">Português</a> ·
@@ -135,7 +135,7 @@ Meta AI-এর মাধ্যমে ছবি ও ভিডিও জেনা�
 
 ![Webhook API](../screenshots/09-webhook.png)
 
-অ্যাপটিকে একটি লোকাল অটোমেশন সার্ভারে পরিণত করুন। এটি স্টার্ট করুন, আপনার API key কপি করুন, এবং `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` বা `/api/openai/generate`-তে জব POST করুন, তারপর `/api/status/<id>` পোল করুন। পেজটি প্রতিটি মডেল ও তার সমর্থিত অ্যাসপেক্ট রেশিও তালিকাভুক্ত করে। সম্পূর্ণ স্কিমা: [`docs/WEBHOOK_INTEGRATION.en.md`](../WEBHOOK_INTEGRATION.en.md)।
+অ্যাপটিকে একটি লোকাল অটোমেশন সার্ভারে পরিণত করুন। এটি স্টার্ট করুন, আপনার API key কপি করুন, এবং `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` বা `/api/openai/generate`-তে জব POST করুন, তারপর `/api/status/<id>` পোল করুন। পেজটি প্রতিটি মডেল ও তার সমর্থিত অ্যাসপেক্ট রেশিও তালিকাভুক্ত করে। সম্পূর্ণ স্কিমা: [`document/WEBHOOK_INTEGRATION.en.md`](../../document/WEBHOOK_INTEGRATION.en.md)।
 
 ---
 

@@ -3,8 +3,8 @@
 <p align="center"><b>Satu aplikasi desktop untuk menghasilkan gambar &amp; video secara massal di seluruh AI besar — Google Flow (Veo 3.1, Omni Flash, Nano Banana), Grok Imagine, Meta AI, dan ChatGPT GPT Image 2.</b></p>
 
 <p align="center">
-  <a href="../../README.md">English</a> ·
-  <a href="README.vi.md">Tiếng Việt</a> ·
+  <a href="README.en.md">English</a> ·
+  <a href="../../README.md">Tiếng Việt</a> ·
   <a href="README.zh.md">简体中文</a> ·
   <a href="README.es.md">Español</a> ·
   <a href="README.pt.md">Português</a> ·
@@ -135,7 +135,7 @@ Kanvas node visual. Klik kanan soket sebuah node dan menu hanya menawarkan node 
 
 ![Webhook API](../screenshots/09-webhook.png)
 
-Ubah aplikasi menjadi server otomasi lokal. Jalankan, salin API key Anda, dan POST pekerjaan ke `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` atau `/api/openai/generate`, lalu periksa `/api/status/<id>`. Halaman ini mencantumkan setiap model dan rasio aspek yang didukungnya. Skema lengkap: [`docs/WEBHOOK_INTEGRATION.en.md`](../WEBHOOK_INTEGRATION.en.md).
+Ubah aplikasi menjadi server otomasi lokal. Jalankan, salin API key Anda, dan POST pekerjaan ke `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` atau `/api/openai/generate`, lalu periksa `/api/status/<id>`. Halaman ini mencantumkan setiap model dan rasio aspek yang didukungnya. Skema lengkap: [`document/WEBHOOK_INTEGRATION.en.md`](../../document/WEBHOOK_INTEGRATION.en.md).
 
 ---
 

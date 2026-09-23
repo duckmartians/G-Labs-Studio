@@ -3,8 +3,8 @@
 <p align="center"><b>हर प्रमुख AI में छवियाँ और वीडियो बैच-जनरेट करने के लिए एक ही डेस्कटॉप ऐप — Google Flow (Veo 3.1, Omni Flash, Nano Banana), Grok Imagine, Meta AI और ChatGPT GPT Image 2।</b></p>
 
 <p align="center">
-  <a href="../../README.md">English</a> ·
-  <a href="README.vi.md">Tiếng Việt</a> ·
+  <a href="README.en.md">English</a> ·
+  <a href="../../README.md">Tiếng Việt</a> ·
   <a href="README.zh.md">简体中文</a> ·
   <a href="README.es.md">Español</a> ·
   <a href="README.pt.md">Português</a> ·
@@ -135,7 +135,7 @@ Meta AI के ज़रिए छवि और वीडियो जनरे�
 
 ![Webhook API](../screenshots/09-webhook.png)
 
-ऐप को एक लोकल ऑटोमेशन सर्वर में बदलें। इसे स्टार्ट करें, अपनी API key कॉपी करें, और `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` या `/api/openai/generate` पर जॉब POST करें, फिर `/api/status/<id>` को पोल करें। पेज हर मॉडल और उसके समर्थित आस्पेक्ट रेशियो की सूची देता है। पूरा स्कीमा: [`docs/WEBHOOK_INTEGRATION.en.md`](../WEBHOOK_INTEGRATION.en.md)।
+ऐप को एक लोकल ऑटोमेशन सर्वर में बदलें। इसे स्टार्ट करें, अपनी API key कॉपी करें, और `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` या `/api/openai/generate` पर जॉब POST करें, फिर `/api/status/<id>` को पोल करें। पेज हर मॉडल और उसके समर्थित आस्पेक्ट रेशियो की सूची देता है। पूरा स्कीमा: [`document/WEBHOOK_INTEGRATION.en.md`](../../document/WEBHOOK_INTEGRATION.en.md)।
 
 ---
 
