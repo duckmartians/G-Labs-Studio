@@ -26,8 +26,6 @@
   <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="Download for macOS (Intel)" src="https://img.shields.io/badge/Download-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
 
-![G-Labs Studio](../screenshots/01-image.png)
-
 ---
 
 ## Install
@@ -38,9 +36,9 @@ Download the latest build from **[Releases](https://github.com/duckmartians/G-La
 
 | Your machine | Download | Notes |
 |---|---|---|
-| 🪟 **Windows 10/11 (64-bit)** | `G-Labs-Studio-win.exe` | For any Windows PC |
-| 🍎 **Mac with Apple chip (M1/M2/M3/M4)** | `G-Labs-Studio-mac-arm64.dmg` | Macs from ~late 2020 onward |
-| 🍎 **Mac with Intel chip** | `G-Labs-Studio-mac-intel.dmg` | Older Macs (before 2020) |
+| 🪟 **Windows 10/11 (64-bit)** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | For any Windows PC |
+| 🍎 **Mac with Apple chip (M1/M2/M3/M4)** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | Macs from ~late 2020 onward |
+| 🍎 **Mac with Intel chip** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | Older Macs (before 2020) |
 
 **Not sure which chip your Mac has?** Click the  menu (top-left) → **About This Mac**:
 - A **Chip** line reading "Apple M1 / M2 / M3…" → download the **arm64** build.
@@ -75,7 +73,7 @@ Download the latest build from **[Releases](https://github.com/duckmartians/G-La
 
 ### Step 3 — Sign in &amp; pick a plan
 
-**You need a G-Labs account.** Open the app, sign in with Google, and pick a plan. Plans (**FREE / PLUS / MAX**) unlock different tools and models; you can buy one from inside the app (bank QR, PayPal, or USDT). One account runs on **one machine at a time** — signing in elsewhere signs the previous machine out. The badge at the bottom-left of the sidebar shows your current tier.
+**You need a G-Labs account.** Open the app, sign in with Google, and pick a plan. Plans (**FREE / PLUS / MAX**) unlock different tools and models; you can buy one from inside the app (bank QR, PayPal, or USDT). One account runs on **one machine at a time** — signing in elsewhere signs the previous machine out. The badge at the bottom-left of the sidebar shows your current tier. Need **several devices at once**? You can buy a **Team** plan (the price scales with the number of extra devices you add).
 
 > **Just switched from the old version (G-Labs Automation)?** The new version does **not** carry your accounts over. You'll need to **sign in to all your accounts again** (Google/Flow, ChatGPT, Meta…) in the new G-Labs Studio.
 
@@ -99,6 +97,8 @@ Every page header carries a live **status bar** — *Running · Queued · Done �
 ---
 
 ## Features
+
+![G-Labs Studio](../screenshots/01-image.png)
 
 - **Every major generator, one app** — Google Flow (image + video), Grok Imagine, Meta AI (vibes.ai) and OpenAI GPT Image 2, each on its own page with the models and ratios that provider supports.
 - **Batch by design** — paste a list of prompts (one per line) or import a `.txt`/Excel file; each becomes a row. Reference images auto-match by filename. Run the whole list with a concurrency you choose.
@@ -166,7 +166,7 @@ A visual node canvas. Right-click a node's socket and the menu offers only the n
 
 ![Webhook API](../screenshots/09-webhook.png)
 
-Turn the app into a local automation server. Start it, copy your API key, and POST jobs to `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` or `/api/openai/generate`, then poll `/api/status/<id>`. The page lists every model and its supported aspect ratios. Full schema: [`document/WEBHOOK_INTEGRATION.en.md`](../../document/WEBHOOK_INTEGRATION.en.md).
+Turn the app into a local automation server. Start it, copy your API key, and POST jobs to `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` or `/api/openai/generate`, then poll `/api/status/<id>`. The page lists every model and its supported aspect ratios. Full schema: [`WEBHOOK_INTEGRATION.en.md`](../../WEBHOOK_INTEGRATION.en.md).
 
 ---
 

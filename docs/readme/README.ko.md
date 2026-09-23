@@ -21,34 +21,63 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="Download for Windows" src="https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="Download for macOS (Apple Silicon)" src="https://img.shields.io/badge/Download-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="Download for macOS (Intel)" src="https://img.shields.io/badge/Download-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="다운로드 — Windows" src="https://img.shields.io/badge/%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="다운로드 — macOS (Apple Silicon)" src="https://img.shields.io/badge/%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="다운로드 — macOS (Intel)" src="https://img.shields.io/badge/%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
-
-![G-Labs Studio](../screenshots/01-image.png)
 
 ---
 
 ## 설치
 
-**[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)** 에서 최신 빌드를 다운로드하세요:
+### 1단계 — 내 컴퓨터에 맞는 버전 선택
 
-| 플랫폼 | 파일 |
-|---|---|
-| 🪟 **Windows** | `G-Labs-Studio-win.exe` — 설치 프로그램 실행 (관리자/UAC) |
-| 🍎 **macOS (Apple Silicon)** | `G-Labs-Studio-mac-arm64.dmg` |
-| 🍎 **macOS (Intel)** | `G-Labs-Studio-mac-intel.dmg` |
+**[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)** 에서 최신 버전을 내려받은 뒤, 내 컴퓨터에 맞는 파일을 선택하세요:
 
-**macOS 최초 실행** — 이 앱은 Apple 서명이 없어서 macOS가 격리합니다. 처음에는 **마우스 오른쪽 클릭 → 열기**로 열거나, 터미널에서 플래그를 제거하세요:
+| 내 컴퓨터 | 다운로드 | 비고 |
+|---|---|---|
+| 🪟 **Windows 10/11 (64비트)** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | 모든 Windows PC용 |
+| 🍎 **Apple 칩 Mac (M1/M2/M3/M4)** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | 2020년 말 이후 출시된 Mac |
+| 🍎 **Intel 칩 Mac** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | 구형 Mac (2020년 이전) |
 
-```bash
-xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
-```
+**Mac 칩이 무엇인지 잘 모르겠나요?** 왼쪽 위  메뉴 → **About This Mac** 클릭:
+- **Chip** 줄에 “Apple M1 / M2 / M3…” 표시 → **arm64** 버전 다운로드.
+- **Processor** 줄에 “Intel…” 표시 → **intel** 버전 다운로드.
 
-**G-Labs 계정이 필요합니다.** 앱을 열고 Google로 로그인한 뒤 요금제를 선택하세요. 요금제(**FREE / PLUS / MAX**)에 따라 서로 다른 도구와 모델이 잠금 해제됩니다. 앱 내부에서 구매할 수 있습니다(은행 QR, PayPal 또는 USDT). 하나의 계정은 **한 번에 한 기기에서만** 실행됩니다 — 다른 곳에서 로그인하면 이전 기기는 로그아웃됩니다. 사이드바 왼쪽 아래의 배지가 현재 등급을 표시합니다.
+> **Intel** 버전은 Apple 칩 Mac에서도 실행됩니다(다만 느림). 하지만 **arm64** 버전은 Intel Mac에서 **열리지 않으므로** 올바른 것을 선택하세요.
 
-앱은 **스스로 업데이트합니다**: 실행 시 GitHub Releases를 확인하고 앱 내부에서 새 버전을 다운로드하여 설치할 수 있습니다.
+### 2단계 — 설치
+
+<details open>
+<summary><b>🪟 Windows에서</b></summary>
+
+1. 내려받은 **`G-Labs-Studio-win.exe`** 를 엽니다.
+2. **“Windows protected your PC”**(SmartScreen)가 뜨면: **More info** → **Run anyway** 를 클릭하세요. *(아직 Microsoft 인증서로 서명되지 않아 경고가 뜨는 것이며 바이러스가 아닙니다.)*
+3. 관리자(UAC) 창에서 **Yes** 를 클릭한 뒤 설치를 끝까지 진행합니다.
+4. **Start Menu** 또는 **Desktop** 바로가기에서 실행합니다.
+
+</details>
+
+<details open>
+<summary><b>🍎 macOS에서</b></summary>
+
+1. 내려받은 **`.dmg`** 를 열고 **G-Labs Studio 를 Applications 폴더로 드래그**합니다.
+2. **Applications** 에서 **G-Labs Studio** 를 **우클릭**(또는 Control-클릭) → **Open** → 대화상자에서 다시 **Open** 클릭. *(Apple 서명이 없어 **처음 한 번**은 이렇게 열어야 하며, 이후에는 정상적으로 열립니다.)*
+3. macOS가 앱이 **“손상됨 / 열 수 없음”**이라고 하거나 Open 버튼이 없으면, **Terminal** 을 열고 붙여넣으세요:
+   ```bash
+   xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
+   ```
+   그런 다음 앱을 다시 엽니다.
+
+</details>
+
+### 3단계 — 로그인하고 요금제 선택
+
+**G-Labs 계정이 필요합니다.** 앱을 열고 Google로 로그인한 뒤 요금제를 선택하세요. 요금제(**FREE / PLUS / MAX**)에 따라 열리는 도구와 모델이 다르며, 앱 안에서 구매할 수 있습니다(은행 QR, PayPal 또는 USDT). 한 계정은 **한 번에 한 대**에서만 실행됩니다 — 다른 곳에서 로그인하면 이전 기기는 로그아웃됩니다. 사이드바 왼쪽 아래 배지가 현재 등급을 보여 줍니다. 여러 기기를 동시에 써야 하나요? **Team** 요금제를 구매할 수 있습니다(추가하는 기기 수에 따라 가격이 올라갑니다).
+
+> **방금 구버전(G-Labs Automation)에서 옮겨 오셨나요?** 새 버전은 계정을 **가져오지 않습니다**. 새 G-Labs Studio에서 **모든 계정에 다시 로그인**해야 합니다(Google/Flow, ChatGPT, Meta…).
+
+앱은 **스스로 업데이트**합니다: 실행 시 GitHub Releases를 확인하고 앱 안에서 새 버전을 내려받아 설치할 수 있습니다.
 
 ---
 
@@ -68,6 +97,8 @@ xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
 ---
 
 ## 기능
+
+![G-Labs Studio](../screenshots/01-image.png)
 
 - **모든 주요 생성기, 하나의 앱** — Google Flow (이미지 + 비디오), Grok Imagine, Meta AI (vibes.ai) 및 OpenAI GPT Image 2. 각각 해당 제공자가 지원하는 모델과 비율과 함께 자체 페이지에 있습니다.
 - **처음부터 배치 설계** — 프롬프트 목록을 붙여넣거나(한 줄에 하나씩) `.txt`/Excel 파일을 가져오면, 각각이 하나의 행이 됩니다. 참조 이미지는 파일명으로 자동 매칭됩니다. 원하는 동시 실행 수로 전체 목록을 실행하세요.
@@ -135,7 +166,7 @@ ChatGPT 계정을 사용하여 OpenAI **GPT Image 2** 로 생성하며, 최대 5
 
 ![Webhook API](../screenshots/09-webhook.png)
 
-앱을 로컬 자동화 서버로 바꾸세요. 서버를 시작하고 API 키를 복사한 뒤, `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` 또는 `/api/openai/generate` 로 작업을 POST하고, `/api/status/<id>` 를 폴링하세요. 이 페이지는 모든 모델과 지원되는 종횡비를 나열합니다. 전체 스키마: [`document/WEBHOOK_INTEGRATION.en.md`](../../document/WEBHOOK_INTEGRATION.en.md).
+앱을 로컬 자동화 서버로 바꾸세요. 서버를 시작하고 API 키를 복사한 뒤, `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` 또는 `/api/openai/generate` 로 작업을 POST하고, `/api/status/<id>` 를 폴링하세요. 이 페이지는 모든 모델과 지원되는 종횡비를 나열합니다. 전체 스키마: [`WEBHOOK_INTEGRATION.en.md`](../../WEBHOOK_INTEGRATION.en.md).
 
 ---
 

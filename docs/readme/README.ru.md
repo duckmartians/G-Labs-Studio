@@ -21,34 +21,63 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="Download for Windows" src="https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="Download for macOS (Apple Silicon)" src="https://img.shields.io/badge/Download-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="Download for macOS (Intel)" src="https://img.shields.io/badge/Download-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="Скачать — Windows" src="https://img.shields.io/badge/%D0%A1%D0%BA%D0%B0%D1%87%D0%B0%D1%82%D1%8C-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="Скачать — macOS (Apple Silicon)" src="https://img.shields.io/badge/%D0%A1%D0%BA%D0%B0%D1%87%D0%B0%D1%82%D1%8C-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="Скачать — macOS (Intel)" src="https://img.shields.io/badge/%D0%A1%D0%BA%D0%B0%D1%87%D0%B0%D1%82%D1%8C-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
-
-![G-Labs Studio](../screenshots/01-image.png)
 
 ---
 
 ## Установка
 
-Скачайте последнюю сборку из раздела **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)**:
+### Шаг 1 — Выберите правильную сборку для вашего компьютера
 
-| Платформа | Файл |
-|---|---|
-| 🪟 **Windows** | `G-Labs-Studio-win.exe` — запустите установщик (админ/UAC) |
-| 🍎 **macOS (Apple Silicon)** | `G-Labs-Studio-mac-arm64.dmg` |
-| 🍎 **macOS (Intel)** | `G-Labs-Studio-mac-intel.dmg` |
+Скачайте последнюю версию из **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)** и выберите файл, подходящий вашему компьютеру:
 
-**Первый запуск на macOS** — приложение не подписано Apple, поэтому macOS помещает его в карантин. Откройте его в первый раз через **правый клик → Открыть** или снимите флаг из Терминала:
+| Ваш компьютер | Скачать | Примечания |
+|---|---|---|
+| 🪟 **Windows 10/11 (64-бит)** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | Для любого ПК с Windows |
+| 🍎 **Mac с чипом Apple (M1/M2/M3/M4)** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | Mac примерно с конца 2020 года |
+| 🍎 **Mac с чипом Intel** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | Более старые Mac (до 2020 года) |
 
-```bash
-xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
-```
+**Не знаете, какой чип у вашего Mac?** Нажмите меню  (вверху слева) → **About This Mac**:
+- Строка **Chip** со значением «Apple M1 / M2 / M3…» → скачивайте сборку **arm64**.
+- Строка **Processor** со значением «Intel…» → скачивайте сборку **intel**.
 
-**Вам нужна учётная запись G-Labs.** Откройте приложение, войдите через Google и выберите план. Планы (**FREE / PLUS / MAX**) открывают разные инструменты и модели; купить план можно прямо в приложении (банковский QR, PayPal или USDT). Одна учётная запись работает на **одной машине одновременно** — вход на другом устройстве завершает сеанс на предыдущем. Значок в левом нижнем углу боковой панели показывает ваш текущий уровень.
+> Сборка **Intel** всё равно запустится на Mac с чипом Apple (только медленнее), но сборка **arm64** **не откроется** на Intel Mac — поэтому выбирайте правильную.
 
-Приложение **обновляется само**: при запуске оно проверяет GitHub Releases и может скачать и установить новую версию прямо из приложения.
+### Шаг 2 — Установка
+
+<details open>
+<summary><b>🪟 На Windows</b></summary>
+
+1. Откройте скачанный **`G-Labs-Studio-win.exe`**.
+2. Если появится **«Windows protected your PC»** (SmartScreen): нажмите **More info** → **Run anyway**. *(Приложение пока не подписано сертификатом Microsoft, поэтому появляется предупреждение — это не вирус.)*
+3. Нажмите **Yes** в запросе администратора (UAC) и пройдите установщик до конца.
+4. Запустите его из **Start Menu** или ярлыком на **Desktop**.
+
+</details>
+
+<details open>
+<summary><b>🍎 На macOS</b></summary>
+
+1. Откройте скачанный **`.dmg`** и **перетащите G-Labs Studio в папку Applications**.
+2. Откройте **Applications**, **щёлкните правой кнопкой** (или Control-клик) по **G-Labs Studio** → **Open** → ещё раз нажмите **Open** в диалоге. *(Приложение не подписано Apple, поэтому в **первый раз** его нужно открыть так; далее оно открывается обычно.)*
+3. Если macOS пишет, что приложение **«повреждено / не может быть открыто»**, или нет кнопки Open, откройте **Terminal** и вставьте:
+   ```bash
+   xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
+   ```
+   Затем откройте приложение снова.
+
+</details>
+
+### Шаг 3 — Войдите и выберите план
+
+**Вам нужен аккаунт G-Labs.** Откройте приложение, войдите через Google и выберите план. Планы (**FREE / PLUS / MAX**) открывают разные инструменты и модели; купить можно прямо в приложении (банковский QR, PayPal или USDT). Один аккаунт работает **на одной машине одновременно** — вход в другом месте выходит из предыдущей машины. Значок в левом нижнем углу боковой панели показывает ваш текущий уровень. Нужно несколько устройств одновременно? Можно купить план **Team** (цена растёт с числом добавленных устройств).
+
+> **Только что перешли со старой версии (G-Labs Automation)?** Новая версия **не** переносит ваши аккаунты. Нужно **заново войти во все аккаунты** (Google/Flow, ChatGPT, Meta…) в новой G-Labs Studio.
+
+Приложение **обновляется само**: при запуске проверяет GitHub Releases и может скачать и установить новую версию прямо из приложения.
 
 ---
 
@@ -68,6 +97,8 @@ xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
 ---
 
 ## Возможности
+
+![G-Labs Studio](../screenshots/01-image.png)
 
 - **Все крупные генераторы в одном приложении** — Google Flow (изображения + видео), Grok Imagine, Meta AI (vibes.ai) и OpenAI GPT Image 2, каждый на своей странице с моделями и соотношениями сторон, которые поддерживает провайдер.
 - **Пакетная работа по замыслу** — вставьте список промптов (по одному на строку) или импортируйте файл `.txt`/Excel; каждый становится строкой. Референсные изображения автоматически сопоставляются по имени файла. Запускайте весь список с выбранной вами параллельностью.
@@ -135,7 +166,7 @@ xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
 
 ![Webhook API](../screenshots/09-webhook.png)
 
-Превратите приложение в локальный сервер автоматизации. Запустите его, скопируйте свой API-ключ и отправляйте задачи POST на `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` или `/api/openai/generate`, затем опрашивайте `/api/status/<id>`. На странице перечислены все модели и поддерживаемые ими соотношения сторон. Полная схема: [`document/WEBHOOK_INTEGRATION.en.md`](../../document/WEBHOOK_INTEGRATION.en.md).
+Превратите приложение в локальный сервер автоматизации. Запустите его, скопируйте свой API-ключ и отправляйте задачи POST на `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` или `/api/openai/generate`, затем опрашивайте `/api/status/<id>`. На странице перечислены все модели и поддерживаемые ими соотношения сторон. Полная схема: [`WEBHOOK_INTEGRATION.en.md`](../../WEBHOOK_INTEGRATION.en.md).
 
 ---
 

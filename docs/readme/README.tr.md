@@ -21,34 +21,63 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="Download for Windows" src="https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="Download for macOS (Apple Silicon)" src="https://img.shields.io/badge/Download-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="Download for macOS (Intel)" src="https://img.shields.io/badge/Download-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="İndir — Windows" src="https://img.shields.io/badge/%C4%B0ndir-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="İndir — macOS (Apple Silicon)" src="https://img.shields.io/badge/%C4%B0ndir-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="İndir — macOS (Intel)" src="https://img.shields.io/badge/%C4%B0ndir-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
-
-![G-Labs Studio](../screenshots/01-image.png)
 
 ---
 
 ## Kurulum
 
-En son sürümü **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)** sayfasından indirin:
+### Adım 1 — Makinen için doğru sürümü seç
 
-| Platform | Dosya |
-|---|---|
-| 🪟 **Windows** | `G-Labs-Studio-win.exe` — yükleyiciyi çalıştırın (yönetici/UAC) |
-| 🍎 **macOS (Apple Silicon)** | `G-Labs-Studio-mac-arm64.dmg` |
-| 🍎 **macOS (Intel)** | `G-Labs-Studio-mac-intel.dmg` |
+En son sürümü **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)** üzerinden indir, sonra makinene uygun dosyayı seç:
 
-**macOS ilk açılış** — uygulama Apple tarafından imzalanmadığı için macOS onu karantinaya alır. İlk açışta **sağ tıkla → Aç** ile açın veya bayrağı Terminal'den temizleyin:
+| Makinen | İndir | Notlar |
+|---|---|---|
+| 🪟 **Windows 10/11 (64 bit)** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | Her Windows PC için |
+| 🍎 **Apple çipli Mac (M1/M2/M3/M4)** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | Yaklaşık 2020 sonundan itibaren Mac'ler |
+| 🍎 **Intel çipli Mac** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | Daha eski Mac'ler (2020 öncesi) |
 
-```bash
-xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
-```
+**Mac'inin hangi çipe sahip olduğundan emin değil misin?**  menüsü (sol üst) → **About This Mac**:
+- “Apple M1 / M2 / M3…” yazan bir **Chip** satırı → **arm64** sürümünü indir.
+- “Intel…” yazan bir **Processor** satırı → **intel** sürümünü indir.
 
-**Bir G-Labs hesabına ihtiyacınız var.** Uygulamayı açın, Google ile oturum açın ve bir plan seçin. Planlar (**FREE / PLUS / MAX**) farklı araç ve modelleri açar; uygulamanın içinden bir tane satın alabilirsiniz (banka QR, PayPal veya USDT). Bir hesap **aynı anda tek bir makinede** çalışır — başka bir yerde oturum açmak önceki makinenin oturumunu kapatır. Kenar çubuğunun sol altındaki rozet mevcut kademenizi gösterir.
+> **Intel** sürümü Apple çipli bir Mac'te yine de çalışır (sadece daha yavaş), ama **arm64** sürümü bir Intel Mac'te **açılmaz** — o yüzden doğru olanı seç.
 
-Uygulama **kendini günceller**: açılışta GitHub Releases'i kontrol eder ve yeni sürümü uygulamanın içinden indirip kurabilir.
+### Adım 2 — Kur
+
+<details open>
+<summary><b>🪟 Windows'ta</b></summary>
+
+1. İndirdiğin **`G-Labs-Studio-win.exe`** dosyasını aç.
+2. **“Windows protected your PC”** (SmartScreen) çıkarsa: **More info** → **Run anyway** tıkla. *(Uygulama henüz bir Microsoft sertifikasıyla imzalanmadı, bu yüzden uyarı çıkıyor — virüs değil.)*
+3. Yönetici (UAC) isteminde **Yes** tıkla, sonra kurulumu sonuna kadar tamamla.
+4. **Start Menu** ya da **Desktop** kısayolundan aç.
+
+</details>
+
+<details open>
+<summary><b>🍎 macOS'ta</b></summary>
+
+1. İndirdiğin **`.dmg`** dosyasını aç, sonra **G-Labs Studio'yu Applications klasörüne sürükle**.
+2. **Applications**'a git, **G-Labs Studio**'ya **sağ tıkla** (veya Control-tıkla) → **Open** → iletişim kutusunda tekrar **Open** tıkla. *(Uygulama Apple tarafından imzalı değil, bu yüzden **ilk kez** böyle açman gerekir; sonrasında normal açılır.)*
+3. macOS uygulamanın **“hasarlı / açılamıyor”** olduğunu söylerse ya da Open düğmesi yoksa, **Terminal**'i açıp yapıştır:
+   ```bash
+   xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
+   ```
+   Sonra uygulamayı tekrar aç.
+
+</details>
+
+### Adım 3 — Giriş yap ve bir plan seç
+
+**Bir G-Labs hesabına ihtiyacın var.** Uygulamayı aç, Google ile giriş yap ve bir plan seç. Planlar (**FREE / PLUS / MAX**) farklı araç ve modelleri açar; uygulama içinden satın alabilirsin (banka QR, PayPal veya USDT). Bir hesap **aynı anda tek makinede** çalışır — başka yerde giriş yapmak önceki makinenin oturumunu kapatır. Kenar çubuğunun sol alt köşesindeki rozet mevcut seviyeni gösterir. Aynı anda birden fazla cihaz mı gerekiyor? **Team** planı satın alabilirsin (fiyat, eklediğin ek cihaz sayısına göre artar).
+
+> **Az önce eski sürümden (G-Labs Automation) mi geçtin?** Yeni sürüm hesaplarını **taşımaz**. Yeni G-Labs Studio'da **tüm hesaplara yeniden giriş yapman** gerekir (Google/Flow, ChatGPT, Meta…).
+
+Uygulama **kendini günceller**: açılışta GitHub Releases'i kontrol eder ve yeni sürümü uygulama içinden indirip kurabilir.
 
 ---
 
@@ -68,6 +97,8 @@ Her sayfa başlığında canlı bir **durum çubuğu** bulunur — *Running · Q
 ---
 
 ## Özellikler
+
+![G-Labs Studio](../screenshots/01-image.png)
 
 - **Her büyük üreteç, tek uygulama** — Google Flow (görüntü + video), Grok Imagine, Meta AI (vibes.ai) ve OpenAI GPT Image 2, her biri kendi sayfasında, o sağlayıcının desteklediği modeller ve oranlarla.
 - **Tasarımı gereği toplu** — bir istem listesini yapıştırın (satır başına bir tane) veya bir `.txt`/Excel dosyası içe aktarın; her biri bir satır olur. Referans görüntüler dosya adına göre otomatik eşleşir. Seçtiğiniz bir eşzamanlılıkla tüm listeyi çalıştırın.
@@ -135,7 +166,7 @@ Görsel bir düğüm tuvali. Bir düğümün soketine sağ tıklayın, menü yal
 
 ![Webhook API](../screenshots/09-webhook.png)
 
-Uygulamayı yerel bir otomasyon sunucusuna dönüştürün. Başlatın, API anahtarınızı kopyalayın ve `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` veya `/api/openai/generate` adreslerine iş POST edin, ardından `/api/status/<id>` sorgulayın. Sayfa her modeli ve desteklediği en boy oranlarını listeler. Tam şema: [`document/WEBHOOK_INTEGRATION.en.md`](../../document/WEBHOOK_INTEGRATION.en.md).
+Uygulamayı yerel bir otomasyon sunucusuna dönüştürün. Başlatın, API anahtarınızı kopyalayın ve `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` veya `/api/openai/generate` adreslerine iş POST edin, ardından `/api/status/<id>` sorgulayın. Sayfa her modeli ve desteklediği en boy oranlarını listeler. Tam şema: [`WEBHOOK_INTEGRATION.en.md`](../../WEBHOOK_INTEGRATION.en.md).
 
 ---
 

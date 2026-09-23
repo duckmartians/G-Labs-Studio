@@ -21,34 +21,63 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="Download for Windows" src="https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="Download for macOS (Apple Silicon)" src="https://img.shields.io/badge/Download-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="Download for macOS (Intel)" src="https://img.shields.io/badge/Download-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="Unduh — Windows" src="https://img.shields.io/badge/Unduh-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="Unduh — macOS (Apple Silicon)" src="https://img.shields.io/badge/Unduh-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="Unduh — macOS (Intel)" src="https://img.shields.io/badge/Unduh-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
-
-![G-Labs Studio](../screenshots/01-image.png)
 
 ---
 
 ## Instalasi
 
-Unduh build terbaru dari **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)**:
+### Langkah 1 — Pilih versi yang tepat untuk perangkatmu
 
-| Platform | Berkas |
-|---|---|
-| 🪟 **Windows** | `G-Labs-Studio-win.exe` — jalankan installer (admin/UAC) |
-| 🍎 **macOS (Apple Silicon)** | `G-Labs-Studio-mac-arm64.dmg` |
-| 🍎 **macOS (Intel)** | `G-Labs-Studio-mac-intel.dmg` |
+Unduh versi terbaru dari **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)**, lalu pilih berkas yang cocok dengan perangkatmu:
 
-**Peluncuran pertama di macOS** — aplikasi ini tidak ditandatangani oleh Apple, sehingga macOS mengarantinanya. Buka pertama kali dengan **klik kanan → Open**, atau hapus penanda tersebut dari Terminal:
+| Perangkatmu | Unduh | Catatan |
+|---|---|---|
+| 🪟 **Windows 10/11 (64-bit)** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | Untuk PC Windows apa pun |
+| 🍎 **Mac dengan chip Apple (M1/M2/M3/M4)** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | Mac dari sekitar akhir 2020 ke atas |
+| 🍎 **Mac dengan chip Intel** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | Mac lama (sebelum 2020) |
 
-```bash
-xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
-```
+**Tidak yakin chip Mac-mu apa?** Klik menu  (kiri atas) → **About This Mac**:
+- Baris **Chip** bertuliskan “Apple M1 / M2 / M3…” → unduh versi **arm64**.
+- Baris **Processor** bertuliskan “Intel…” → unduh versi **intel**.
 
-**Anda memerlukan akun G-Labs.** Buka aplikasi, masuk dengan Google, dan pilih paket. Paket (**FREE / PLUS / MAX**) membuka berbagai alat dan model; Anda dapat membelinya dari dalam aplikasi (QR bank, PayPal, atau USDT). Satu akun berjalan di **satu mesin pada satu waktu** — masuk di tempat lain akan mengeluarkan mesin sebelumnya. Lencana di kiri bawah bilah sisi menampilkan tingkat Anda saat ini.
+> Versi **Intel** tetap jalan di Mac chip Apple (hanya lebih lambat), tapi versi **arm64** **tidak bisa dibuka** di Mac Intel — jadi pilih yang tepat.
 
-Aplikasi ini **memperbarui dirinya sendiri**: ia memeriksa GitHub Releases saat diluncurkan dan dapat mengunduh serta memasang versi baru dari dalam aplikasi.
+### Langkah 2 — Instal
+
+<details open>
+<summary><b>🪟 Di Windows</b></summary>
+
+1. Buka **`G-Labs-Studio-win.exe`** yang sudah diunduh.
+2. Jika muncul **“Windows protected your PC”** (SmartScreen): klik **More info** → **Run anyway**. *(Aplikasi belum ditandatangani dengan sertifikat Microsoft, jadi ditandai — bukan virus.)*
+3. Klik **Yes** pada permintaan admin (UAC), lalu ikuti pemasang sampai selesai.
+4. Jalankan dari **Start Menu** atau pintasan **Desktop**.
+
+</details>
+
+<details open>
+<summary><b>🍎 Di macOS</b></summary>
+
+1. Buka **`.dmg`** yang diunduh, lalu **seret G-Labs Studio ke folder Applications**.
+2. Buka **Applications**, **klik kanan** (atau Control-klik) **G-Labs Studio** → **Open** → klik **Open** lagi di dialog. *(Aplikasi tidak ditandatangani Apple, jadi kamu harus membukanya begini pada **kali pertama**; setelahnya terbuka normal.)*
+3. Jika macOS bilang aplikasi **“rusak / tidak bisa dibuka”**, atau tidak ada tombol Open, buka **Terminal** dan tempel:
+   ```bash
+   xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
+   ```
+   Lalu buka aplikasi lagi.
+
+</details>
+
+### Langkah 3 — Masuk & pilih paket
+
+**Kamu butuh akun G-Labs.** Buka aplikasi, masuk dengan Google, dan pilih paket. Paket (**FREE / PLUS / MAX**) membuka alat dan model yang berbeda; kamu bisa membeli dari dalam aplikasi (QR bank, PayPal, atau USDT). Satu akun berjalan di **satu mesin dalam satu waktu** — masuk di tempat lain akan mengeluarkan mesin sebelumnya. Lencana di kiri bawah bilah sisi menunjukkan tingkatmu saat ini. Butuh beberapa perangkat sekaligus? Kamu bisa membeli paket **Team** (harganya naik sesuai jumlah perangkat tambahan yang kamu pilih).
+
+> **Baru pindah dari versi lama (G-Labs Automation)?** Versi baru **tidak** membawa akunmu. Kamu perlu **masuk ke semua akun lagi** (Google/Flow, ChatGPT, Meta…) di G-Labs Studio yang baru.
+
+Aplikasi **memperbarui dirinya sendiri**: memeriksa GitHub Releases saat dibuka dan bisa mengunduh serta memasang versi baru dari dalam aplikasi.
 
 ---
 
@@ -68,6 +97,8 @@ Setiap kepala halaman membawa **bilah status** langsung — *Running · Queued �
 ---
 
 ## Fitur
+
+![G-Labs Studio](../screenshots/01-image.png)
 
 - **Setiap generator besar, satu aplikasi** — Google Flow (gambar + video), Grok Imagine, Meta AI (vibes.ai) dan OpenAI GPT Image 2, masing-masing di halamannya sendiri dengan model dan rasio yang didukung penyedia tersebut.
 - **Dirancang untuk batch** — tempel daftar prompt (satu per baris) atau impor berkas `.txt`/Excel; masing-masing menjadi satu baris. Gambar referensi dicocokkan otomatis berdasarkan nama berkas. Jalankan seluruh daftar dengan konkurensi yang Anda pilih.
@@ -135,7 +166,7 @@ Kanvas node visual. Klik kanan soket sebuah node dan menu hanya menawarkan node 
 
 ![Webhook API](../screenshots/09-webhook.png)
 
-Ubah aplikasi menjadi server otomasi lokal. Jalankan, salin API key Anda, dan POST pekerjaan ke `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` atau `/api/openai/generate`, lalu periksa `/api/status/<id>`. Halaman ini mencantumkan setiap model dan rasio aspek yang didukungnya. Skema lengkap: [`document/WEBHOOK_INTEGRATION.en.md`](../../document/WEBHOOK_INTEGRATION.en.md).
+Ubah aplikasi menjadi server otomasi lokal. Jalankan, salin API key Anda, dan POST pekerjaan ke `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` atau `/api/openai/generate`, lalu periksa `/api/status/<id>`. Halaman ini mencantumkan setiap model dan rasio aspek yang didukungnya. Skema lengkap: [`WEBHOOK_INTEGRATION.en.md`](../../WEBHOOK_INTEGRATION.en.md).
 
 ---
 

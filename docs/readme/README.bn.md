@@ -21,34 +21,63 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="Download for Windows" src="https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="Download for macOS (Apple Silicon)" src="https://img.shields.io/badge/Download-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="Download for macOS (Intel)" src="https://img.shields.io/badge/Download-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="ডাউনলোড — Windows" src="https://img.shields.io/badge/%E0%A6%A1%E0%A6%BE%E0%A6%89%E0%A6%A8%E0%A6%B2%E0%A7%8B%E0%A6%A1-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="ডাউনলোড — macOS (Apple Silicon)" src="https://img.shields.io/badge/%E0%A6%A1%E0%A6%BE%E0%A6%89%E0%A6%A8%E0%A6%B2%E0%A7%8B%E0%A6%A1-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="ডাউনলোড — macOS (Intel)" src="https://img.shields.io/badge/%E0%A6%A1%E0%A6%BE%E0%A6%89%E0%A6%A8%E0%A6%B2%E0%A7%8B%E0%A6%A1-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
-
-![G-Labs Studio](../screenshots/01-image.png)
 
 ---
 
 ## ইনস্টল
 
-সর্বশেষ বিল্ড **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)** থেকে ডাউনলোড করুন:
+### ধাপ ১ — আপনার কম্পিউটারের জন্য সঠিক বিল্ড বেছে নিন
 
-| প্ল্যাটফর্ম | ফাইল |
-|---|---|
-| 🪟 **Windows** | `G-Labs-Studio-win.exe` — ইনস্টলার চালান (admin/UAC) |
-| 🍎 **macOS (Apple Silicon)** | `G-Labs-Studio-mac-arm64.dmg` |
-| 🍎 **macOS (Intel)** | `G-Labs-Studio-mac-intel.dmg` |
+সর্বশেষ বিল্ড **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)** থেকে ডাউনলোড করুন, তারপর আপনার কম্পিউটারের সাথে মানানসই ফাইলটি বেছে নিন:
 
-**macOS-এ প্রথমবার চালু** — অ্যাপটি Apple দ্বারা সাইন করা নয়, তাই macOS একে কোয়ারেন্টাইন করে। প্রথমবার এটি **রাইট-ক্লিক → Open** দিয়ে খুলুন, অথবা Terminal থেকে ফ্ল্যাগটি সরান:
+| আপনার কম্পিউটার | ডাউনলোড | মন্তব্য |
+|---|---|---|
+| 🪟 **Windows 10/11 (64-বিট)** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | যেকোনো Windows PC-র জন্য |
+| 🍎 **Apple চিপযুক্ত Mac (M1/M2/M3/M4)** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | প্রায় ২০২০-এর শেষ থেকে পরবর্তী Mac |
+| 🍎 **Intel চিপযুক্ত Mac** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | পুরনো Mac (২০২০-এর আগে) |
 
-```bash
-xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
-```
+**আপনার Mac-এ কোন চিপ তা নিশ্চিত নন?** উপরে বাঁদিকে  মেনু → **About This Mac**-এ ক্লিক করুন:
+- **Chip** লাইনে “Apple M1 / M2 / M3…” থাকলে → **arm64** বিল্ড ডাউনলোড করুন।
+- **Processor** লাইনে “Intel…” থাকলে → **intel** বিল্ড ডাউনলোড করুন।
 
-**আপনার একটি G-Labs অ্যাকাউন্ট প্রয়োজন।** অ্যাপটি খুলুন, Google দিয়ে সাইন ইন করুন এবং একটি প্ল্যান বেছে নিন। প্ল্যানগুলি (**FREE / PLUS / MAX**) বিভিন্ন টুল এবং মডেল আনলক করে; আপনি অ্যাপের ভেতর থেকেই একটি কিনতে পারেন (ব্যাংক QR, PayPal, বা USDT)। একটি অ্যাকাউন্ট **এক সময়ে একটি মেশিনে** চলে — অন্য কোথাও সাইন ইন করলে আগের মেশিন সাইন আউট হয়ে যায়। সাইডবারের নিচে-বাঁয়ের ব্যাজ আপনার বর্তমান টিয়ার দেখায়।
+> **Intel** বিল্ড Apple চিপের Mac-এও চলে (শুধু ধীর), কিন্তু **arm64** বিল্ড Intel Mac-এ **খুলবে না** — তাই সঠিকটি বেছে নিন।
 
-অ্যাপটি **নিজেকে আপডেট করে**: চালুর সময় এটি GitHub Releases পরীক্ষা করে এবং অ্যাপের ভেতর থেকেই নতুন সংস্করণ ডাউনলোড ও ইনস্টল করতে পারে।
+### ধাপ ২ — ইনস্টল করুন
+
+<details open>
+<summary><b>🪟 Windows-এ</b></summary>
+
+1. ডাউনলোড করা **`G-Labs-Studio-win.exe`** খুলুন।
+2. যদি **“Windows protected your PC”** (SmartScreen) দেখায়: **More info** → **Run anyway** ক্লিক করুন। *(অ্যাপটি এখনো Microsoft সার্টিফিকেটে সাইন করা নয়, তাই সতর্কতা দেখায় — এটি ভাইরাস নয়।)*
+3. অ্যাডমিন (UAC) প্রম্পটে **Yes** ক্লিক করুন, তারপর ইনস্টলার শেষ পর্যন্ত সম্পন্ন করুন।
+4. এটি **Start Menu** বা **Desktop** শর্টকাট থেকে খুলুন।
+
+</details>
+
+<details open>
+<summary><b>🍎 macOS-এ</b></summary>
+
+1. ডাউনলোড করা **`.dmg`** খুলুন, তারপর **G-Labs Studio-কে Applications ফোল্ডারে টেনে নিন**।
+2. **Applications**-এ যান, **G-Labs Studio**-তে **রাইট-ক্লিক** (বা Control-ক্লিক) → **Open** → ডায়ালগে আবার **Open** ক্লিক করুন। *(অ্যাপটি Apple দ্বারা সাইন করা নয়, তাই **প্রথমবার** এভাবে খুলতে হয়; পরে স্বাভাবিকভাবে খোলে।)*
+3. যদি macOS বলে অ্যাপটি **“damaged / খোলা যাচ্ছে না”**, বা Open বোতাম না থাকে, **Terminal** খুলে পেস্ট করুন:
+   ```bash
+   xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
+   ```
+   তারপর অ্যাপটি আবার খুলুন।
+
+</details>
+
+### ধাপ ৩ — সাইন ইন করে একটি প্ল্যান বেছে নিন
+
+**আপনার একটি G-Labs অ্যাকাউন্ট দরকার।** অ্যাপ খুলুন, Google দিয়ে সাইন ইন করুন এবং একটি প্ল্যান বেছে নিন। প্ল্যান (**FREE / PLUS / MAX**) আলাদা টুল ও মডেল আনলক করে; অ্যাপের ভেতর থেকেই কিনতে পারেন (ব্যাংক QR, PayPal বা USDT)। একটি অ্যাকাউন্ট একসাথে **একটি মেশিনে** চলে — অন্য জায়গায় সাইন ইন করলে আগের মেশিন সাইন আউট হয়ে যায়। সাইডবারের নিচে বাঁদিকের ব্যাজ আপনার বর্তমান টিয়ার দেখায়। একসাথে একাধিক ডিভাইস দরকার? আপনি **Team** প্ল্যান কিনতে পারেন (আপনি যত অতিরিক্ত ডিভাইস যোগ করবেন, দাম তত বাড়বে)।
+
+> **সবেমাত্র পুরনো সংস্করণ (G-Labs Automation) থেকে এসেছেন?** নতুন সংস্করণ আপনার অ্যাকাউন্ট **নিয়ে আসে না**। নতুন G-Labs Studio-তে আপনাকে **সব অ্যাকাউন্টে আবার সাইন ইন** করতে হবে (Google/Flow, ChatGPT, Meta…)।
+
+অ্যাপটি **নিজে থেকে আপডেট হয়**: চালু হওয়ার সময় GitHub Releases যাচাই করে এবং নতুন সংস্করণ অ্যাপের ভেতর থেকেই ডাউনলোড ও ইনস্টল করতে পারে।
 
 ---
 
@@ -68,6 +97,8 @@ xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
 ---
 
 ## বৈশিষ্ট্য
+
+![G-Labs Studio](../screenshots/01-image.png)
 
 - **প্রতিটি প্রধান জেনারেটর, একটি অ্যাপ** — Google Flow (ছবি + ভিডিও), Grok Imagine, Meta AI (vibes.ai) এবং OpenAI GPT Image 2, প্রতিটি তার নিজস্ব পেজে সেই প্রোভাইডার যে মডেল ও অনুপাত সমর্থন করে সেগুলির সাথে।
 - **ডিজাইন থেকেই ব্যাচ** — প্রম্পটের একটি তালিকা পেস্ট করুন (প্রতি লাইনে একটি) বা একটি `.txt`/Excel ফাইল ইম্পোর্ট করুন; প্রতিটি একটি সারি হয়ে যায়। রেফারেন্স ছবিগুলি ফাইলনাম দিয়ে স্বয়ংক্রিয়ভাবে মিলে যায়। পুরো তালিকাটি আপনার বেছে নেওয়া concurrency দিয়ে চালান।
@@ -135,7 +166,7 @@ Meta AI-এর মাধ্যমে ছবি ও ভিডিও জেনা�
 
 ![Webhook API](../screenshots/09-webhook.png)
 
-অ্যাপটিকে একটি লোকাল অটোমেশন সার্ভারে পরিণত করুন। এটি স্টার্ট করুন, আপনার API key কপি করুন, এবং `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` বা `/api/openai/generate`-তে জব POST করুন, তারপর `/api/status/<id>` পোল করুন। পেজটি প্রতিটি মডেল ও তার সমর্থিত অ্যাসপেক্ট রেশিও তালিকাভুক্ত করে। সম্পূর্ণ স্কিমা: [`document/WEBHOOK_INTEGRATION.en.md`](../../document/WEBHOOK_INTEGRATION.en.md)।
+অ্যাপটিকে একটি লোকাল অটোমেশন সার্ভারে পরিণত করুন। এটি স্টার্ট করুন, আপনার API key কপি করুন, এবং `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` বা `/api/openai/generate`-তে জব POST করুন, তারপর `/api/status/<id>` পোল করুন। পেজটি প্রতিটি মডেল ও তার সমর্থিত অ্যাসপেক্ট রেশিও তালিকাভুক্ত করে। সম্পূর্ণ স্কিমা: [`WEBHOOK_INTEGRATION.en.md`](../../WEBHOOK_INTEGRATION.en.md)।
 
 ---
 

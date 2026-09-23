@@ -21,34 +21,63 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="Download for Windows" src="https://img.shields.io/badge/Download-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="Download for macOS (Apple Silicon)" src="https://img.shields.io/badge/Download-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="Download for macOS (Intel)" src="https://img.shields.io/badge/Download-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="下载 — Windows" src="https://img.shields.io/badge/%E4%B8%8B%E8%BD%BD-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="下载 — macOS (Apple Silicon)" src="https://img.shields.io/badge/%E4%B8%8B%E8%BD%BD-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="下载 — macOS (Intel)" src="https://img.shields.io/badge/%E4%B8%8B%E8%BD%BD-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
-
-![G-Labs Studio](../screenshots/01-image.png)
 
 ---
 
 ## 安装
 
-从 **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)** 下载最新版本：
+### 第 1 步 — 为你的电脑选择正确的版本
 
-| 平台 | 文件 |
-|---|---|
-| 🪟 **Windows** | `G-Labs-Studio-win.exe` —— 运行安装程序（管理员/UAC） |
-| 🍎 **macOS（Apple Silicon）** | `G-Labs-Studio-mac-arm64.dmg` |
-| 🍎 **macOS（Intel）** | `G-Labs-Studio-mac-intel.dmg` |
+从 **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)** 下载最新版本，然后选择与你电脑匹配的文件：
 
-**macOS 首次启动** —— 该应用未经 Apple 签名，因此 macOS 会将其隔离。首次打开时请使用**右键 → Open**，或在终端中清除隔离标记：
+| 你的电脑 | 下载 | 说明 |
+|---|---|---|
+| 🪟 **Windows 10/11（64 位）** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | 适用于所有 Windows 电脑 |
+| 🍎 **搭载 Apple 芯片的 Mac（M1/M2/M3/M4）** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | 约 2020 年底及以后的 Mac |
+| 🍎 **搭载 Intel 芯片的 Mac** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | 较旧的 Mac（2020 年前） |
 
-```bash
-xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
-```
+**不确定你的 Mac 是什么芯片？** 点击左上角  菜单 → **About This Mac**：
+- 有 **Chip**（芯片）一行显示 “Apple M1 / M2 / M3…” → 下载 **arm64** 版本。
+- 有 **Processor**（处理器）一行显示 “Intel…” → 下载 **intel** 版本。
 
-**你需要一个 G-Labs 账户。** 打开应用，用 Google 登录并选择套餐。套餐（**FREE / PLUS / MAX**）解锁不同的工具和模型；你可以在应用内购买（银行二维码、PayPal 或 USDT）。一个账户**同一时间只能在一台设备上运行** —— 在别处登录会使之前的设备退出登录。侧边栏左下角的徽章显示你当前的等级。
+> **Intel** 版本在 Apple 芯片的 Mac 上仍可运行（只是较慢），但 **arm64** 版本在 Intel Mac 上**无法打开** —— 所以请选对。
 
-该应用**自动更新**：启动时会检查 GitHub Releases，并可在应用内下载和安装新版本。
+### 第 2 步 — 安装
+
+<details open>
+<summary><b>🪟 在 Windows 上</b></summary>
+
+1. 打开下载好的 **`G-Labs-Studio-win.exe`**。
+2. 如果出现 **“Windows protected your PC”**（SmartScreen）：点击 **More info** → **Run anyway**。*（该应用尚未用微软证书签名，所以会被提示——并非病毒。）*
+3. 在管理员（UAC）提示中点击 **Yes**，然后按照安装程序完成安装。
+4. 从 **Start Menu** 或 **Desktop** 快捷方式启动它。
+
+</details>
+
+<details open>
+<summary><b>🍎 在 macOS 上</b></summary>
+
+1. 打开下载好的 **`.dmg`**，然后**把 G-Labs Studio 拖到 Applications 文件夹**。
+2. 进入 **Applications**，**右键点击**（或按住 Control 点击）**G-Labs Studio** → **Open** → 在对话框中再次点击 **Open**。*（该应用未经 Apple 签名，所以**第一次**必须这样打开；之后就能正常打开。）*
+3. 如果 macOS 提示应用**“已损坏 / 无法打开”**，或没有 Open 按钮，打开 **Terminal** 粘贴：
+   ```bash
+   xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
+   ```
+   然后再次打开应用。
+
+</details>
+
+### 第 3 步 — 登录并选择套餐
+
+**你需要一个 G-Labs 账号。** 打开应用，用 Google 登录并选择套餐。套餐（**FREE / PLUS / MAX**）解锁不同的工具和模型；你可以在应用内购买（银行二维码、PayPal 或 USDT）。一个账号同一时间只能在**一台电脑**上运行——在别处登录会让上一台电脑退出登录。侧边栏左下角的徽章显示你当前的等级。 需要多台设备同时使用，可以购买 **Team** 套餐（价格会随你额外增加的设备数量而上涨）。
+
+> **刚从旧版（G-Labs Automation）切换过来？** 新版**不会**带过来旧版的账号。你需要在新的 G-Labs Studio 中**重新登录所有账号**（Google/Flow、ChatGPT、Meta……）。
+
+应用会**自动更新**：启动时检查 GitHub Releases，并可在应用内下载并安装新版本。
 
 ---
 
@@ -68,6 +97,8 @@ xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
 ---
 
 ## 功能
+
+![G-Labs Studio](../screenshots/01-image.png)
 
 - **所有主流生成器，一款应用** —— Google Flow（图像 + 视频）、Grok Imagine、Meta AI（vibes.ai）和 OpenAI GPT Image 2，各自拥有独立页面，配备该提供商所支持的模型和比例。
 - **为批量而生** —— 粘贴一列提示词（每行一条）或导入 `.txt`/Excel 文件；每条成为一行。参考图像按文件名自动匹配。以你选择的并发数运行整个列表。
@@ -135,7 +166,7 @@ xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"
 
 ![Webhook API](../screenshots/09-webhook.png)
 
-把应用变成一个本地自动化服务器。启动它，复制你的 API key，向 `/api/image/generate`、`/api/video/generate`、`/api/grok/generate`、`/api/meta/generate` 或 `/api/openai/generate` POST 任务，然后轮询 `/api/status/<id>`。该页面列出每个模型及其支持的宽高比。完整架构：[`document/WEBHOOK_INTEGRATION.en.md`](../../document/WEBHOOK_INTEGRATION.en.md)。
+把应用变成一个本地自动化服务器。启动它，复制你的 API key，向 `/api/image/generate`、`/api/video/generate`、`/api/grok/generate`、`/api/meta/generate` 或 `/api/openai/generate` POST 任务，然后轮询 `/api/status/<id>`。该页面列出每个模型及其支持的宽高比。完整架构：[`WEBHOOK_INTEGRATION.en.md`](../../WEBHOOK_INTEGRATION.en.md)。
 
 ---
 
