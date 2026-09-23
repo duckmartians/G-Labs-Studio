@@ -77,6 +77,8 @@ Tải bản mới nhất từ **[Releases](https://github.com/duckmartians/G-Lab
 
 **Bạn cần một tài khoản G-Labs.** Mở ứng dụng, đăng nhập bằng Google và chọn gói. Các gói (**FREE / PLUS / MAX**) mở khóa những công cụ và mô hình khác nhau; bạn có thể mua ngay trong ứng dụng (QR ngân hàng, PayPal hoặc USDT). Một tài khoản chỉ chạy trên **một máy tại một thời điểm** — đăng nhập ở nơi khác sẽ đăng xuất máy trước đó. Huy hiệu ở góc dưới bên trái thanh bên hiển thị hạng hiện tại của bạn.
 
+> **Vừa chuyển từ bản cũ (G-Labs Automation)?** Bản mới **không** mang tài khoản từ bản cũ sang. Bạn cần **đăng nhập lại toàn bộ tài khoản** (Google/Flow, ChatGPT, Meta…) trong bản G-Labs Studio mới.
+
 Ứng dụng **tự cập nhật**: nó kiểm tra GitHub Releases khi khởi động và có thể tải rồi cài đặt phiên bản mới ngay trong ứng dụng.
 
 ---

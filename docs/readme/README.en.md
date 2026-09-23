@@ -77,6 +77,8 @@ Download the latest build from **[Releases](https://github.com/duckmartians/G-La
 
 **You need a G-Labs account.** Open the app, sign in with Google, and pick a plan. Plans (**FREE / PLUS / MAX**) unlock different tools and models; you can buy one from inside the app (bank QR, PayPal, or USDT). One account runs on **one machine at a time** — signing in elsewhere signs the previous machine out. The badge at the bottom-left of the sidebar shows your current tier.
 
+> **Just switched from the old version (G-Labs Automation)?** The new version does **not** carry your accounts over. You'll need to **sign in to all your accounts again** (Google/Flow, ChatGPT, Meta…) in the new G-Labs Studio.
+
 The app **updates itself**: it checks GitHub Releases on launch and can download and install the new version from inside the app.
 
 ---
