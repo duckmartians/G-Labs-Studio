@@ -36,9 +36,9 @@
 
 | 내 컴퓨터 | 다운로드 | Google Drive | 비고 |
 |---|---|---|---|
-| 🪟 **Windows 10/11 (64비트)** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | 모든 Windows PC용 |
-| 🍎 **Apple 칩 Mac (M1/M2/M3/M4)** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | 2020년 말 이후 출시된 Mac |
-| 🍎 **Intel 칩 Mac** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | 구형 Mac (2020년 이전) |
+| 🪟 **Windows 10/11 (64비트)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | 모든 Windows PC용 |
+| 🍎 **Apple 칩 Mac (M1/M2/M3/M4)** | [macOS ARM](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | 2020년 말 이후 출시된 Mac |
+| 🍎 **Intel 칩 Mac** | [macOS Intel](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | 구형 Mac (2020년 이전) |
 
 **Mac 칩이 무엇인지 잘 모르겠나요?** 왼쪽 위  메뉴 → **About This Mac** 클릭:
 - **Chip** 줄에 “Apple M1 / M2 / M3…” 표시 → **arm64** 버전 다운로드.

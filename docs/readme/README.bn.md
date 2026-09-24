@@ -36,9 +36,9 @@
 
 | আপনার কম্পিউটার | ডাউনলোড | Google Drive | মন্তব্য |
 |---|---|---|---|
-| 🪟 **Windows 10/11 (64-বিট)** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | যেকোনো Windows PC-র জন্য |
-| 🍎 **Apple চিপযুক্ত Mac (M1/M2/M3/M4)** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | প্রায় ২০২০-এর শেষ থেকে পরবর্তী Mac |
-| 🍎 **Intel চিপযুক্ত Mac** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | পুরনো Mac (২০২০-এর আগে) |
+| 🪟 **Windows 10/11 (64-বিট)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | যেকোনো Windows PC-র জন্য |
+| 🍎 **Apple চিপযুক্ত Mac (M1/M2/M3/M4)** | [macOS ARM](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | প্রায় ২০২০-এর শেষ থেকে পরবর্তী Mac |
+| 🍎 **Intel চিপযুক্ত Mac** | [macOS Intel](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | পুরনো Mac (২০২০-এর আগে) |
 
 **আপনার Mac-এ কোন চিপ তা নিশ্চিত নন?** উপরে বাঁদিকে  মেনু → **About This Mac**-এ ক্লিক করুন:
 - **Chip** লাইনে “Apple M1 / M2 / M3…” থাকলে → **arm64** বিল্ড ডাউনলোড করুন।
