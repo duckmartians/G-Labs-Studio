@@ -34,11 +34,11 @@
 
 Скачайте последнюю версию из **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)** и выберите файл, подходящий вашему компьютеру:
 
-| Ваш компьютер | Скачать | Примечания |
-|---|---|---|
-| 🪟 **Windows 10/11 (64-бит)** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | Для любого ПК с Windows |
-| 🍎 **Mac с чипом Apple (M1/M2/M3/M4)** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | Mac примерно с конца 2020 года |
-| 🍎 **Mac с чипом Intel** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | Более старые Mac (до 2020 года) |
+| Ваш компьютер | Скачать | Google Drive | Примечания |
+|---|---|---|---|
+| 🪟 **Windows 10/11 (64-бит)** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | [`G-Labs-Studio-win.exe`](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | Для любого ПК с Windows |
+| 🍎 **Mac с чипом Apple (M1/M2/M3/M4)** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [`G-Labs-Studio-mac-arm64.dmg`](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | Mac примерно с конца 2020 года |
+| 🍎 **Mac с чипом Intel** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [`G-Labs-Studio-mac-intel.dmg`](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | Более старые Mac (до 2020 года) |
 
 **Не знаете, какой чип у вашего Mac?** Нажмите меню  (вверху слева) → **About This Mac**:
 - Строка **Chip** со значением «Apple M1 / M2 / M3…» → скачивайте сборку **arm64**.

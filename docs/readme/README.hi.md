@@ -34,11 +34,11 @@
 
 नवीनतम बिल्ड **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)** से डाउनलोड करें, फिर अपने कंप्यूटर से मेल खाती फ़ाइल चुनें:
 
-| आपका कंप्यूटर | डाउनलोड | टिप्पणियाँ |
-|---|---|---|
-| 🪟 **Windows 10/11 (64-बिट)** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | किसी भी Windows PC के लिए |
-| 🍎 **Apple चिप वाला Mac (M1/M2/M3/M4)** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | लगभग 2020 के अंत से आगे के Mac |
-| 🍎 **Intel चिप वाला Mac** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | पुराने Mac (2020 से पहले) |
+| आपका कंप्यूटर | डाउनलोड | Google Drive | टिप्पणियाँ |
+|---|---|---|---|
+| 🪟 **Windows 10/11 (64-बिट)** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | [`G-Labs-Studio-win.exe`](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | किसी भी Windows PC के लिए |
+| 🍎 **Apple चिप वाला Mac (M1/M2/M3/M4)** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [`G-Labs-Studio-mac-arm64.dmg`](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | लगभग 2020 के अंत से आगे के Mac |
+| 🍎 **Intel चिप वाला Mac** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [`G-Labs-Studio-mac-intel.dmg`](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | पुराने Mac (2020 से पहले) |
 
 **पता नहीं आपके Mac में कौन-सी चिप है?** ऊपर बाईं ओर  मेनू → **About This Mac** पर क्लिक करें:
 - **Chip** पंक्ति में “Apple M1 / M2 / M3…” दिखे → **arm64** बिल्ड डाउनलोड करें।

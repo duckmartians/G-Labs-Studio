@@ -34,11 +34,11 @@
 
 ดาวน์โหลดเวอร์ชันล่าสุดจาก **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)** แล้วเลือกไฟล์ที่ตรงกับเครื่องของคุณ:
 
-| เครื่องของคุณ | ดาวน์โหลด | หมายเหตุ |
-|---|---|---|
-| 🪟 **Windows 10/11 (64 บิต)** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | สำหรับพีซี Windows ทุกเครื่อง |
-| 🍎 **Mac ชิป Apple (M1/M2/M3/M4)** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | Mac ตั้งแต่ราวปลายปี 2020 เป็นต้นมา |
-| 🍎 **Mac ชิป Intel** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | Mac รุ่นเก่า (ก่อนปี 2020) |
+| เครื่องของคุณ | ดาวน์โหลด | Google Drive | หมายเหตุ |
+|---|---|---|---|
+| 🪟 **Windows 10/11 (64 บิต)** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | [`G-Labs-Studio-win.exe`](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | สำหรับพีซี Windows ทุกเครื่อง |
+| 🍎 **Mac ชิป Apple (M1/M2/M3/M4)** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [`G-Labs-Studio-mac-arm64.dmg`](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | Mac ตั้งแต่ราวปลายปี 2020 เป็นต้นมา |
+| 🍎 **Mac ชิป Intel** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [`G-Labs-Studio-mac-intel.dmg`](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | Mac รุ่นเก่า (ก่อนปี 2020) |
 
 **ไม่แน่ใจว่า Mac ของคุณใช้ชิปอะไร?** คลิกเมนู  (มุมบนซ้าย) → **About This Mac**:
 - มีบรรทัด **Chip** ระบุ “Apple M1 / M2 / M3…” → ดาวน์โหลดไฟล์ **arm64**

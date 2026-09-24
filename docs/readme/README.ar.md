@@ -34,11 +34,11 @@
 
 نزّل أحدث نسخة من **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)** ثم اختر الملف المناسب لجهازك:
 
-| جهازك | تنزيل | ملاحظات |
-|---|---|---|
-| 🪟 **Windows 10/11 (64-بت)** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | لأي جهاز كمبيوتر يعمل بنظام Windows |
-| 🍎 **Mac بمعالج Apple (M1/M2/M3/M4)** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | أجهزة Mac من أواخر 2020 فصاعدًا |
-| 🍎 **Mac بمعالج Intel** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | أجهزة Mac الأقدم (قبل 2020) |
+| جهازك | تنزيل | Google Drive | ملاحظات |
+|---|---|---|---|
+| 🪟 **Windows 10/11 (64-بت)** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | [`G-Labs-Studio-win.exe`](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | لأي جهاز كمبيوتر يعمل بنظام Windows |
+| 🍎 **Mac بمعالج Apple (M1/M2/M3/M4)** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [`G-Labs-Studio-mac-arm64.dmg`](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | أجهزة Mac من أواخر 2020 فصاعدًا |
+| 🍎 **Mac بمعالج Intel** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [`G-Labs-Studio-mac-intel.dmg`](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | أجهزة Mac الأقدم (قبل 2020) |
 
 **لست متأكدًا من معالج جهاز Mac لديك؟** انقر على قائمة  (أعلى اليسار) → **About This Mac**:
 - سطر **Chip** يذكر «Apple M1 / M2 / M3…» → نزّل نسخة **arm64**.

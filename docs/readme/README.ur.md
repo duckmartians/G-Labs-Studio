@@ -34,11 +34,11 @@
 
 تازہ ترین ورژن **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)** سے ڈاؤن لوڈ کریں، پھر اپنی مشین سے مطابقت رکھنے والی فائل منتخب کریں:
 
-| آپ کی مشین | ڈاؤن لوڈ | نوٹس |
-|---|---|---|
-| 🪟 **Windows 10/11 (64-bit)** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | کسی بھی Windows PC کے لیے |
-| 🍎 **Apple چپ والا Mac (M1/M2/M3/M4)** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | تقریباً 2020 کے آخر سے آگے کے Mac |
-| 🍎 **Intel چپ والا Mac** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | پرانے Mac (2020 سے پہلے) |
+| آپ کی مشین | ڈاؤن لوڈ | Google Drive | نوٹس |
+|---|---|---|---|
+| 🪟 **Windows 10/11 (64-bit)** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | [`G-Labs-Studio-win.exe`](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | کسی بھی Windows PC کے لیے |
+| 🍎 **Apple چپ والا Mac (M1/M2/M3/M4)** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [`G-Labs-Studio-mac-arm64.dmg`](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | تقریباً 2020 کے آخر سے آگے کے Mac |
+| 🍎 **Intel چپ والا Mac** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [`G-Labs-Studio-mac-intel.dmg`](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | پرانے Mac (2020 سے پہلے) |
 
 **یقین نہیں کہ آپ کے Mac میں کون سی چپ ہے؟** اوپر بائیں  مینو → **About This Mac** پر کلک کریں:
 - **Chip** والی سطر میں “Apple M1 / M2 / M3…” ہو → **arm64** ورژن ڈاؤن لوڈ کریں۔

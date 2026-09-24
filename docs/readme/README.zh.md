@@ -34,11 +34,11 @@
 
 从 **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)** 下载最新版本，然后选择与你电脑匹配的文件：
 
-| 你的电脑 | 下载 | 说明 |
-|---|---|---|
-| 🪟 **Windows 10/11（64 位）** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | 适用于所有 Windows 电脑 |
-| 🍎 **搭载 Apple 芯片的 Mac（M1/M2/M3/M4）** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | 约 2020 年底及以后的 Mac |
-| 🍎 **搭载 Intel 芯片的 Mac** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | 较旧的 Mac（2020 年前） |
+| 你的电脑 | 下载 | Google Drive | 说明 |
+|---|---|---|---|
+| 🪟 **Windows 10/11（64 位）** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | [`G-Labs-Studio-win.exe`](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | 适用于所有 Windows 电脑 |
+| 🍎 **搭载 Apple 芯片的 Mac（M1/M2/M3/M4）** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [`G-Labs-Studio-mac-arm64.dmg`](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | 约 2020 年底及以后的 Mac |
+| 🍎 **搭载 Intel 芯片的 Mac** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [`G-Labs-Studio-mac-intel.dmg`](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | 较旧的 Mac（2020 年前） |
 
 **不确定你的 Mac 是什么芯片？** 点击左上角  菜单 → **About This Mac**：
 - 有 **Chip**（芯片）一行显示 “Apple M1 / M2 / M3…” → 下载 **arm64** 版本。
