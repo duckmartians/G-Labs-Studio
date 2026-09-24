@@ -36,9 +36,9 @@ En son sürümü **[Releases](https://github.com/duckmartians/G-Labs-Studio/rele
 
 | Makinen | İndir | Google Drive | Notlar |
 |---|---|---|---|
-| 🪟 **Windows 10/11 (64 bit)** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | [`G-Labs-Studio-win.exe`](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | Her Windows PC için |
-| 🍎 **Apple çipli Mac (M1/M2/M3/M4)** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [`G-Labs-Studio-mac-arm64.dmg`](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | Yaklaşık 2020 sonundan itibaren Mac'ler |
-| 🍎 **Intel çipli Mac** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [`G-Labs-Studio-mac-intel.dmg`](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | Daha eski Mac'ler (2020 öncesi) |
+| 🪟 **Windows 10/11 (64 bit)** | [`G-Labs-Studio-win.exe`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | Her Windows PC için |
+| 🍎 **Apple çipli Mac (M1/M2/M3/M4)** | [`G-Labs-Studio-mac-arm64.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | Yaklaşık 2020 sonundan itibaren Mac'ler |
+| 🍎 **Intel çipli Mac** | [`G-Labs-Studio-mac-intel.dmg`](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | Daha eski Mac'ler (2020 öncesi) |
 
 **Mac'inin hangi çipe sahip olduğundan emin değil misin?**  menüsü (sol üst) → **About This Mac**:
 - “Apple M1 / M2 / M3…” yazan bir **Chip** satırı → **arm64** sürümünü indir.
