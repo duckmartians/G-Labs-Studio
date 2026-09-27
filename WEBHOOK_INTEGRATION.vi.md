@@ -7,7 +7,8 @@
 
 Tài liệu này mô tả API do tab **Webhook** của ứng dụng desktop G-Labs Automation
 (v5.0.8+) cung cấp. Nó cho phép các công cụ bên ngoài (n8n, Make.com, script tự
-viết, AI agent) điều khiển việc tạo ảnh / video / Grok / Meta AI qua REST API đơn giản.
+viết, AI agent) điều khiển việc tạo ảnh / video (Veo, Omni Flash, Google Vids) / Grok /
+Meta AI / OpenAI — và nâng cấp ảnh cục bộ — qua REST API đơn giản.
 
 ---
 
@@ -32,11 +33,13 @@ viết, AI agent) điều khiển việc tạo ảnh / video / Grok / Meta AI qu
 - **Đồng thời.** Máy chủ nhận nhiều request cùng lúc. Tối đa **10 task được bóc
   tách song song**; còn *chạy tạo* được bao nhiêu cái một lúc thì tùy endpoint:
   Ảnh/Video/Meta/OpenAI co giãn theo số tài khoản (khoảng 5 mỗi tài khoản), Grok
-  trần **10**, riêng Upscale chạy **lần lượt từng cái** (chỉ có một GPU — xem §5.6).
+  trần **10**, Google Vids nhận số việc mỗi tài khoản do máy chủ cấp trên từng tài khoản Vids,
+  riêng Upscale chạy **lần lượt từng cái** (chỉ có một GPU — xem §5.6).
 - **Tạo nội dung dùng tài khoản đã đăng nhập trong app.** Ảnh/Video dùng tài khoản
   Google (Flow/Veo) cấu hình trong app; Grok dùng phiên Super Grok đã kết nối;
   **Meta AI** dùng tài khoản Meta (vibes.ai) đã đăng nhập; **OpenAI (GPT Image 2)**
-  dùng tài khoản ChatGPT/OpenAI đã đăng nhập. Nếu không có tài khoản hợp lệ, task sẽ
+  dùng tài khoản ChatGPT/OpenAI đã đăng nhập; **Google Vids** (`omni_vids`) dùng tài khoản
+  Google Vids ở Cài đặt → Vids. Nếu không có tài khoản hợp lệ, task sẽ
   thất bại (xem bảng lỗi). App phải đang chạy với các tài khoản đó đã đăng nhập & đang bật.
 
 ---
@@ -74,8 +77,15 @@ client trên trình duyệt cũng dùng được.
 | `GET`  | `/api/result/{task_id}` | ✅ | Lấy kết quả (chỉ khi đã `completed`) |
 | `GET`  | `/api/files/{filename}` | ❌ | Tải file kết quả đã tạo |
 | `GET`  | `/api/tasks` | ✅ | Liệt kê 50 task gần nhất |
+| `POST` | `/api/stop` | ✅ | **Dừng** mọi task đang chờ / đang chạy — hoặc một task: `/api/stop/{task_id}` hay body `{"task_id": "..."}`. Chỉ cần API key (không kiểm tra gói MAX), nên client luôn huỷ được. |
 
 Dấu `/` ở cuối được chấp nhận (vd `/api/health/`).
+
+**Dừng việc đang làm.** Client đổi ý (tạo lại, prompt sai, người dùng bấm huỷ) nên gọi
+`POST /api/stop` thay vì để hàng đợi chạy tiếp: mọi task được nhắm tới lỗi ngay với
+`error_code 499` / `STOPPED_BY_CLIENT`, việc đang xếp hàng không bao giờ bắt đầu, provider đang
+chạy được yêu cầu dừng, và kết quả về sau của một request đã gửi tới provider bị bỏ (request đó
+vẫn bị tính phí — một cuộc gọi HTTP không huỷ ngang được).
 
 ---
 
@@ -157,6 +167,9 @@ file (`image/png`, `image/jpeg`, `video/mp4`, …). File lưu nội bộ trên m
 - **Grok** → luôn đúng 1 file.
 - **Meta AI** → `count` file (1–4): `count` ảnh (một lô) hoặc `count` clip video.
 - **OpenAI (GPT Image 2)** → luôn đúng 1 file.
+- **Google Vids** (`omni_vids`) → đúng 1 file ở độ phân giải đã yêu cầu; task `upscale` của
+  `omni_vids` → 1 file (clip 1080p).
+- **Upscale** → luôn đúng 1 file (một ảnh vào, một ảnh ra).
 
 (Nên `len(results)` và thứ tự khớp với các độ phân giải bạn yêu cầu.)
 
@@ -200,8 +213,8 @@ lớn vào cùng một request.
 
 | Trường | Kiểu | Bắt buộc | Mặc định | Ghi chú |
 |--------|------|:--------:|----------|---------|
-| `prompt` | string | ✅ | — | Mô tả chuyển động / khung cảnh. |
-| `model` | string | ❌ | `veo_31_fast` | Một trong `veo_31_fast`, `veo_31_lite`, `veo_31_quality`, `veo_31_lite_relaxed`, `omni_flash`. Không hợp lệ → `veo_31_fast`. `veo_31_lite_relaxed` cần tài khoản **ULTRA**. **`omni_flash`**: xem ghi chú `mode`. |
+| `prompt` | string | ✅ | — | Mô tả chuyển động / khung cảnh. Chỉ không bắt buộc với request `upscale` của `omni_vids`. |
+| `model` | string | ✅ | — | Một trong `veo_31_fast`, `veo_31_lite`, `veo_31_quality`, `veo_31_lite_relaxed`, `omni_flash`, `omni_vids`. Thiếu → `400 MISSING_MODEL`; tên Veo lạ → `veo_31_fast`. **`omni_vids`** = Google Vids (xem ghi chú Google Vids bên dưới). `veo_31_lite_relaxed` cần tài khoản **ULTRA**. **`omni_flash`**: xem ghi chú `mode`. |
 | `aspect_ratio` | string | ❌ | `16:9` | `16:9` hoặc `9:16`. |
 | `mode` | string | ❌ | `text_to_video` | `text_to_video` (0 ảnh) · `start_image` (1 ảnh) · `start_end_image` (2 ảnh: khung đầu + khung cuối) · `components` (Veo tối đa 3 ảnh, Omni Flash tối đa 7; hỗ trợ `voice` và `reference_video`). **Mọi mode dùng được cho cả Veo lẫn Omni Flash** (`start_end_image` của Omni Flash cần server config có mapping `i2v_end` — thiếu sẽ bị từ chối kèm lý do rõ). |
 | `reference_images` | array | ❌ | `[]` | Tối đa **3** ảnh base64 (Veo); **Omni Flash `components` tối đa 7** (có `reference_video` thì tối đa **5**). **Bắt buộc khi `mode != text_to_video`** — riêng `components` có thể thay bằng `reference_video`. Mỗi ảnh có thể kèm `name` để gắn theo `@tên` trong prompt — Veo (§6.1). |
@@ -225,13 +238,17 @@ lớn vào cùng một request.
 > **Thứ tự ảnh tham chiếu:** với `start_end_image`, `reference_images[0]` là khung
 > đầu, `reference_images[1]` là khung cuối. Với `start_image`, chỉ dùng
 > `reference_images[0]`.
-> **`mode` không được kiểm tra chặt:** mode không hợp lệ sẽ hoạt động như
+>
+> **`mode` không được kiểm tra chặt** (Veo / Omni Flash): mode không hợp lệ sẽ hoạt động như
 > `text_to_video` (bỏ qua ảnh tham chiếu). Chỉ `components` đọc trường `voice`
-> (Veo tối đa 3 ảnh tham chiếu, Omni Flash tối đa 7).
+> (Veo tối đa 3 ảnh tham chiếu, Omni Flash tối đa 7). **Riêng `omni_vids`** kiểm tra chặt
+> `mode`, `resolution`, `video_length`, `aspect_ratio` và trả `400` kèm tên lỗi (xem ghi chú Google Vids).
+>
 > **Dùng được cả Veo lẫn Omni Flash.** Omni Flash (`model: "omni_flash"`) hỗ trợ
 > đủ `text_to_video`, `start_image`, `start_end_image`, `components` — và riêng nó
 > có thêm: mốc `video_length` **10s**, độ phân giải **360p**, và luồng **edit video**
 > (`reference_video` trong mode `components`). Nó không cần tài khoản ULTRA.
+>
 > `resolution` có thể liệt kê nhiều giá trị; mỗi giá trị được tạo nếu hạng tài khoản
 > cho phép.
 
@@ -256,6 +273,75 @@ Ví dụ Omni Flash — edit video (dựng lại clip ≤10s theo prompt):
   "mode": "components",
   "reference_video": "data:video/mp4;base64,...",
   "reference_images": ["data:image/png;base64,..."]
+}
+```
+
+> **Google Vids (`model: "omni_vids"`)** chạy bằng tài khoản Google Vids thêm ở Cài đặt → Vids
+> (gói PLUS/MAX). Cùng dạng request với Veo, với các quy tắc:
+> - `mode` (không phân biệt hoa thường): `text_to_video` (không ảnh, mặc định), `start_image`
+>   (1 ảnh = khung hình đầu; ảnh thừa bị bỏ qua), `components` (1–3 ảnh làm nguyên liệu) hoặc
+>   `upscale` (xem dưới). Nhận cả tên tắt `t2v` / `i2v` / `r2v`. Giá trị khác — kể cả
+>   `start_end_image` → `400 INVALID_MODE`.
+> - `resolution`: **một** giá trị trong danh sách máy chủ (hiện `720p` / `1080p`), chuỗi hoặc list một
+>   phần tử — tạo thẳng, không qua bước upscale. Bỏ trống → giá trị đầu tiên của danh sách máy chủ.
+>   Hai giá trị, `360p`, `4K` hay giá trị lạ → `400 INVALID_RESOLUTION`.
+> - `video_length`: số nguyên **3–10** giây (mặc định 5); 1 giây video trừ 1 giây hạn mức tài khoản.
+>   Ngoài khoảng → `400 INVALID_VIDEO_LENGTH`.
+> - `orientation` (`landscape` / `portrait`) hoặc `aspect_ratio` (`16:9` / `9:16`); gửi cả hai thì
+>   `orientation` được ưu tiên. Mặc định `16:9`. Giá trị khác → `400 INVALID_ASPECT_RATIO`.
+> - `reference_video` → `400 INVALID_FIELD`. `voice` và `category` bị bỏ qua.
+> - Ở mode `components`, đặt `"name"` cho từng ảnh và viết `@tên` trong prompt để đặt ảnh đúng vị trí
+>   (`"@luna gặp @grandpa"`); ảnh không được @ vẫn được gửi kèm ở đầu. **Nhân vật trong thư viện**
+>   (Cài đặt → Nhân vật) gọi được cùng cách — `@Anna` thêm ảnh của nhân vật làm nguyên liệu
+>   (Google Vids chỉ đồng nhất hình ảnh — không đồng nhất giọng nói). Quy tắc: tính năng Nhân vật
+>   phải đang bật; tag phải là **đúng tên đầy đủ** của nhân vật (không phân biệt hoa thường); nhân
+>   vật chỉ được thêm khi request còn dưới 3 ảnh; ảnh **bạn gửi** có cùng `name` được ưu tiên hơn
+>   nhân vật. Tổng tối đa 3 nguyên liệu; không có nguyên liệu nào → `400 MISSING_REFERENCE`.
+> - **Tài khoản:** chỉ dùng tài khoản đang **BẬT** ở Cài đặt → Vids (và đang bật video) và còn ít
+>   nhất `video_length` giây; mỗi tài khoản nhận tối đa số việc đồng thời máy chủ cấp, và số giây
+>   được giữ chỗ trong lúc việc chạy. Xoay vòng round-robin, lỗi auth / hạn mức / giới hạn tốc độ /
+>   máy chủ thì chuyển sang tài khoản kế; cookie chết được làm mới từ profile trước. Tài khoản không
+>   làm mới được cookie, hoặc đã hết giây, bị **TẮT** trong app (giống trang Vids). Khi mọi tài
+>   khoản dùng được đều bận, task giữ trạng thái `pending` và **chờ** slot trống (tối đa 15 phút)
+>   thay vì lỗi.
+> - **Kết quả:** task hoàn thành có thêm `meta` trong `GET /api/status/{task_id}` và
+>   `GET /api/result/{task_id}`:
+>   `mode` (`t2v` / `i2v` / `r2v` / `upscale`), `resolution` (`720p` / `1080p`), `orientation`
+>   (`landscape` / `portrait`), `duration` (giây), `account` (email tài khoản Google Vids đã tạo
+>   clip), `clip_temp_id` (id mà request upscale cần) và `upscale_available` (`true` khi clip
+>   còn nâng phân giải được — chưa phải 1080p).
+> - **Upscale:** `{"model": "omni_vids", "mode": "upscale", "clip_temp_id": "<meta.clip_temp_id>"}`
+>   (không cần `prompt`) tạo bản 1080p của clip do **một task webhook `omni_vids` đã hoàn thành
+>   trong cùng phiên chạy app** tạo ra — clip tạo ở trang Vids không dùng được. Chỉ chạy trên đúng
+>   tài khoản đã tạo clip, giữ nguyên độ dài và hướng, không bao giờ chuyển sang tài khoản khác
+>   (tài khoản đó đang bận thì task chờ). Kết quả là một task mới với file riêng. Id lạ →
+>   `400 UNKNOWN_CLIP`, đã 1080p → `400 ALREADY_UPSCALED`, tài khoản đó đang tắt hoặc đã lỗi →
+>   `409 CLIP_ACCOUNT_UNAVAILABLE`, clip đã hết hạn phía Google → `400 CLIP_GONE`.
+
+Ví dụ Google Vids — thành phần với @tên:
+
+```json
+{
+  "prompt": "@luna đi bộ trên đường thì gặp @grandpa",
+  "model": "omni_vids",
+  "mode": "components",
+  "aspect_ratio": "16:9",
+  "resolution": ["1080p"],
+  "video_length": 6,
+  "reference_images": [
+    {"data": "data:image/png;base64,...", "name": "luna"},
+    {"data": "data:image/png;base64,...", "name": "grandpa"}
+  ]
+}
+```
+
+Ví dụ Google Vids — nâng phân giải clip của một task đã xong:
+
+```json
+{
+  "model": "omni_vids",
+  "mode": "upscale",
+  "clip_temp_id": "ABCD...WXYZ"
 }
 ```
 
@@ -488,6 +574,7 @@ vì đoán đường dẫn trên đĩa.
 | `veo_31_quality` | Veo 3.1 Quality | `16:9, 9:16` |
 | `veo_31_lite_relaxed` | Veo 3.1 Lite Lower Priority [0 Credit] (chỉ ULTRA) | `16:9, 9:16` |
 | `omni_flash` | Omni Flash (video; 4/6/8/10s; tối đa 7 ảnh ref; 360p hoặc 720p; edit video ≤10s qua `reference_video`; không cần ULTRA) | `16:9, 9:16` |
+| `omni_vids` | Google Vids Omni (video; 3–10 s; 720p hoặc 1080p tạo thẳng; `text_to_video` / `start_image` (1 ảnh) / `components` (1–3 ảnh, `@tên`); chạy bằng tài khoản Google Vids ở Cài đặt → Vids, gói PLUS/MAX) | `16:9, 9:16` |
 | *upscale* `model` | Tuỳ những gì đang có trong `bin/realesrgan/models/` — bảng model ở tab Webhook liệt kê đúng bộ trên máy bạn. Bản gốc: `upscayl-standard-4x`, `upscayl-lite-4x`, `digital-art-4x`, `high-fidelity-4x`, `remacri-4x`, `ultramix-balanced-4x`, `ultrasharp-4x` | scale `2`–`8` (giữ nguyên khung ảnh) |
 | Grok `mode=t2i` | Text → Image (1K) | `9:16, 16:9, 1:1, 2:3, 3:2, 4:3, 21:9, 5:2` |
 | Grok `mode=i2i` | Image → Image (1K) | `9:16, 16:9, 1:1, 2:3, 3:2, 4:3, 21:9, 5:2` |
@@ -543,7 +630,8 @@ Ràng buộc:
   không tồn tại sẽ **làm hỏng task** — gõ nhầm đường dẫn mà vẫn lặng lẽ render thiếu
   một ảnh tham chiếu thì tệ hơn nhiều.
 - Số lượng tối đa theo endpoint: **ảnh = 10**, **grok = 5**, **openai = 5**,
-  **video = 3** (**Omni Flash `components` = 7**). Phần dư vượt mức tối đa bị bỏ qua.
+  **video = 3** (**Omni Flash = 7** — chỉ `components` dùng quá 2; **Google Vids = 3**).
+  Phần dư vượt mức tối đa bị bỏ qua.
 - **Vì sao nên dùng `path`:** base64 làm payload phình ~4/3 và mỗi request bị chặn ở
   50 MB (§5). Đường dẫn cục bộ không giới hạn kích thước và bỏ qua luôn khâu mã hoá/
   giải mã ở cả hai đầu.
@@ -559,7 +647,7 @@ webhook đi qua chính các hàm xử lý đó nên payload gửi Flow API khớ
   thứ tự trong `reference_images` thắng.
 - **Tác dụng**: gắn đúng ảnh đó vào đúng vị trí danh từ trong câu (Flow structured prompt
   "Mode-2"), thay vì truyền tất cả ảnh như tham chiếu chung vô danh.
-- **Phạm vi**: dùng cho **image (Flow)** và **video (Veo)**; **Grok** và **OpenAI (GPT Image 2)** **không hỗ trợ** `@tag` (ref đi theo vị trí).
+- **Phạm vi**: dùng cho **image (Flow)**, **video (Veo)** và **Google Vids `components`** (`omni_vids`, ở đó tên nhân vật trong thư viện cũng là tag hợp lệ); **Grok** và **OpenAI (GPT Image 2)** **không hỗ trợ** `@tag` (ref đi theo vị trí).
 - Tên file được làm sạch (bỏ thành phần thư mục và ký tự không hợp lệ) trước khi dùng.
 - **Tag không khớp** được giữ nguyên là văn bản — không gây lỗi.
 - **Không gửi `name`**: ảnh vẫn dùng như tham chiếu theo vị trí như trước (tương thích ngược).
@@ -623,14 +711,18 @@ cùng thiết bị:
 
 ### GET `/api/status/{task_id}` → `200`
 - `pending` / `running`: `{ task_id, type, status, prompt, created_at }`
-- `completed`: thêm `results` (mảng URL file) và `completed_at` (unix giây).
+- `type`: `image`, `video`, `grok`, `vibes` (task Meta AI), `openai` hoặc `upscale`.
+- `completed`: thêm `results` (mảng URL file) và `completed_at` (unix giây); task Google Vids
+  còn có thêm `meta` (§5.2).
 - `failed`: thêm `error_code` (int), `error` (string), `error_detail` (string).
-- task_id không tồn tại → `404 {"error": "Task <id> not found"}`.
+- task_id không tồn tại → `404 {"error": "Task <id> not found"}`. Máy chủ giữ 200 task **đã
+  xong** gần nhất; task cũ hơn bị xoá và cũng trả `404`.
 
 ### GET `/api/result/{task_id}` → `200`
-- Nếu chưa xong: `{ task_id, status, message: "Task not yet completed" }`.
-- Nếu đã xong: `{ task_id, status: "completed", results: [...], completed_at }`.
-
+- Nếu chưa xong: `{ task_id, status, message: "Task not yet completed" }` — task `failed` cũng
+  nhận đúng dạng này, **không** có trường lỗi: đọc lỗi ở `GET /api/status/{task_id}`.
+- Nếu đã xong: `{ task_id, status: "completed", results: [...], completed_at }` (thêm `meta`
+  với Google Vids).
 ### GET `/api/health` → `200`
 ```json
 { "status": "ok", "server": "G-Labs Webhook", "uptime": 123, "tasks_pending": 0, "tasks_running": 1 }
@@ -642,6 +734,15 @@ cùng thiết bị:
 ```
 (Mới nhất trước, tối đa 50.)
 
+### POST `/api/stop` (hoặc `/api/stop/{task_id}`) → `200`
+```json
+{ "stopped": ["a1b2c3d4", "e5f6a7b8"], "skipped": [], "count": 2 }
+```
+`stopped` = các task đang chờ / đang chạy nay đã `failed` (`499 STOPPED_BY_CLIENT`);
+`skipped` = task được gọi đích danh nhưng đã xong từ trước. `task_id` không tồn tại → `404`.
+Lệnh này chỉ cần API key. Body không phải JSON object → `400 {"error": "Body must be a JSON
+object"}`; body quá 64 KB → `413` — cả hai đều không dừng gì cả.
+
 ### Các response lỗi
 | HTTP | Body | Khi nào |
 |------|------|---------|
@@ -650,7 +751,7 @@ cùng thiết bị:
 | `401` | `{"error": "Invalid or missing API key"}` | Thiếu/sai `X-API-Key` |
 | `403` | `{"error": "Webhook requires MAX plan"}` | Kết nối được máy chủ nhưng license không phải MAX |
 | `404` | `{"error": "Not found"}` | Route không tồn tại |
-| `404` | `{"error": "Task <id> not found"}` | task không tồn tại ở status/result |
+| `404` | `{"error": "Task <id> not found"}` | task không tồn tại ở status/result/stop |
 | `404` | `{"error": "File not found: <name>"}` | File không tồn tại/đã hết hạn |
 | `413` | `{"error": "Payload too large (max 52428800 bytes)"}` | Body vượt trần **50 MB** — xem §5 |
 | `500` | `{"error": "Failed to read file"}` | File kết quả có trong registry nhưng không đọc được |
@@ -683,21 +784,38 @@ Các trường hợp phổ biến:
 | `403` | Bị từ chối quyền / lỗi phiên | `PERMISSION_DENIED` |
 | `400` | Request không hợp lệ / vi phạm chính sách prompt | `INVALID_ARGUMENT`, thông điệp vi phạm |
 | `500` | Lỗi máy chủ phía trên | `INTERNAL` / `HTTP_500` |
-| `0` | Lỗi validate / môi trường | `No active accounts available`, `Missing required field: prompt`, `Invalid mode '...'`, thông điệp upscale thất bại, `Timeout: no result generated` |
+| `0` | Lỗi validate / môi trường | `No active accounts available`, `Missing required field: prompt`, `Invalid mode '...'`, thông điệp upscale thất bại, `Timeout: no result generated`, `Task timed out (no completion signal received)` (watchdog task treo) |
 
 > Mẹo xử lý bằng code: rẽ nhánh theo `error_code` (không phụ thuộc ngôn ngữ). Dùng
 > `error` / `error_detail` cho log hiển thị cho người. `error_code == 429` là tín hiệu
 > để giãn nhịp / xoay tài khoản / thử lại sau.
+>
+> Mã có tên luôn kèm lời giải thích phía sau: `error` là toàn bộ phần sau `"<mã>: "`, vd
+> `"INVALID_MODE — omni_vids supports text_to_video, …"`. Hãy so **phần đầu** của `error`
+> (`error.startswith("INVALID_MODE")`), đừng so cả chuỗi.
 
 Lưu ý riêng của app này:
 - **Video** yêu cầu độ phân giải không tạo được (vd `4K` mà không có tài khoản ULTRA)
   → `failed`.
 - **Ảnh** yêu cầu `upscale` (`2K`/`4K`) không tạo được → `failed` kèm lý do upscale
   (không trả về ảnh gốc nhỏ hơn).
+- **Upscale** có mã riêng (`503 ENGINE_MISSING`, `503 NO_VULKAN_DEVICE`,
+  `507 GPU_OUT_OF_MEMORY`, `400 UNKNOWN_MODEL`, …) — xem bảng ở §5.6. Không bao giờ trả
+  `429`: không có quota nào để hết.
 - **Meta AI**: cookie tài khoản hết hạn → `failed` `401` (`Meta cookie expired`);
   hết quota → `429` (`Meta quota exhausted`); không có tài khoản Meta đang bật cho
   loại yêu cầu → `error_code 0` (`No enabled Meta account for image/video`); không
   tạo ra gì → `Meta produced no output`.
+- **Task bất kỳ** bị dừng qua `POST /api/stop` → `failed` với `499` / `STOPPED_BY_CLIENT`.
+- **Google Vids** (`omni_vids`): request bị từ chối → `400` `INVALID_MODE` / `INVALID_RESOLUTION` /
+  `INVALID_VIDEO_LENGTH` / `INVALID_ASPECT_RATIO` / `INVALID_FIELD` / `MISSING_REFERENCE` /
+  `UNKNOWN_CLIP` / `ALREADY_UPSCALED`; gói thấp → `403 PLAN_REQUIRED`; thiếu config máy chủ →
+  `503 VIDS_CONFIG` / `503 RUNTIME_CONFIG`; không tài khoản nào đủ giây → `503 NO_VIDS_ACCOUNT`;
+  mọi tài khoản bận suốt 15 phút → `503 NO_FREE_SLOT`; sau một lỗi mà không còn tài khoản nào nhận được task → `502 ALL_ACCOUNTS_FAILED` (còn lại là lỗi của chính tài khoản cuối, bên dưới);
+  việc tự lỗi → `401 VIDS_COOKIE_EXPIRED`, `429 VIDS_QUOTA_EXHAUSTED`, `429 RATE_LIMITED`,
+  `400 CONTENT_POLICY`, `400 BAD_REQUEST`, `400 CLIP_GONE` (upscale), `409 CLIP_ACCOUNT_UNAVAILABLE`
+  (upscale), `502 UPSTREAM`, `502 NO_OUTPUT`; máy chủ webhook bị tắt khi task đang chờ hoặc đang chạy
+  → `503 SERVER_STOPPED`.
 
 ---
 
@@ -724,6 +842,9 @@ Lưu ý riêng của app này:
   và **fail-over** sang tài khoản kế khi lỗi ở mức tài khoản (hết hạn/quota/5xx). Token
   được làm mới tự động trước mỗi lượt. Trần luồng = **5 luồng mỗi tài khoản** (số tài
   khoản đang bật × 5), giống Flow/Meta. Ảnh ra bị cap ~1.57 MP (không 2K/4K, không upscale).
+- **Google Vids** (`omni_vids`) cần gói **PLUS/MAX** và ít nhất một tài khoản Google Vids ở
+  Cài đặt → Vids đang BẬT và còn giây. Số giây là hạn mức riêng của tài khoản (1 giây video =
+  1 giây). Upscale chỉ chạy trên đúng tài khoản đã tạo clip.
 - **Upscale** không cần tài khoản, không cần hạng nào — engine Real-ESRGAN chạy trên
   GPU máy bạn nên không tốn credit, không đụng quota. Chỉ cần có sẵn engine + model
   trong `bin/realesrgan/` (thiếu thì `503 ENGINE_MISSING`) và một GPU hỗ trợ Vulkan.
@@ -816,6 +937,18 @@ curl -X POST http://127.0.0.1:8765/api/upscale/generate   -H "Content-Type: appl
 
 # --- Upscale: gửi ảnh dạng base64 (client ở máy khác) ---
 curl -X POST http://127.0.0.1:8765/api/upscale/generate   -H "Content-Type: application/json" -H "X-API-Key: $KEY"   -d '{"image":"data:image/png;base64,...","filename":"meo.png","scale":2,"format":"png"}'
+
+# --- Google Vids: văn bản → video (1080p dọc, 5 giây) ---
+curl -X POST http://127.0.0.1:8765/api/video/generate -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"prompt":"a cat walking on a wall at sunset","model":"omni_vids","mode":"text_to_video","aspect_ratio":"9:16","resolution":["1080p"],"video_length":5}'
+
+# --- Google Vids: nâng phân giải clip của một task đã xong (clip_temp_id lấy từ meta) ---
+curl -X POST http://127.0.0.1:8765/api/video/generate -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"model":"omni_vids","mode":"upscale","clip_temp_id":"ABCD...WXYZ"}'
+
+# --- Dừng một task / dừng tất cả ---
+curl -X POST http://127.0.0.1:8765/api/stop/abc12345 -H "X-API-Key: YOUR_API_KEY"
+curl -X POST http://127.0.0.1:8765/api/stop -H "X-API-Key: YOUR_API_KEY"
 
 # --- Tải file kết quả ---
 curl -o out.png "http://127.0.0.1:8765/api/files/image_001.png"
@@ -915,12 +1048,15 @@ console.log(urls);
 ## 11. Checklist nhanh cho người tích hợp / AI agent
 
 1. Bật máy chủ Webhook trong app; sao chép **port** và **API key**.
-2. Luôn gửi `X-API-Key` ở các call generate/status/result/tasks.
-3. `POST /api/{image|video|grok|meta|openai}/generate` với body hợp lệ (`prompt` bắt buộc),
-   hoặc `POST /api/upscale/generate` với `image_path` / `image` và **không** có `prompt`.
+2. Luôn gửi `X-API-Key` ở các call generate/status/result/tasks/stop.
+3. `POST /api/{image|video|grok|meta|openai}/generate` với body hợp lệ (`prompt` bắt buộc —
+   trừ `upscale` của `omni_vids`), hoặc `POST /api/upscale/generate` với `image_path` /
+   `image` và **không** có `prompt`.
 4. Đọc `task_id` từ response `202`.
 5. Hỏi `GET /api/status/{task_id}` mỗi 3–5 giây tới khi `completed` hoặc `failed`.
 6. Khi `completed`: `GET` từng URL trong `results` để tải file.
 7. Khi `failed`: xem `error_code` (vd `429` = hết quota) và `error` / `error_detail`.
 8. Tôn trọng tỉ lệ theo từng model, số ảnh tham chiếu theo từng mode, và các tính
    năng chỉ dành cho ULTRA.
+9. Muốn huỷ: `POST /api/stop/{task_id}` (hoặc `/api/stop` cho tất cả) — task chuyển ngay sang
+   `failed` với `499 STOPPED_BY_CLIENT`.
