@@ -7,7 +7,7 @@
 
 Tài liệu này mô tả API do tab **Webhook** của ứng dụng desktop G-Labs Automation
 (v5.0.8+) cung cấp. Nó cho phép các công cụ bên ngoài (n8n, Make.com, script tự
-viết, AI agent) điều khiển việc tạo ảnh / video (Veo, Omni Flash, Google Vids) / Grok /
+viết, AI agent) điều khiển việc tạo ảnh (Flow, Google Pics) / video (Veo, Omni Flash, Google Vids) / Grok /
 Meta AI / OpenAI — và nâng cấp ảnh cục bộ — qua REST API đơn giản.
 
 ---
@@ -33,13 +33,14 @@ Meta AI / OpenAI — và nâng cấp ảnh cục bộ — qua REST API đơn gi�
 - **Đồng thời.** Máy chủ nhận nhiều request cùng lúc. Tối đa **10 task được bóc
   tách song song**; còn *chạy tạo* được bao nhiêu cái một lúc thì tùy endpoint:
   Ảnh/Video/Meta/OpenAI co giãn theo số tài khoản (khoảng 5 mỗi tài khoản), Grok
-  trần **10**, Google Vids nhận số việc mỗi tài khoản do máy chủ cấp trên từng tài khoản Vids,
+  trần **10**, Google Vids và Google Pics nhận số việc mỗi tài khoản do máy chủ cấp trên từng tài
+  khoản Google,
   riêng Upscale chạy **lần lượt từng cái** (chỉ có một GPU — xem §5.6).
 - **Tạo nội dung dùng tài khoản đã đăng nhập trong app.** Ảnh/Video dùng tài khoản
   Google (Flow/Veo) cấu hình trong app; Grok dùng phiên Super Grok đã kết nối;
   **Meta AI** dùng tài khoản Meta (vibes.ai) đã đăng nhập; **OpenAI (GPT Image 2)**
-  dùng tài khoản ChatGPT/OpenAI đã đăng nhập; **Google Vids** (`omni_vids`) dùng tài khoản
-  Google Vids ở Cài đặt → Vids. Nếu không có tài khoản hợp lệ, task sẽ
+  dùng tài khoản ChatGPT/OpenAI đã đăng nhập; **Google Vids** (`omni_vids`) và **Google Pics**
+  (`nano_pics`) dùng tài khoản Google ở Cài đặt → Tài khoản Google. Nếu không có tài khoản hợp lệ, task sẽ
   thất bại (xem bảng lỗi). App phải đang chạy với các tài khoản đó đã đăng nhập & đang bật.
 
 ---
@@ -159,6 +160,8 @@ file (`image/png`, `image/jpeg`, `video/mp4`, …). File lưu nội bộ trên m
 **Trả về bao nhiêu file (và ở độ phân giải nào):**
 
 - **Ảnh, không `upscale`** → 1 file (ảnh gốc).
+- **Google Pics** (`nano_pics`) → tối đa `keep` file (mặc định 1; `keep: 0` = mọi ảnh của lượt,
+  3–9).
 - **Ảnh có `upscale`** → một file **cho mỗi độ phân giải upscale yêu cầu**, theo thứ
   tự tăng dần — vd `["2K"]` → `[2K]`, `["2K","4K"]` → `[2K, 4K]`. Ảnh gốc
   (không upscale) **không** được kèm khi đã yêu cầu `upscale`.
@@ -191,7 +194,7 @@ lớn vào cùng một request.
 | Trường | Kiểu | Bắt buộc | Mặc định | Ghi chú |
 |--------|------|:--------:|----------|---------|
 | `prompt` | string | ✅ | — | Mô tả ảnh. |
-| `model` | string | ❌ | `nano_banana_2` | Một trong `nano_banana_pro`, `nano_banana_2`, `nano_banana_2_lite`. Không hợp lệ → `nano_banana_2`. |
+| `model` | string | ❌ | `nano_banana_2` | Một trong `nano_banana_pro`, `nano_banana_2`, `nano_banana_2_lite`, `nano_pics`. Không hợp lệ → `nano_banana_2`. **`nano_pics`** = Google Pics, có trường riêng (`mode`, `keep`, `remove_logo`) và kiểm tra chặt — xem ghi chú Google Pics bên dưới. |
 | `aspect_ratio` | string | ❌ | `1:1` | Một trong `1:1`, `3:4`, `4:3`, `9:16`, `16:9`. Không hợp lệ → `1:1`. |
 | `reference_images` | array | ❌ | `[]` | Tối đa **10** ảnh base64 (xem §6). Mỗi ảnh có thể kèm `name` để gắn theo `@tên` trong prompt (§6.1). |
 | `upscale` | array | ❌ | `[]` | Bất kỳ `"2K"`, `"4K"`. **4K cần tài khoản ULTRA** và model hỗ trợ upscale. Giá trị sai bị bỏ. |
@@ -208,6 +211,58 @@ lớn vào cùng một request.
 
 > Nếu yêu cầu `upscale` mà không tạo được độ phân giải đó (vd 4K hết quota), task sẽ
 > báo **failed** kèm lý do — **không** âm thầm trả về ảnh gốc độ phân giải thấp hơn.
+
+> **Google Pics (`model: "nano_pics"`)** — trình tạo ảnh của Google (docs.google.com/images), chạy
+> bằng **tài khoản Google** ở Cài đặt → Tài khoản Google (cùng tài khoản với Google Vids; gói
+> PLUS/MAX). Cùng endpoint, có trường và quy tắc riêng:
+> - `mode` (không phân biệt hoa thường, không bắt buộc): `text_to_image` hoặc `image_to_image`
+>   (bí danh `t2i` / `i2i`). Bỏ trống → `image_to_image` nếu có gửi `reference_images`, ngược lại
+>   `text_to_image`. Giá trị khác → `400 INVALID_MODE`; `image_to_image` mà không có ảnh →
+>   `400 MISSING_REFERENCE`; `text_to_image` bỏ qua mọi ảnh gửi kèm.
+> - `reference_images`: **1–14** ảnh (base64 hoặc `path`, §6), theo vị trí — Google Pics **không
+>   có** gắn `@tag`, `name` / `category` bị bỏ qua. Vượt giới hạn máy chủ (14) →
+>   `400 TOO_MANY_REFERENCES` (không bao giờ lặng lẽ cắt bớt).
+> - `aspect_ratio`: một giá trị trong danh sách máy chủ — hiện là `16:9, 9:16, 1:1, 4:3, 3:4, 3:2,
+>   2:3, 5:4, 4:5, 21:9` (bảng model ở tab Webhook hiện danh sách đang dùng). Mặc định `1:1`. Giá
+>   trị khác → `400 INVALID_ASPECT_RATIO` (không tự đổi về mặc định như các model Flow).
+> - `keep`: số ảnh của lượt cần trả về. Google trả **3–9 ảnh mỗi lượt**; `keep` là số nguyên, một
+>   trong `1`, `2`, `3`, `4` hoặc `0` (= mọi ảnh của lượt). Bỏ trống hoặc `null` → `1`. Giá trị
+>   khác (kể cả `true`, `2.7` hay chuỗi `"2"`) → `400 INVALID_KEEP`.
+> - `remove_logo`: `true` xoá logo ✦ Gemini khỏi mọi ảnh (khôi phục điểm ảnh sạch, không làm mờ);
+>   `false` giữ nguyên ảnh như Google tạo. **Không gửi** (hoặc `null`) → theo nút **"Hiển thị logo
+>   Gemini"** của trang Google Pics (mặc định nút tắt = xoá). Không phải boolean → `400 INVALID_FIELD`.
+> - Không hỗ trợ `upscale` (bị bỏ qua).
+> - **Hạn mức:** một task = **một lượt = 1 đơn vị** hạn mức Pics của tài khoản, bất kể ra bao nhiêu
+>   ảnh. Hạn mức đọc thật từ Google (còn / tổng), tách riêng với số giây của Vids.
+> - **Tài khoản:** chỉ dùng tài khoản đang **BẬT** và đang tích ô **Ảnh** ở Cài đặt → Tài khoản
+>   Google, còn ít nhất 1 lượt Pics (tài khoản chưa từng đọc hạn mức vẫn được thử — việc sẽ đọc
+>   trước khi tạo). Mỗi tài khoản nhận tối đa số việc đồng thời máy chủ cấp. Xoay vòng round-robin,
+>   lỗi auth / hạn mức / giới hạn tốc độ / máy chủ, hoặc tài khoản không dùng được Google Pics thì
+>   chuyển sang tài khoản kế; cookie chết được làm mới từ profile trước. Cookie không làm mới được
+>   thì tài khoản bị **TẮT** (cả cho Vids). Tài khoản cookie vẫn sống nhưng không có Google Pics (bị
+>   từ chối ngay cả khi vừa làm mới cookie) chỉ bị **bỏ qua** — không bao giờ bị tắt. Hết lượt Pics
+>   cũng **không** tắt tài khoản: khi bật *Tự động tắt tài khoản bị hết giới hạn* chỉ ô **Ảnh** bị
+>   bỏ tích; qua mốc reset hạn mức Pics thì tài khoản được thử lại và ô được tích lại — Google Vids
+>   vẫn dùng tiếp suốt thời gian đó. Khi mọi tài khoản dùng được đều bận, task trở về `pending` và
+>   **chờ** slot trống (tối đa 15 phút), kể cả sau khi đã chuyển tài khoản.
+> - **Kết quả:** `results` = các ảnh được giữ (PNG), tối đa `keep` file (ít hơn nếu có ảnh tải
+>   lỗi). Task hoàn thành có thêm `meta`: `mode` (`t2i` / `i2i`), `aspect_ratio`, `images` (số file
+>   trả về), `logo_removed` (số ảnh thực sự đã được xoá logo Gemini — `0` khi `remove_logo: false`),
+>   `account` (email tài khoản Google) và `partial: true` khi lượt bị dừng
+>   / lỗi sau khi đã lưu được một số ảnh.
+> - Prompt bị từ chối → `400 CONTENT_POLICY` (không tốn hạn mức, không thử lại trên tài khoản khác).
+
+Ví dụ Google Pics — ảnh sang ảnh, 16:9, giữ 2 ảnh:
+
+```json
+{
+  "prompt": "the same girl reading in a cozy cafe",
+  "model": "nano_pics",
+  "aspect_ratio": "16:9",
+  "keep": 2,
+  "reference_images": ["data:image/png;base64,..."]
+}
+```
 
 ### 5.2 Video — `POST /api/video/generate`
 
@@ -276,7 +331,7 @@ Ví dụ Omni Flash — edit video (dựng lại clip ≤10s theo prompt):
 }
 ```
 
-> **Google Vids (`model: "omni_vids"`)** chạy bằng tài khoản Google Vids thêm ở Cài đặt → Vids
+> **Google Vids (`model: "omni_vids"`)** chạy bằng tài khoản Google thêm ở Cài đặt → Tài khoản Google
 > (gói PLUS/MAX). Cùng dạng request với Veo, với các quy tắc:
 > - `mode` (không phân biệt hoa thường): `text_to_video` (không ảnh, mặc định), `start_image`
 >   (1 ảnh = khung hình đầu; ảnh thừa bị bỏ qua), `components` (1–3 ảnh làm nguyên liệu) hoặc
@@ -297,19 +352,26 @@ Ví dụ Omni Flash — edit video (dựng lại clip ≤10s theo prompt):
 >   phải đang bật; tag phải là **đúng tên đầy đủ** của nhân vật (không phân biệt hoa thường); nhân
 >   vật chỉ được thêm khi request còn dưới 3 ảnh; ảnh **bạn gửi** có cùng `name` được ưu tiên hơn
 >   nhân vật. Tổng tối đa 3 nguyên liệu; không có nguyên liệu nào → `400 MISSING_REFERENCE`.
-> - **Tài khoản:** chỉ dùng tài khoản đang **BẬT** ở Cài đặt → Vids (và đang bật video) và còn ít
+> - **Tài khoản:** chỉ dùng tài khoản đang **BẬT** ở Cài đặt → Tài khoản Google (và đang tích ô Video) và còn ít
 >   nhất `video_length` giây; mỗi tài khoản nhận tối đa số việc đồng thời máy chủ cấp, và số giây
 >   được giữ chỗ trong lúc việc chạy. Xoay vòng round-robin, lỗi auth / hạn mức / giới hạn tốc độ /
 >   máy chủ thì chuyển sang tài khoản kế; cookie chết được làm mới từ profile trước. Tài khoản không
->   làm mới được cookie, hoặc đã hết giây, bị **TẮT** trong app (giống trang Vids). Khi mọi tài
+>   làm mới được cookie bị **TẮT** trong app; tài khoản hết giây chỉ bị bỏ tích ô **Video** (khi bật
+>   *Tự động tắt tài khoản bị hết giới hạn*) — Google Pics vẫn dùng tiếp (giống trang Vids). Khi mọi tài
 >   khoản dùng được đều bận, task giữ trạng thái `pending` và **chờ** slot trống (tối đa 15 phút)
 >   thay vì lỗi.
 > - **Kết quả:** task hoàn thành có thêm `meta` trong `GET /api/status/{task_id}` và
 >   `GET /api/result/{task_id}`:
 >   `mode` (`t2v` / `i2v` / `r2v` / `upscale`), `resolution` (`720p` / `1080p`), `orientation`
 >   (`landscape` / `portrait`), `duration` (giây), `account` (email tài khoản Google Vids đã tạo
->   clip), `clip_temp_id` (id mà request upscale cần) và `upscale_available` (`true` khi clip
->   còn nâng phân giải được — chưa phải 1080p).
+>   clip), `clip_temp_id` (id mà request upscale cần), `upscale_available` (`true` khi clip
+>   còn nâng phân giải được — chưa phải 1080p) và `logo_removed` (`true` khi logo ✦ Gemini đã
+>   được xoá khỏi file trả về).
+> - `remove_logo` (tuỳ chọn, cả request tạo lẫn `upscale`): `true` xoá logo ✦ Gemini khỏi video
+>   (720p / 1080p; bản 1080p là bản nâng cấp nên đôi khi còn vết rất mờ trên nền nhiều vân);
+>   `false` giữ nguyên video như Google tạo. **Không gửi** (hoặc `null`) → theo nút **"Hiển thị
+>   logo Gemini"** của trang Google Vids (mặc định nút tắt = xoá). Không phải boolean →
+>   `400 INVALID_FIELD`. Video không có logo, hoặc xoá lỗi, được trả nguyên bản (`logo_removed: false`).
 > - **Upscale:** `{"model": "omni_vids", "mode": "upscale", "clip_temp_id": "<meta.clip_temp_id>"}`
 >   (không cần `prompt`) tạo bản 1080p của clip do **một task webhook `omni_vids` đã hoàn thành
 >   trong cùng phiên chạy app** tạo ra — clip tạo ở trang Vids không dùng được. Chỉ chạy trên đúng
@@ -569,12 +631,13 @@ vì đoán đường dẫn trên đĩa.
 | `nano_banana_pro` | Nano Banana Pro | `1:1, 3:4, 4:3, 9:16, 16:9` |
 | `nano_banana_2` | Nano Banana 2 | `1:1, 3:4, 4:3, 9:16, 16:9` |
 | `nano_banana_2_lite` | Nano Banana 2 Lite | `1:1, 3:4, 4:3, 9:16, 16:9` |
+| `nano_pics` | Google Pics (ảnh; `text_to_image` / `image_to_image` (1–14 ảnh, theo vị trí); 3–9 ảnh mỗi lượt, `keep` 1–4 hoặc tất cả; mặc định xoá logo Gemini; chạy bằng tài khoản Google ở Cài đặt → Tài khoản Google, gói PLUS/MAX) | `16:9, 9:16, 1:1, 4:3, 3:4, 3:2, 2:3, 5:4, 4:5, 21:9` |
 | `veo_31_fast` | Veo 3.1 Fast | `16:9, 9:16` |
 | `veo_31_lite` | Veo 3.1 Lite | `16:9, 9:16` |
 | `veo_31_quality` | Veo 3.1 Quality | `16:9, 9:16` |
 | `veo_31_lite_relaxed` | Veo 3.1 Lite Lower Priority [0 Credit] (chỉ ULTRA) | `16:9, 9:16` |
 | `omni_flash` | Omni Flash (video; 4/6/8/10s; tối đa 7 ảnh ref; 360p hoặc 720p; edit video ≤10s qua `reference_video`; không cần ULTRA) | `16:9, 9:16` |
-| `omni_vids` | Google Vids Omni (video; 3–10 s; 720p hoặc 1080p tạo thẳng; `text_to_video` / `start_image` (1 ảnh) / `components` (1–3 ảnh, `@tên`); chạy bằng tài khoản Google Vids ở Cài đặt → Vids, gói PLUS/MAX) | `16:9, 9:16` |
+| `omni_vids` | Google Vids Omni (video; 3–10 s; 720p hoặc 1080p tạo thẳng; `text_to_video` / `start_image` (1 ảnh) / `components` (1–3 ảnh, `@tên`); chạy bằng tài khoản Google ở Cài đặt → Tài khoản Google, gói PLUS/MAX) | `16:9, 9:16` |
 | *upscale* `model` | Tuỳ những gì đang có trong `bin/realesrgan/models/` — bảng model ở tab Webhook liệt kê đúng bộ trên máy bạn. Bản gốc: `upscayl-standard-4x`, `upscayl-lite-4x`, `digital-art-4x`, `high-fidelity-4x`, `remacri-4x`, `ultramix-balanced-4x`, `ultrasharp-4x` | scale `2`–`8` (giữ nguyên khung ảnh) |
 | Grok `mode=t2i` | Text → Image (1K) | `9:16, 16:9, 1:1, 2:3, 3:2, 4:3, 21:9, 5:2` |
 | Grok `mode=i2i` | Image → Image (1K) | `9:16, 16:9, 1:1, 2:3, 3:2, 4:3, 21:9, 5:2` |
@@ -629,9 +692,10 @@ Ràng buộc:
 - Base64 giải mã ra dưới ~100 byte sẽ bị bỏ (coi là không hợp lệ). Ngược lại, `path`
   không tồn tại sẽ **làm hỏng task** — gõ nhầm đường dẫn mà vẫn lặng lẽ render thiếu
   một ảnh tham chiếu thì tệ hơn nhiều.
-- Số lượng tối đa theo endpoint: **ảnh = 10**, **grok = 5**, **openai = 5**,
+- Số lượng tối đa theo endpoint: **ảnh = 10** (**Google Pics = 14**), **grok = 5**, **openai = 5**,
   **video = 3** (**Omni Flash = 7** — chỉ `components` dùng quá 2; **Google Vids = 3**).
-  Phần dư vượt mức tối đa bị bỏ qua.
+  Phần dư vượt mức tối đa bị bỏ qua — riêng Google Pics thì từ chối
+  (`400 TOO_MANY_REFERENCES`).
 - **Vì sao nên dùng `path`:** base64 làm payload phình ~4/3 và mỗi request bị chặn ở
   50 MB (§5). Đường dẫn cục bộ không giới hạn kích thước và bỏ qua luôn khâu mã hoá/
   giải mã ở cả hai đầu.
@@ -647,7 +711,7 @@ webhook đi qua chính các hàm xử lý đó nên payload gửi Flow API khớ
   thứ tự trong `reference_images` thắng.
 - **Tác dụng**: gắn đúng ảnh đó vào đúng vị trí danh từ trong câu (Flow structured prompt
   "Mode-2"), thay vì truyền tất cả ảnh như tham chiếu chung vô danh.
-- **Phạm vi**: dùng cho **image (Flow)**, **video (Veo)** và **Google Vids `components`** (`omni_vids`, ở đó tên nhân vật trong thư viện cũng là tag hợp lệ); **Grok** và **OpenAI (GPT Image 2)** **không hỗ trợ** `@tag` (ref đi theo vị trí).
+- **Phạm vi**: dùng cho **image (Flow)**, **video (Veo)** và **Google Vids `components`** (`omni_vids`, ở đó tên nhân vật trong thư viện cũng là tag hợp lệ); **Grok**, **OpenAI (GPT Image 2)** và **Google Pics** **không hỗ trợ** `@tag` (ref đi theo vị trí).
 - Tên file được làm sạch (bỏ thành phần thư mục và ký tự không hợp lệ) trước khi dùng.
 - **Tag không khớp** được giữ nguyên là văn bản — không gây lỗi.
 - **Không gửi `name`**: ảnh vẫn dùng như tham chiếu theo vị trí như trước (tương thích ngược).
@@ -713,7 +777,7 @@ cùng thiết bị:
 - `pending` / `running`: `{ task_id, type, status, prompt, created_at }`
 - `type`: `image`, `video`, `grok`, `vibes` (task Meta AI), `openai` hoặc `upscale`.
 - `completed`: thêm `results` (mảng URL file) và `completed_at` (unix giây); task Google Vids
-  còn có thêm `meta` (§5.2).
+  còn có thêm `meta` (§5.2), task Google Pics cũng vậy (§5.1).
 - `failed`: thêm `error_code` (int), `error` (string), `error_detail` (string).
 - task_id không tồn tại → `404 {"error": "Task <id> not found"}`. Máy chủ giữ 200 task **đã
   xong** gần nhất; task cũ hơn bị xoá và cũng trả `404`.
@@ -722,7 +786,7 @@ cùng thiết bị:
 - Nếu chưa xong: `{ task_id, status, message: "Task not yet completed" }` — task `failed` cũng
   nhận đúng dạng này, **không** có trường lỗi: đọc lỗi ở `GET /api/status/{task_id}`.
 - Nếu đã xong: `{ task_id, status: "completed", results: [...], completed_at }` (thêm `meta`
-  với Google Vids).
+  với Google Vids / Google Pics).
 ### GET `/api/health` → `200`
 ```json
 { "status": "ok", "server": "G-Labs Webhook", "uptime": 123, "tasks_pending": 0, "tasks_running": 1 }
@@ -816,6 +880,16 @@ Lưu ý riêng của app này:
   `400 CONTENT_POLICY`, `400 BAD_REQUEST`, `400 CLIP_GONE` (upscale), `409 CLIP_ACCOUNT_UNAVAILABLE`
   (upscale), `502 UPSTREAM`, `502 NO_OUTPUT`; máy chủ webhook bị tắt khi task đang chờ hoặc đang chạy
   → `503 SERVER_STOPPED`.
+- **Google Pics** (`nano_pics`): request bị từ chối → `400` `INVALID_MODE` / `MISSING_REFERENCE` /
+  `TOO_MANY_REFERENCES` / `INVALID_ASPECT_RATIO` / `INVALID_KEEP` / `INVALID_FIELD`; gói thấp →
+  `403 PLAN_REQUIRED`; thiếu config máy chủ → `503 PICS_CONFIG` / `503 RUNTIME_CONFIG`; không tài
+  khoản nào dùng được còn lượt → `503 NO_PICS_ACCOUNT`; mọi tài khoản bận suốt 15 phút →
+  `503 NO_FREE_SLOT`; sau một lỗi mà không còn tài khoản nào nhận được task →
+  `502 ALL_ACCOUNTS_FAILED` (còn lại là lỗi của chính tài khoản cuối, bên dưới); việc tự lỗi →
+  `401 PICS_COOKIE_EXPIRED`, `403 PICS_NO_ACCESS` (tài khoản không dùng được Google Pics; vẫn
+  được giữ bật), `504 PICS_TIMEOUT` (đã gửi yêu cầu mà không nhận được trả lời — có thể đã trừ lượt
+  nên KHÔNG tự thử lại, không chuyển tài khoản khác), `429 PICS_QUOTA_EXHAUSTED`, `429 RATE_LIMITED`, `400 CONTENT_POLICY`,
+  `400 BAD_REQUEST`, `502 UPSTREAM`, `502 NO_OUTPUT`; máy chủ webhook bị tắt → `503 SERVER_STOPPED`.
 
 ---
 
@@ -842,9 +916,12 @@ Lưu ý riêng của app này:
   và **fail-over** sang tài khoản kế khi lỗi ở mức tài khoản (hết hạn/quota/5xx). Token
   được làm mới tự động trước mỗi lượt. Trần luồng = **5 luồng mỗi tài khoản** (số tài
   khoản đang bật × 5), giống Flow/Meta. Ảnh ra bị cap ~1.57 MP (không 2K/4K, không upscale).
-- **Google Vids** (`omni_vids`) cần gói **PLUS/MAX** và ít nhất một tài khoản Google Vids ở
-  Cài đặt → Vids đang BẬT và còn giây. Số giây là hạn mức riêng của tài khoản (1 giây video =
+- **Google Vids** (`omni_vids`) cần gói **PLUS/MAX** và ít nhất một tài khoản Google ở
+  Cài đặt → Tài khoản Google đang BẬT (tích ô Video) và còn giây. Số giây là hạn mức riêng của tài khoản (1 giây video =
   1 giây). Upscale chỉ chạy trên đúng tài khoản đã tạo clip.
+- **Google Pics** (`nano_pics`) cần gói **PLUS/MAX** và ít nhất một tài khoản Google ở Cài đặt →
+  Tài khoản Google đang BẬT (tích ô Ảnh) và còn lượt Pics. Một task = một lượt = 1 đơn vị hạn
+  mức Pics của tài khoản, bất kể lượt đó ra bao nhiêu ảnh.
 - **Upscale** không cần tài khoản, không cần hạng nào — engine Real-ESRGAN chạy trên
   GPU máy bạn nên không tốn credit, không đụng quota. Chỉ cần có sẵn engine + model
   trong `bin/realesrgan/` (thiếu thì `503 ENGINE_MISSING`) và một GPU hỗ trợ Vulkan.
@@ -937,6 +1014,14 @@ curl -X POST http://127.0.0.1:8765/api/upscale/generate   -H "Content-Type: appl
 
 # --- Upscale: gửi ảnh dạng base64 (client ở máy khác) ---
 curl -X POST http://127.0.0.1:8765/api/upscale/generate   -H "Content-Type: application/json" -H "X-API-Key: $KEY"   -d '{"image":"data:image/png;base64,...","filename":"meo.png","scale":2,"format":"png"}'
+
+# --- Google Pics: văn bản → ảnh (16:9, giữ 2 ảnh, xoá logo Gemini) ---
+curl -X POST http://127.0.0.1:8765/api/image/generate -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"prompt":"a red fox in the snow","model":"nano_pics","aspect_ratio":"16:9","keep":2}'
+
+# --- Google Pics: ảnh → ảnh (ảnh tham chiếu đọc từ đĩa) ---
+curl -X POST http://127.0.0.1:8765/api/image/generate -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"prompt":"the same girl in a cafe","model":"nano_pics","mode":"image_to_image","reference_images":[{"path":"E:/photos/girl.png"}]}'
 
 # --- Google Vids: văn bản → video (1080p dọc, 5 giây) ---
 curl -X POST http://127.0.0.1:8765/api/video/generate -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
@@ -1057,6 +1142,7 @@ console.log(urls);
 6. Khi `completed`: `GET` từng URL trong `results` để tải file.
 7. Khi `failed`: xem `error_code` (vd `429` = hết quota) và `error` / `error_detail`.
 8. Tôn trọng tỉ lệ theo từng model, số ảnh tham chiếu theo từng mode, và các tính
-   năng chỉ dành cho ULTRA.
+   năng chỉ dành cho ULTRA. Google Vids và Google Pics từ chối giá trị sai bằng mã `400` có
+   tên lỗi, không tự đổi về mặc định.
 9. Muốn huỷ: `POST /api/stop/{task_id}` (hoặc `/api/stop` cho tất cả) — task chuyển ngay sang
    `failed` với `499 STOPPED_BY_CLIENT`.
