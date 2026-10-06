@@ -1,9 +1,9 @@
-# G-Labs Automation — Workflow JSON Specification
+# G-Labs Automation - Workflow JSON Specification
 
 > Audience: developers and AI agents that need to **generate a `.json` workflow file**
 > the G-Labs Automation **Workflow** page can load (toolbar → **Open Flow**, or drop the
 > file into `.../workflow/sample/`).
-> Goal: everything needed to emit a valid, loadable node graph — the file schema, every
+> Goal: everything needed to emit a valid, loadable node graph - the file schema, every
 > node type with its sockets and settings, how to wire nodes, and a complete example.
 
 A workflow is a **node graph**: nodes (prompt, image/video generators, loaders…) connected
@@ -23,10 +23,10 @@ nodes wired to it.
 }
 ```
 
-- `nodes` — array of node objects (see §3). **Order matters**: edges reference nodes by
+- `nodes` - array of node objects (see §3). **Order matters**: edges reference nodes by
   their **0-based index in this array**, NOT by `id`.
-- `edges` — array of connections (see §4).
-- `groups` — visual node grouping. Optional; use `[]`.
+- `edges` - array of connections (see §4).
+- `groups` - visual node grouping. Optional; use `[]`.
 
 ---
 
@@ -61,9 +61,9 @@ Every node has these fields:
 | `w`, `h` | number | ❌ | Size. Generator nodes use `400`×`400`; prompt `400`×`300`. Defaults are applied if omitted. |
 | `disabled` | bool | ❌ | `true` = node is off (skipped at run). Default `false`. |
 | `skipped` | bool | ❌ | `true` = skip this node but keep it. Default `false`. |
-| `inputs` | string[] | ✅ | Input socket **labels** — the array **length = number of input sockets** (this is what edges target). Text is cosmetic; the count matters. |
+| `inputs` | string[] | ✅ | Input socket **labels** - the array **length = number of input sockets** (this is what edges target). Text is cosmetic; the count matters. |
 | `outputs` | string[] | ✅ | Output socket labels (usually one). |
-| `values` | object | ✅ | Widget settings — keys/values per node type (§3.1). Use `{}` if none. |
+| `values` | object | ✅ | Widget settings - keys/values per node type (§3.1). Use `{}` if none. |
 | `ref_mode` | string | ❌ | Reference nodes only: `"pro"`. |
 
 **`values` combo rule:** for dropdown settings, use the **data value** listed in the tables
@@ -76,17 +76,17 @@ There are **11** node types. Each block below lists the output type (**→ type*
 sockets, and a **values** table with every setting key, its accepted values, and how it
 serializes. Two labels are used throughout:
 
-- **stable** — the accepted values are fixed and safe to hardcode in a `.json`.
-- **server** — the option list is fetched from the account's server config at runtime, so the
+- **stable** - the accepted values are fixed and safe to hardcode in a `.json`.
+- **server** - the option list is fetched from the account's server config at runtime, so the
   exact value depends on the logged-in tier (see the note after `video_generate`).
 
 Combos serialize their **data value** when one exists, else their visible text; the app
 resolves on load by data first, then by text. Where a table says *"index/text"* the combo has
-no data value — omit the key to keep its default rather than hardcoding localized text.
+no data value - omit the key to keep its default rather than hardcoding localized text.
 
 ---
 
-#### `prompt` — a text prompt  → `string`
+#### `prompt` - a text prompt  → `string`
 - **inputs:** `[]` (none).  **outputs:** `["Prompt"]`.
 
 | key | values | notes |
@@ -95,7 +95,7 @@ no data value — omit the key to keep its default rather than hardcoding locali
 
 ---
 
-#### `batch_prompt` — many prompts; loops the whole downstream chain once per line  → `string`
+#### `batch_prompt` - many prompts; loops the whole downstream chain once per line  → `string`
 - **inputs:** `[]`.  **outputs:** `["Prompt"]`.
 
 | key | values | notes |
@@ -106,7 +106,7 @@ no data value — omit the key to keep its default rather than hardcoding locali
 
 ---
 
-#### `reference` — one image file from disk  → `image`
+#### `reference` - one image file from disk  → `image`
 - **inputs:** `[]`.  **outputs:** `["Image"]`.  Add top-level `"ref_mode": "pro"`.
 
 | key | values | notes |
@@ -115,7 +115,7 @@ no data value — omit the key to keep its default rather than hardcoding locali
 
 ---
 
-#### `batch_loader` — a folder of images; loops once per image  → `image`
+#### `batch_loader` - a folder of images; loops once per image  → `image`
 - **inputs:** `[]`.  **outputs:** `["Image"]`.
 
 | key | values | notes |
@@ -126,13 +126,13 @@ no data value — omit the key to keep its default rather than hardcoding locali
 
 ---
 
-#### `frame_extract` — pull the last frame of a video as an image  → `image`
+#### `frame_extract` - pull the last frame of a video as an image  → `image`
 - **inputs:** `["Video"]` (wire a video-producing node here).  **outputs:** `["Image"]`.
 - **values:** `{}` (no settings).
 
 ---
 
-#### `render` — merge two videos into one (local ffmpeg)  → `video`
+#### `render` - merge two videos into one (local ffmpeg)  → `video`
 - **inputs:** `["Video A", "Video B"]` (index 0 = first clip, index 1 = second clip; wire a video-producing node into each).  **outputs:** `["Video"]`.
 - Runs ffmpeg **locally** (no account). Video B is auto-normalized to A's size/fps. Optional trim of each clip's head/tail, plus a transition between them.
 
@@ -145,12 +145,12 @@ no data value — omit the key to keep its default rather than hardcoding locali
 
 ---
 
-#### `generate` — Flow image generator (Google)  → `image`
-- **inputs:** `["Prompt", "Ref 1"]` — index 0 prompt; 1+ optional image refs (auto-grow).  **outputs:** `["Image"]`.
+#### `generate` - Flow image generator (Google)  → `image`
+- **inputs:** `["Prompt", "Ref 1"]` - index 0 prompt; 1+ optional image refs (auto-grow).  **outputs:** `["Image"]`.
 
 | key | values | notes |
 |-----|--------|-------|
-| `model` | `"GEM_PIX_2"` (Nano Banana Pro) \| `"NARWHAL"` (Nano Banana 2) \| `"HARBOR_SEAL"` (Nano Banana 2 Lite) | **server default** — all three support upscale |
+| `model` | `"GEM_PIX_2"` (Nano Banana Pro) \| `"NARWHAL"` (Nano Banana 2) \| `"HARBOR_SEAL"` (Nano Banana 2 Lite) | **server default** - all three support upscale |
 | `ratio` | `"IMAGE_ASPECT_RATIO_LANDSCAPE"` (16:9) \| `"IMAGE_ASPECT_RATIO_LANDSCAPE_FOUR_THREE"` (4:3) \| `"IMAGE_ASPECT_RATIO_PORTRAIT_THREE_FOUR"` (3:4) \| `"IMAGE_ASPECT_RATIO_PORTRAIT"` (9:16) \| `"IMAGE_ASPECT_RATIO_SQUARE"` (1:1) | **server default**; store the API constant, not the UI key |
 | `res_group` | `"1K"` \| `"2K"` \| `"4K"` | **stable** (button text); 2K/4K need an upscale-capable model (all current models qualify) |
 | `seed_mode` | index/text: Random \| Fixed | omit ⇒ Random |
@@ -158,7 +158,7 @@ no data value — omit the key to keep its default rather than hardcoding locali
 
 ---
 
-#### `video_generate` — Veo / Omni Flash video generator (Google)  → `video`
+#### `video_generate` - Veo / Omni Flash video generator (Google)  → `video`
 - **inputs (by `mode`):**
   - `image` → `["Prompt", "Start Image", "End Image (optional)"]` (fixed 3 sockets)
   - `components` → `["Prompt", "Ref 1", ...]` (auto-grow refs)
@@ -180,7 +180,7 @@ no data value — omit the key to keep its default rather than hardcoding locali
 
 ---
 
-#### `grok` — Grok image/video generator  → `any` (image in t2i/i2i, video in t2v/i2v)
+#### `grok` - Grok image/video generator  → `any` (image in t2i/i2i, video in t2v/i2v)
 - **inputs (by `mode`):** `t2i`/`t2v` → `["Prompt"]`; `i2i`/`i2v` → `["Prompt", "Ref 1"]`.
 - **outputs:** `["Output"]`.
 
@@ -193,7 +193,7 @@ no data value — omit the key to keep its default rather than hardcoding locali
 
 ---
 
-#### `meta` — Meta AI (vibes.ai) image/video generator  → `any` (image in t2i/i2i, video in t2v/i2v)
+#### `meta` - Meta AI (vibes.ai) image/video generator  → `any` (image in t2i/i2i, video in t2v/i2v)
 - **inputs (by `mode`):**
   - `t2i` / `t2v` → `["Prompt"]`
   - `i2i` → `["Prompt", "Character", "Scene", "Style"]` (named component sockets)
@@ -209,8 +209,8 @@ no data value — omit the key to keep its default rather than hardcoding locali
 
 ---
 
-#### `openai` — OpenAI GPT Image 2  → `image`
-- **inputs:** `["Prompt", "Ref 1"]` — index 0 prompt; 1+ optional image refs, **up to 5** (auto-grow).  **outputs:** `["Image"]`.
+#### `openai` - OpenAI GPT Image 2  → `image`
+- **inputs:** `["Prompt", "Ref 1"]` - index 0 prompt; 1+ optional image refs, **up to 5** (auto-grow).  **outputs:** `["Image"]`.
 
 | key | values | notes |
 |-----|--------|-------|
@@ -222,7 +222,7 @@ no data value — omit the key to keep its default rather than hardcoding locali
 
 ---
 
-## 4. Connection rules — what connects to what
+## 4. Connection rules - what connects to what
 
 Wiring is governed by **socket data types**. An edge is valid only when the source's output
 type matches the target input socket's type. There are four types: `string`, `image`,
@@ -250,10 +250,10 @@ Socket **index** is the value you put in an edge's `end_socket`.
 
 | Node | idx | Socket | Accepts (type) | Wire a… |
 |------|:---:|--------|----------------|---------|
-| `prompt` | — | (no inputs) | — | — |
-| `batch_prompt` | — | (no inputs) | — | — |
-| `reference` | — | (no inputs) | — | — |
-| `batch_loader` | — | (no inputs) | — | — |
+| `prompt` | - | (no inputs) | - | - |
+| `batch_prompt` | - | (no inputs) | - | - |
+| `reference` | - | (no inputs) | - | - |
+| `batch_loader` | - | (no inputs) | - | - |
 | `generate` | 0 | Prompt | `string` | `prompt` / `batch_prompt` |
 | `generate` | 1+ | Ref image | `image` | `reference` / `batch_loader` / `frame_extract` / image generator |
 | `openai` | 0 | Prompt | `string` | `prompt` / `batch_prompt` |
@@ -282,9 +282,9 @@ Socket **index** is the value you put in an edge's `end_socket`.
   never feeds a Prompt socket or a Video socket.
 - **`video`** (video_generate / grok-video / meta-video / render) → the `Video` socket of
   `frame_extract`, or the `Video A` / `Video B` sockets of `render`.
-- **`any`** output (`grok` / `meta`): choose the target by the node's **mode** — in an image
+- **`any`** output (`grok` / `meta`): choose the target by the node's **mode** - in an image
   mode wire it like an `image`; in a video mode wire it like a `video`. (The type check
-  permits `any`↔anything, so the app won't stop a wrong wiring at edit time — it just fails
+  permits `any`↔anything, so the app won't stop a wrong wiring at edit time - it just fails
   at run. Follow the mode.)
 
 ### 4.4 Edge object
@@ -293,13 +293,13 @@ Socket **index** is the value you put in an edge's `end_socket`.
 { "start_node": 0, "start_socket": 0, "end_node": 1, "end_socket": 0 }
 ```
 
-- `start_node` / `end_node` — **0-based INDEX into the `nodes` array** (position, NOT `id`).
-- `start_socket` — index into the source node's **output** sockets (almost always `0`).
-- `end_socket` — index into the target node's **input** sockets (see §4.2).
+- `start_node` / `end_node` - **0-based INDEX into the `nodes` array** (position, NOT `id`).
+- `start_socket` - index into the source node's **output** sockets (almost always `0`).
+- `end_socket` - index into the target node's **input** sockets (see §4.2).
 
 **A wiring is correct only when all three hold:** (1) the source output type is compatible
 with the target socket type (§4.3), (2) `end_socket` exists for that node's current `mode`
-(the `inputs` array is long enough — §5 rule 2), and (3) the Prompt socket (index 0) has at
+(the `inputs` array is long enough - §5 rule 2), and (3) the Prompt socket (index 0) has at
 most one incoming edge.
 
 ---
@@ -356,7 +356,7 @@ Prompt → **GPT Image 2** (16:9, high) and the same prompt → **Grok** text-to
     {
       "id": 3,
       "type": "grok",
-      "title": "Grok — Text to Video",
+      "title": "Grok - Text to Video",
       "x": 80, "y": 180, "w": 400, "h": 400,
       "inputs": ["Prompt"],
       "outputs": ["Output"],
@@ -416,7 +416,7 @@ A `reference` image wired into the **Character** socket (input index 1) of a `me
 }
 ```
 
-Here node index `1` (the reference) connects to `end_socket: 1` — the **Character** input of
+Here node index `1` (the reference) connects to `end_socket: 1` - the **Character** input of
 the `meta` node. Use `end_socket` 2 for Scene, 3 for Style.
 
 ### 6.2 Batch + video-to-frame chain (all-stable nodes)
@@ -431,7 +431,7 @@ reference. Every value here is **stable**, so the file loads and runs as-is.
     { "id": 1, "type": "batch_prompt", "title": "Prompts", "x": -400, "y": 0, "w": 400, "h": 300,
       "inputs": [], "outputs": ["Prompt"],
       "values": { "prompt_list": "a paper boat on a puddle\na paper plane over a desk" } },
-    { "id": 2, "type": "meta", "title": "Meta — Text to Video", "x": 60, "y": -160, "w": 400, "h": 400,
+    { "id": 2, "type": "meta", "title": "Meta - Text to Video", "x": 60, "y": -160, "w": 400, "h": 400,
       "inputs": ["Prompt"], "outputs": ["Output"],
       "values": { "mode": "t2v", "ratio": "16:9", "resolution": "720p", "count": 1 } },
     { "id": 3, "type": "frame_extract", "title": "Last Frame", "x": 520, "y": -160, "w": 400, "h": 100,

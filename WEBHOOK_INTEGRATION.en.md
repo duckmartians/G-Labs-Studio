@@ -1,14 +1,14 @@
-# G-Labs Automation — Webhook API Integration Guide
+# G-Labs Automation - Webhook API Integration Guide
 
 > Audience: developers, technical integrators, and AI agents.
-> Goal: everything needed to integrate the local Webhook REST API correctly —
+> Goal: everything needed to integrate the local Webhook REST API correctly -
 > endpoints, auth, request/response schemas, models, parameters, error handling,
 > and the async (submit → poll → download) workflow.
 
 This document describes the API exposed by the **Webhook** tab of the G-Labs
 Automation desktop app (v5.0.8+). It lets external tools (n8n, Make.com, custom
 scripts, AI agents) drive image (Flow, Google Pics) / video (Veo, Omni Flash, Google Vids) / Grok /
-Meta AI / OpenAI generation — and local image upscaling — over a simple REST API.
+Meta AI / OpenAI generation - and local image upscaling - over a simple REST API.
 
 ---
 
@@ -18,7 +18,7 @@ Meta AI / OpenAI generation — and local image upscaling — over a simple REST
 - **Bind address (default loopback).** The API runs on `http://<host>:<port>`. By
   default `host` is `127.0.0.1` (this machine only). You can change it in the
   Webhook tab: set `0.0.0.0` (all interfaces) or a specific **LAN IP** so other
-  machines on your network can reach it. Do **not** use `127.0.0.0` — that is the
+  machines on your network can reach it. Do **not** use `127.0.0.0` - that is the
   loopback *network* address and nothing can connect to it. For access over the
   internet you still need your own tunnel/reverse proxy. For LAN access, also allow
   the port through the OS firewall.
@@ -35,7 +35,7 @@ Meta AI / OpenAI generation — and local image upscaling — over a simple REST
   parsed concurrently**; how many then *generate* at once depends on the endpoint:
   Image/Video/Meta/OpenAI scale with your account count (roughly 5 per account),
   Grok is capped at **10**, Google Vids and Google Pics take the server's per-account job
-  count on each Google account, and Upscale runs **one at a time** (a single GPU — see §5.6).
+  count on each Google account, and Upscale runs **one at a time** (a single GPU - see §5.6).
 - **Generation runs on the app's logged-in accounts.** Image/Video use the
   Google (Flow/Veo) accounts configured in the app; Grok uses the connected
   Super Grok session; **Meta AI** uses a logged-in Meta (vibes.ai) account;
@@ -80,7 +80,7 @@ handled, so browser-based clients work.
 | `GET`  | `/api/result/{task_id}` | ✅ | Get result (only once `completed`) |
 | `GET`  | `/api/files/{filename}` | ❌ | Download a generated output file |
 | `GET`  | `/api/tasks` | ✅ | List the 50 most recent tasks |
-| `POST` | `/api/stop` | ✅ | **Stop** every pending / running task — or one: `/api/stop/{task_id}` or body `{"task_id": "..."}`. Needs the API key only (no MAX check), so a client can always cancel. |
+| `POST` | `/api/stop` | ✅ | **Stop** every pending / running task - or one: `/api/stop/{task_id}` or body `{"task_id": "..."}`. Needs the API key only (no MAX check), so a client can always cancel. |
 
 Trailing slashes are tolerated (e.g. `/api/health/`).
 
@@ -88,13 +88,13 @@ Trailing slashes are tolerated (e.g. `/api/health/`).
 cancel) should call `POST /api/stop` instead of letting the queue run on: every targeted task
 is failed at once with `error_code 499` / `STOPPED_BY_CLIENT`, queued jobs never start, running
 providers are told to stop, and a later result of a request that was already in flight at the
-provider is discarded (that one request is still charged — an HTTP call can't be aborted).
+provider is discarded (that one request is still charged - an HTTP call can't be aborted).
 
 ---
 
 ## 4. The async workflow (step by step)
 
-### Step 1 — Submit
+### Step 1 - Submit
 
 `POST` to one of the generate endpoints (image / video / grok / meta / openai) with
 a JSON body (see schemas in §5). Response is **HTTP 202**:
@@ -110,7 +110,7 @@ a JSON body (see schemas in §5). Response is **HTTP 202**:
 
 > `task_id` is an 8-char hex string. Keep it to poll and fetch results.
 
-### Step 2 — Poll status
+### Step 2 - Poll status
 
 `GET /api/status/{task_id}` (with the `X-API-Key` header). Possible `status`
 values: `pending` → `running` → `completed` | `failed`.
@@ -147,12 +147,12 @@ values: `pending` → `running` → `completed` | `failed`.
 }
 ```
 
-> Suggested poll interval: every 3–5 seconds. Images usually finish in seconds to
+> Suggested poll interval: every 3-5 seconds. Images usually finish in seconds to
 > a couple of minutes; videos can take several minutes (the upstream service may
 > queue them). A server-side watchdog fails tasks stuck with no result after a
 > long timeout.
 
-### Step 3 — Download results
+### Step 3 - Download results
 
 `results` is an array of URLs like `http://<host>:<port>/api/files/<urlencoded-name>`.
 The `<host>` matches the server's bind address, so a client that reached the server
@@ -165,14 +165,14 @@ raw bytes. `Content-Type` is set by file extension (`image/png`, `image/jpeg`,
 
 - **Image, no `upscale`** → 1 file (the base image).
 - **Google Pics** (`nano_pics`) → up to `keep` files (default 1; `keep: 0` = every image of
-  the run, 3–9).
+  the run, 3-9).
 - **Image with `upscale`** → one file **per requested upscale resolution**, in
-  ascending order — e.g. `["2K"]` → `[2K]`, `["2K","4K"]` → `[2K, 4K]`. The base
+  ascending order - e.g. `["2K"]` → `[2K]`, `["2K","4K"]` → `[2K, 4K]`. The base
   (non-upscaled) image is **not** included when `upscale` is requested.
-- **Video** → one file **per produced resolution** — e.g. `["720p","1080p"]` →
+- **Video** → one file **per produced resolution** - e.g. `["720p","1080p"]` →
   up to 2 files.
 - **Grok** → always exactly 1 file.
-- **Meta AI** → `count` files (1–4): `count` images (one batch) or `count` video clips.
+- **Meta AI** → `count` files (1-4): `count` images (one batch) or `count` video clips.
 - **OpenAI (GPT Image 2)** → always exactly 1 file.
 - **Google Vids** (`omni_vids`) → exactly 1 file at the requested resolution; an
   `omni_vids` `upscale` task → 1 file (the 1080p clip).
@@ -190,15 +190,15 @@ exception is `/api/upscale/generate` (§5.6), which takes an image and no prompt
 
 **Body size cap: 50 MB** on every endpoint. Base64 inflates binary data by ~4/3, so
 roughly 37 MB of raw image data fits in one request. Over the cap the `POST` itself
-returns `413` — the task is never created. Sending many large reference images in one
+returns `413` - the task is never created. Sending many large reference images in one
 request is the usual way to hit it.
 
-### 5.1 Image — `POST /api/image/generate`
+### 5.1 Image - `POST /api/image/generate`
 
 | Field | Type | Required | Default | Notes |
 |-------|------|:--------:|---------|-------|
-| `prompt` | string | ✅ | — | Image description. |
-| `model` | string | ❌ | `nano_banana_2` | One of `nano_banana_pro`, `nano_banana_2`, `nano_banana_2_lite`, `nano_pics`. Unknown → `nano_banana_2`. **`nano_pics`** = Google Pics, with its own fields (`mode`, `keep`, `remove_logo`) and strict validation — see the Google Pics note below. |
+| `prompt` | string | ✅ | - | Image description. |
+| `model` | string | ❌ | `nano_banana_2` | One of `nano_banana_pro`, `nano_banana_2`, `nano_banana_2_lite`, `nano_pics`. Unknown → `nano_banana_2`. **`nano_pics`** = Google Pics, with its own fields (`mode`, `keep`, `remove_logo`) and strict validation - see the Google Pics note below. |
 | `aspect_ratio` | string | ❌ | `1:1` | One of `1:1`, `3:4`, `4:3`, `9:16`, `16:9`. Unknown → `1:1`. |
 | `reference_images` | array | ❌ | `[]` | Up to **10** base64 images (see §6). Each image may include a `name` to bind it via `@name` in the prompt (§6.1). |
 | `upscale` | array | ❌ | `[]` | Any of `"2K"`, `"4K"`. **4K requires an ULTRA account** and a model that supports upscaling. Invalid values are dropped. |
@@ -214,23 +214,23 @@ request is the usual way to hit it.
 ```
 
 > If `upscale` is requested and the requested resolution cannot be produced (e.g.
-> 4K quota exhausted), the task is reported **failed** with the reason — it does
+> 4K quota exhausted), the task is reported **failed** with the reason - it does
 > **not** silently return the lower-resolution base image.
 
-> **Google Pics (`model: "nano_pics"`)** — Google's image generator (docs.google.com/images), run
+> **Google Pics (`model: "nano_pics"`)** - Google's image generator (docs.google.com/images), run
 > on the **Google accounts** of Settings → Google Accounts (the same accounts as Google Vids;
 > PLUS/MAX). Same endpoint, its own fields and rules:
 > - `mode` (case-insensitive, optional): `text_to_image` or `image_to_image` (aliases `t2i` /
 >   `i2i`). Omitted → `image_to_image` when `reference_images` are sent, else `text_to_image`.
 >   Anything else → `400 INVALID_MODE`; `image_to_image` without an image →
 >   `400 MISSING_REFERENCE`; `text_to_image` ignores any image sent.
-> - `reference_images`: **1–14** images (base64 or `path`, §6), positional — Google Pics has **no
+> - `reference_images`: **1-14** images (base64 or `path`, §6), positional - Google Pics has **no
 >   `@tag`** binding, `name` / `category` are ignored. More than the server limit (14) →
 >   `400 TOO_MANY_REFERENCES` (never silently dropped).
-> - `aspect_ratio`: one of the server list — today `16:9, 9:16, 1:1, 4:3, 3:4, 3:2, 2:3, 5:4, 4:5,
+> - `aspect_ratio`: one of the server list - today `16:9, 9:16, 1:1, 4:3, 3:4, 3:2, 2:3, 5:4, 4:5,
 >   21:9` (the Webhook tab's model table shows the live list). Default `1:1`. Anything else →
 >   `400 INVALID_ASPECT_RATIO` (no silent fallback, unlike the Flow models).
-> - `keep`: how many images of the run to return. Google returns **3–9 images per run**; `keep`
+> - `keep`: how many images of the run to return. Google returns **3-9 images per run**; `keep`
 >   is an integer, one of `1`, `2`, `3`, `4` or `0` (= every image of the run). Omitted or `null`
 >   → `1`. Anything else (including `true`, `2.7` or the string `"2"`) → `400 INVALID_KEEP`.
 > - `remove_logo`: `true` removes the Gemini ✦ logo from every image (clean pixel restore, no
@@ -242,25 +242,25 @@ request is the usual way to hit it.
 >   of images. The quota is read from Google (left / total), separate from the Vids seconds.
 > - **Accounts:** an account is used when it is **ON** and its **Image** box is ticked in Settings
 >   → Google accounts, and it has at least 1 Pics run left (an account whose quota was never read
->   is tried — the job reads it first). Each account takes at most the server's per-account
+>   is tried - the job reads it first). Each account takes at most the server's per-account
 >   number of jobs at once. Rotation is round-robin with failover to the next account on an auth /
 >   quota / rate-limit / upstream failure or when the account cannot use Google Pics; a dead
 >   cookie is renewed from the account's profile first. A cookie that cannot be renewed switches
 >   the account **OFF** (for Vids too). An account whose cookie works but that has no Google Pics
->   (refused even right after a renew) is only **skipped** — never switched off. Running out of
+>   (refused even right after a renew) is only **skipped** - never switched off. Running out of
 >   Pics runs never switches the account off either: with *Auto-disable accounts that hit their
 >   limit* on, only its **Image** box is unticked; once the account's Pics reset time has passed
->   it is tried again and the box is ticked back — Google Vids keeps using it throughout. When
+>   it is tried again and the box is ticked back - Google Vids keeps using it throughout. When
 >   every usable account is busy the task goes back to `pending` and **waits** for a free slot
 >   (up to 15 min), also after a failover.
 > - **Result:** `results` = the kept images (PNG), `keep` files at most (fewer if a download
 >   failed). A completed task also carries `meta`: `mode` (`t2i` / `i2i`), `aspect_ratio`,
 >   `images` (files returned), `logo_removed` (how many of them the Gemini logo was actually
->   removed from — `0` with `remove_logo: false`), `account` (the Google account email) and
+>   removed from - `0` with `remove_logo: false`), `account` (the Google account email) and
 >   `partial: true` when the run stopped / failed after some images were already saved.
 > - A refused prompt → `400 CONTENT_POLICY` (no quota spent, no retry on another account).
 
-Google Pics example — image to image, 16:9, keep 2 images:
+Google Pics example - image to image, 16:9, keep 2 images:
 
 ```json
 {
@@ -272,19 +272,19 @@ Google Pics example — image to image, 16:9, keep 2 images:
 }
 ```
 
-### 5.2 Video — `POST /api/video/generate`
+### 5.2 Video - `POST /api/video/generate`
 
 | Field | Type | Required | Default | Notes |
 |-------|------|:--------:|---------|-------|
-| `prompt` | string | ✅ | — | Motion / scene description. Optional only for an `omni_vids` `upscale` request. |
-| `model` | string | ✅ | — | One of `veo_31_fast`, `veo_31_lite`, `veo_31_quality`, `veo_31_lite_relaxed`, `omni_flash`, `omni_vids`. Missing → `400 MISSING_MODEL`; an unknown Veo name → `veo_31_fast`. **`omni_vids`** = Google Vids (see the Google Vids note below). `veo_31_lite_relaxed` requires **ULTRA** accounts. **`omni_flash`**: see the `mode` note. |
+| `prompt` | string | ✅ | - | Motion / scene description. Optional only for an `omni_vids` `upscale` request. |
+| `model` | string | ✅ | - | One of `veo_31_fast`, `veo_31_lite`, `veo_31_quality`, `veo_31_lite_relaxed`, `omni_flash`, `omni_vids`. Missing → `400 MISSING_MODEL`; an unknown Veo name → `veo_31_fast`. **`omni_vids`** = Google Vids (see the Google Vids note below). `veo_31_lite_relaxed` requires **ULTRA** accounts. **`omni_flash`**: see the `mode` note. |
 | `aspect_ratio` | string | ❌ | `16:9` | `16:9` or `9:16`. |
-| `mode` | string | ❌ | `text_to_video` | `text_to_video` (0 refs) · `start_image` (1 ref) · `start_end_image` (2 refs: start + end frame) · `components` (Veo up to 3 refs, Omni Flash up to 7; supports `voice` and `reference_video`). **Every mode works on both Veo and Omni Flash** (Omni Flash `start_end_image` needs the server config's `i2v_end` mapping — without it the request is rejected with a clear reason). |
-| `reference_images` | array | ❌ | `[]` | Up to **3** base64 images (Veo); **Omni Flash `components` up to 7** (up to **5** when a `reference_video` is present). **Required when `mode != text_to_video`** — except `components`, which may use `reference_video` instead. Each image may include a `name` to bind it via `@name` in the prompt — Veo (§6.1). |
-| `reference_video` | string/object | ❌ | — | **Omni Flash + `components` mode only** — the **edit-video** flow: the clip (≤ **10s**) is restyled per the prompt, optionally with up to 5 ingredient images. Accepts a base64/data-URI string (`data:video/mp4;base64,...`) or `{"path": "...", "name": "..."}` (file on the app machine). Always renders **720p** (cannot be combined with `"360p"`). Clips over 10s are rejected — trim before sending. |
-| `resolution` | array | ❌ | `["720p"]` | Any of `"360p"`, `"720p"`, `"1080p"`, `"4K"`. **`360p` is Omni Flash only** (server-config gated) — the base video generates at 360p, cheaper on credits; **a 360p source upscales to 720p only**, so valid combos are `["360p"]` or `["360p", "720p"]` (adding `1080p`/`4K` is rejected). `1080p`/`4K` are produced by upscaling a 720p base; **only `4K` requires an ULTRA account**. Invalid values → `720p`. One output file per produced resolution. |
+| `mode` | string | ❌ | `text_to_video` | `text_to_video` (0 refs) · `start_image` (1 ref) · `start_end_image` (2 refs: start + end frame) · `components` (Veo up to 3 refs, Omni Flash up to 7; supports `voice` and `reference_video`). **Every mode works on both Veo and Omni Flash** (Omni Flash `start_end_image` needs the server config's `i2v_end` mapping - without it the request is rejected with a clear reason). |
+| `reference_images` | array | ❌ | `[]` | Up to **3** base64 images (Veo); **Omni Flash `components` up to 7** (up to **5** when a `reference_video` is present). **Required when `mode != text_to_video`** - except `components`, which may use `reference_video` instead. Each image may include a `name` to bind it via `@name` in the prompt - Veo (§6.1). |
+| `reference_video` | string/object | ❌ | - | **Omni Flash + `components` mode only** - the **edit-video** flow: the clip (≤ **10s**) is restyled per the prompt, optionally with up to 5 ingredient images. Accepts a base64/data-URI string (`data:video/mp4;base64,...`) or `{"path": "...", "name": "..."}` (file on the app machine). Always renders **720p** (cannot be combined with `"360p"`). Clips over 10s are rejected - trim before sending. |
+| `resolution` | array | ❌ | `["720p"]` | Any of `"360p"`, `"720p"`, `"1080p"`, `"4K"`. **`360p` is Omni Flash only** (server-config gated) - the base video generates at 360p, cheaper on credits; **a 360p source upscales to 720p only**, so valid combos are `["360p"]` or `["360p", "720p"]` (adding `1080p`/`4K` is rejected). `1080p`/`4K` are produced by upscaling a 720p base; **only `4K` requires an ULTRA account**. Invalid values → `720p`. One output file per produced resolution. |
 | `voice` | string | ❌ | `""` | Lowercase voice name. Only used in `components` mode. |
-| `video_length` | int | ❌ | (model default) | Clip length in seconds. Veo: `4`/`6`/`8`; Omni Flash: `4`/`6`/`8`/`10`. Unsupported values → default (8s). **Veo `4`/`6` require an ULTRA account** (Omni Flash doesn't). The edit flow (`reference_video`) ignores this — length follows the source clip. |
+| `video_length` | int | ❌ | (model default) | Clip length in seconds. Veo: `4`/`6`/`8`; Omni Flash: `4`/`6`/`8`/`10`. Unsupported values → default (8s). **Veo `4`/`6` require an ULTRA account** (Omni Flash doesn't). The edit flow (`reference_video`) ignores this - length follows the source clip. |
 
 ```json
 {
@@ -309,13 +309,13 @@ Google Pics example — image to image, 16:9, keep 2 images:
 > `400` with a named reason (see the Google Vids note).
 >
 > **Both Veo and Omni Flash are available.** Omni Flash (`model: "omni_flash"`)
-> supports all of `text_to_video`, `start_image`, `start_end_image`, `components` —
+> supports all of `text_to_video`, `start_image`, `start_end_image`, `components` -
 > and exclusively adds: the **10s** `video_length` option, **360p** output, and the
 > **edit-video** flow (`reference_video` in `components` mode). It needs no ULTRA account.
 >
 > `resolution` may list multiple values; each is produced if the account tier allows it.
 
-Omni Flash example — start + end frame, cheap 360p draft:
+Omni Flash example - start + end frame, cheap 360p draft:
 
 ```json
 {
@@ -327,7 +327,7 @@ Omni Flash example — start + end frame, cheap 360p draft:
 }
 ```
 
-Omni Flash example — edit video (restyle a ≤10s clip per the prompt):
+Omni Flash example - edit video (restyle a ≤10s clip per the prompt):
 
 ```json
 {
@@ -342,20 +342,20 @@ Omni Flash example — edit video (restyle a ≤10s clip per the prompt):
 > **Google Vids (`model: "omni_vids"`)** runs on the Google accounts added in Settings → Google Accounts
 > (PLUS/MAX). Same request shape as Veo, with these rules:
 > - `mode` (case-insensitive): `text_to_video` (no refs, the default), `start_image` (1 ref =
->   the first frame; extra refs are ignored), `components` (1–3 refs used as ingredients) or
->   `upscale` (see below). Aliases `t2v` / `i2v` / `r2v` are accepted. Anything else — including
+>   the first frame; extra refs are ignored), `components` (1-3 refs used as ingredients) or
+>   `upscale` (see below). Aliases `t2v` / `i2v` / `r2v` are accepted. Anything else - including
 >   `start_end_image` → `400 INVALID_MODE`.
 > - `resolution`: **one** of the server list (today `720p` / `1080p`), as a string or a one-item
->   list — generated directly, no upscale step. Omitted → the first value of the server list.
+>   list - generated directly, no upscale step. Omitted → the first value of the server list.
 >   Two values, `360p`, `4K` or any other value → `400 INVALID_RESOLUTION`.
-> - `video_length`: an integer **3–10** s (default 5); 1 s of video costs 1 s of the account's
+> - `video_length`: an integer **3-10** s (default 5); 1 s of video costs 1 s of the account's
 >   quota. Out of range → `400 INVALID_VIDEO_LENGTH`.
 > - `orientation` (`landscape` / `portrait`) or `aspect_ratio` (`16:9` / `9:16`); when both are
 >   sent, `orientation` wins. Default `16:9`. Anything else → `400 INVALID_ASPECT_RATIO`.
 > - `reference_video` → `400 INVALID_FIELD`. `voice` and `category` are ignored.
 > - In `components` mode give each image a `"name"` and write `@name` in the prompt to place that
 >   image at that spot (`"@luna meets @grandpa"`); images without an `@` are still sent, in front.
->   **Characters of the library** (Settings → Characters) can be named the same way — `@Anna`
+>   **Characters of the library** (Settings → Characters) can be named the same way - `@Anna`
 >   adds the character's picture as an ingredient (picture only; the voice is not used by
 >   Google Vids). Rules: the Characters feature must be on; the tag must be the character's
 >   **full name** (case-insensitive); a character is added only while fewer than 3 images are
@@ -367,7 +367,7 @@ Omni Flash example — edit video (restyle a ≤10s clip per the prompt):
 >   round-robin with failover to the next account on an auth / quota / rate-limit / upstream
 >   failure; a dead cookie is renewed from the account's profile first. An account whose cookie
 >   cannot be renewed is **switched OFF** in the app; one whose seconds ran out only gets its
->   **Video** box unticked (with *Auto-disable accounts that hit their limit* on) — Google Pics
+>   **Video** box unticked (with *Auto-disable accounts that hit their limit* on) - Google Pics
 >   keeps using it (same as the Vids page). When every usable account is busy the task stays `pending` and **waits** for a
 >   free slot (up to 15 min) instead of failing.
 > - **Result:** a completed task also carries `meta` in `GET /api/status/{task_id}` and
@@ -375,7 +375,7 @@ Omni Flash example — edit video (restyle a ≤10s clip per the prompt):
 >   `mode` (`t2v` / `i2v` / `r2v` / `upscale`), `resolution` (`720p` / `1080p`), `orientation`
 >   (`landscape` / `portrait`), `duration` (seconds), `account` (the Google Vids account email
 >   that made the clip), `clip_temp_id` (the id an upscale request needs) and
->   `upscale_available` (`true` when the clip can still be upscaled — it is not 1080p yet) and
+>   `upscale_available` (`true` when the clip can still be upscaled - it is not 1080p yet) and
 >   `logo_removed` (`true` when the Gemini ✦ logo was removed from the returned file).
 > - `remove_logo` (optional, on generation and `upscale` requests): `true` removes the Gemini ✦
 >   logo from the video (720p / 1080p; 1080p is an upscaled version and may keep a very faint
@@ -385,14 +385,14 @@ Omni Flash example — edit video (restyle a ≤10s clip per the prompt):
 >   removal, is returned as is (`logo_removed: false`).
 > - **Upscale:** `{"model": "omni_vids", "mode": "upscale", "clip_temp_id": "<meta.clip_temp_id>"}`
 >   (no `prompt` needed) makes the 1080p version of a clip made by a **completed `omni_vids`
->   webhook task of the same app session** — clips made on the Vids page are not reachable. It
+>   webhook task of the same app session** - clips made on the Vids page are not reachable. It
 >   runs only on the account that made the clip, keeps its length and orientation, and never
 >   fails over to another account (if that account is busy the task waits for it). The result
 >   is a new task with its own file. Unknown id → `400 UNKNOWN_CLIP`, already 1080p →
 >   `400 ALREADY_UPSCALED`, that account off or failed → `409 CLIP_ACCOUNT_UNAVAILABLE`, clip
 >   expired on Google's side → `400 CLIP_GONE`.
 
-Google Vids example — components with @names:
+Google Vids example - components with @names:
 
 ```json
 {
@@ -409,7 +409,7 @@ Google Vids example — components with @names:
 }
 ```
 
-Google Vids example — upscale the clip of a completed task:
+Google Vids example - upscale the clip of a completed task:
 
 ```json
 {
@@ -419,11 +419,11 @@ Google Vids example — upscale the clip of a completed task:
 }
 ```
 
-### 5.3 Grok — `POST /api/grok/generate`
+### 5.3 Grok - `POST /api/grok/generate`
 
 | Field | Type | Required | Default | Notes |
 |-------|------|:--------:|---------|-------|
-| `prompt` | string | ✅ | — | Prompt. |
+| `prompt` | string | ✅ | - | Prompt. |
 | `mode` | string | ❌ | `t2v` | `t2i` (text→image) · `i2i` (image→image) · `t2v` (text→video) · `i2v` (image→video). Invalid mode → task fails. |
 | `aspect_ratio` | string | ❌ | `9:16` | Image (`t2i`/`i2i`): `9:16, 16:9, 1:1, 2:3, 3:2, 4:3, 21:9, 5:2`. Video (`t2v`/`i2v`): `9:16, 16:9, 1:1, 2:3, 3:2`. Unknown → `9:16`. |
 | `reference_images` | array | ❌ | `[]` | Up to **5** base64 images. **Required for `i2i` and `i2v`** (≥1, else the task fails). Ignored for `t2i` / `t2v`. |
@@ -446,24 +446,24 @@ Google Vids example — upscale the clip of a completed task:
 > Grok always generates **one** image/video per request and returns the first
 > result. There is no `image_generation_count` parameter.
 
-### 5.4 Meta AI — `POST /api/meta/generate`
+### 5.4 Meta AI - `POST /api/meta/generate`
 
 Generates on **Meta AI (vibes.ai)** with a logged-in Meta account. Unlike the
 other endpoints, reference images are passed as **named fields** (not a
-`reference_images` list) — see §6.2.
+`reference_images` list) - see §6.2.
 
 | Field | Type | Required | Default | Notes |
 |-------|------|:--------:|---------|-------|
-| `prompt` | string | ✅ | — | Prompt. |
+| `prompt` | string | ✅ | - | Prompt. |
 | `mode` | string | ❌ | `t2i` | `t2i` (text→image) · `t2v` (text→video) · `i2i` (image→image, components) · `i2v` (image→video). Invalid mode → task fails. |
 | `aspect_ratio` | string | ❌ | `9:16` | One of `9:16`, `16:9`, `1:1`. Unknown → `9:16`. |
 | `resolution` | string | ❌ | `720p` | `480p` or `720p`. **Video modes only** (`t2v`/`i2v`). Images are site-derived: `1:1` → 1280p, else 720p. |
-| `count` | int | ❌ | `1` | Outputs per prompt, **1–4** (clamped). Images: `count` in one batch; video: `count` clips. |
-| `character_image` | base64 | i2i¹ | — | Subject/character component (§6.2). Also accepts `subject_image`. |
-| `scene_image` | base64 | i2i¹ | — | Scene component. |
-| `style_image` | base64 | i2i¹ | — | Style component. |
-| `start_image` | base64 | i2v | — | **Required for `i2v`** — the start frame. |
-| `end_image` | base64 | ❌ | — | Optional end frame for `i2v` (start→end interpolation). |
+| `count` | int | ❌ | `1` | Outputs per prompt, **1-4** (clamped). Images: `count` in one batch; video: `count` clips. |
+| `character_image` | base64 | i2i¹ | - | Subject/character component (§6.2). Also accepts `subject_image`. |
+| `scene_image` | base64 | i2i¹ | - | Scene component. |
+| `style_image` | base64 | i2i¹ | - | Style component. |
+| `start_image` | base64 | i2v | - | **Required for `i2v`** - the start frame. |
+| `end_image` | base64 | ❌ | - | Optional end frame for `i2v` (start→end interpolation). |
 
 ¹ **i2i** requires **at least one** of `character_image` / `scene_image` / `style_image`.
 **i2v** requires `start_image`. Text modes (`t2i` / `t2v`) ignore any images sent.
@@ -499,7 +499,7 @@ other endpoints, reference images are passed as **named fields** (not a
 > Meta AI has **no `@tag` name-binding** (that is Flow/Veo only); components are
 > bound by the named fields above.
 
-### 5.5 OpenAI (GPT Image 2) — `POST /api/openai/generate`
+### 5.5 OpenAI (GPT Image 2) - `POST /api/openai/generate`
 
 Generates on **OpenAI GPT Image 2** using a logged-in ChatGPT/OpenAI account.
 Always produces **exactly one image** per request (like Grok/Meta return the first
@@ -507,13 +507,13 @@ result). Reference images are **positional** (no `@tag`).
 
 | Field | Type | Required | Default | Notes |
 |-------|------|:--------:|---------|-------|
-| `prompt` | string | ✅ | — | Image description. |
+| `prompt` | string | ✅ | - | Image description. |
 | `aspect_ratio` | string | ❌ | `1:1` | One of `1:1`, `3:2`, `4:3`, `16:9`, `21:9`, `2:3`, `3:4`, `4:5`, `9:16`, `custom`. Unknown → `1:1`. |
 | `quality` | string | ❌ | `high` | One of `low`, `medium`, `high`. Unknown → `high`. |
 | `prompt_mode` | string | ❌ | `auto` | `auto` (model refines the prompt) or `direct` (use the prompt verbatim). Unknown → `auto`. |
 | `reasoning` | string | ❌ | `none` | Reasoning effort: `none`, `low`, `medium`, `high`, `xhigh`, `max`. Unknown → `none`. |
 | `web_search` | bool | ❌ | `false` | Allow web-search grounding before generating. |
-| `reference_images` | array | ❌ | `[]` | Up to **5** base64 images (see §6). Passed **positionally** — GPT Image 2 does **not** support `@tag` name-binding. |
+| `reference_images` | array | ❌ | `[]` | Up to **5** base64 images (see §6). Passed **positionally** - GPT Image 2 does **not** support `@tag` name-binding. |
 
 ```json
 {
@@ -527,31 +527,31 @@ result). Reference images are **positional** (no `@tag`).
 }
 ```
 
-> **No `model` field needed** — the endpoint has a single model (GPT Image 2). A
+> **No `model` field needed** - the endpoint has a single model (GPT Image 2). A
 > `model` value, if sent, is ignored.
 > **Native resolution is capped ~1.57 MP** by the OpenAI backend (aspect ratio is
 > honored, absolute 2K/4K pixel sizes are not). There is no `upscale` option on this
 > endpoint. See §9.
 
-### 5.6 Image Upscale — `POST /api/upscale/generate`
+### 5.6 Image Upscale - `POST /api/upscale/generate`
 
-Upscales one image with the **local Real-ESRGAN engine** — the same engine behind the
+Upscales one image with the **local Real-ESRGAN engine** - the same engine behind the
 **Image Upscaler** tab. No account, no credits, no quota: it runs on your own GPU.
 
-Unlike every other endpoint, this one has **no `prompt`** — the image is the whole
+Unlike every other endpoint, this one has **no `prompt`** - the image is the whole
 request.
 
 | Field | Type | Required | Default | Notes |
 |-------|------|:--------:|---------|-------|
-| `image_path` | string | ⚠️ | — | Absolute path to the source image **on the machine running G-Labs**. Use this *or* `image`. |
-| `image` | string | ⚠️ | — | Source image as base64 (see §6). Use when the client runs on another machine. |
-| `filename` | string | ❌ | — | Only with `image`: seeds the output file name — see the naming rules below. Without it the output is called `wh_ups_<random>_upscaled_x4.png`. |
+| `image_path` | string | ⚠️ | - | Absolute path to the source image **on the machine running G-Labs**. Use this *or* `image`. |
+| `image` | string | ⚠️ | - | Source image as base64 (see §6). Use when the client runs on another machine. |
+| `filename` | string | ❌ | - | Only with `image`: seeds the output file name - see the naming rules below. Without it the output is called `wh_ups_<random>_upscaled_x4.png`. |
 | `model` | string | ❌ | Upscaler tab's model | Must be an installed model, e.g. `upscayl-standard-4x`, `remacri-4x`, `digital-art-4x`. Unknown → `400 UNKNOWN_MODEL` listing what *is* installed. |
-| `scale` | int | ❌ | `4` | Final scale, `2`–`8`. Models are natively 4x; other values are resized from the 4x result. Out of range → `4`. |
+| `scale` | int | ❌ | `4` | Final scale, `2`-`8`. Models are natively 4x; other values are resized from the 4x result. Out of range → `4`. |
 | `format` | string | ❌ | `auto` | `auto` (same as source), `png`, `jpg`, `webp`. |
 | `suffix` | string | ❌ | `_upscaled` | Appended to the output filename before `_x<scale>`. Empty string → falls back to `_upscaled`. |
 | `tile` | int | ❌ | `0` | Engine tile size; `0` = auto. Lower it if the GPU runs out of VRAM. |
-| `tta` | bool | ❌ | `false` | TTA mode — slightly better, **much** slower. |
+| `tta` | bool | ❌ | `false` | TTA mode - slightly better, **much** slower. |
 
 Exactly one of `image_path` / `image` is required; `image_path` wins if both are sent.
 
@@ -568,13 +568,13 @@ Exactly one of `image_path` / `image` is required; `image_path` wins if both are
 }
 ```
 
-**One image per request.** Send several requests for a batch — each gets its own
+**One image per request.** Send several requests for a batch - each gets its own
 `task_id`.
 
 > ⚠️ **Requests run one at a time.** The engine is a GPU process; running several at
 > once would fight over VRAM. Extra requests sit in a FIFO queue and report
 > `pending`, then `running` when their turn comes. This is the one endpoint that
-> does **not** parallelise — the others scale across *accounts*, this one is bound
+> does **not** parallelise - the others scale across *accounts*, this one is bound
 > to a single GPU.
 
 > 💡 **Prefer `image_path` when the caller is on the same machine** (n8n, a local
@@ -587,13 +587,13 @@ Exactly one of `image_path` / `image` is required; `image_path` wins if both are
 **Folder**, in this order:
 
 1. The **Output folder** set on the app's **Image Upscaler** tab, if it is not empty.
-2. Otherwise `<G-Labs output folder>/upscale_output` — next to `image_output`,
+2. Otherwise `<G-Labs output folder>/upscale_output` - next to `image_output`,
    `veo_output`, etc.
 
 Never beside the source image (which is what the Upscaler *tab* does): a webhook
 source is often a temp file, so the result would land in the OS temp folder and get
 swept away. The **Save mode / per-task subfolder** option on the Upscaler tab is also
-**not** applied — webhook results always go straight into the folder above.
+**not** applied - webhook results always go straight into the folder above.
 
 **File name:**
 
@@ -604,8 +604,8 @@ swept away. The **Save mode / per-task subfolder** option on the Upscaler tab is
 | Part | Where it comes from |
 |------|---------------------|
 | `<base>` | With `image_path`: the source file's name without extension. With `image`: the `filename` you sent, plus a short random string (the payload is written to a temp file first). Neither given → `wh_ups_<random>`. |
-| `<suffix>` | The `suffix` field — default `_upscaled`. An **empty string falls back to `_upscaled`**, same as leaving the field blank on the Upscaler tab; there is no way to produce a name with no suffix. |
-| `<scale>` | The `scale` field — default `4`. |
+| `<suffix>` | The `suffix` field - default `_upscaled`. An **empty string falls back to `_upscaled`**, same as leaving the field blank on the Upscaler tab; there is no way to produce a name with no suffix. |
+| `<scale>` | The `scale` field - default `4`. |
 | `<ext>` | The `format` field. `auto` (default) copies the source extension, falling back to `png` for anything that is not png/jpg/webp; `jpeg` is normalised to `jpg`. |
 
 Examples:
@@ -617,11 +617,11 @@ image + filename="cat.png", scale=4                → cat_a1b2c3d4_upscaled_x4.
 ```
 
 **Name collisions never overwrite.** If the target name already exists, `_2`, `_3`, …
-is appended before the extension — so upscaling the same source twice gives you
+is appended before the extension - so upscaling the same source twice gives you
 `cat_upscaled_x4.png` and `cat_upscaled_x4_2.png`, not one file silently replaced.
 
 The API only returns `/api/files/...` URLs; it does **not** expose the local path. The
-file name inside the URL is the one built above, so you can recognise it — but download
+file name inside the URL is the one built above, so you can recognise it - but download
 via the URL rather than guessing the path on disk.
 
 **Error codes specific to this endpoint:**
@@ -643,14 +643,14 @@ via the URL rather than guessing the path on disk.
 | `nano_banana_pro` | Nano Banana Pro | `1:1, 3:4, 4:3, 9:16, 16:9` |
 | `nano_banana_2` | Nano Banana 2 | `1:1, 3:4, 4:3, 9:16, 16:9` |
 | `nano_banana_2_lite` | Nano Banana 2 Lite | `1:1, 3:4, 4:3, 9:16, 16:9` |
-| `nano_pics` | Google Pics (image; `text_to_image` / `image_to_image` (1–14 refs, positional); 3–9 images per run, `keep` 1–4 or all; Gemini logo removed by default; runs on the Google accounts in Settings → Google Accounts, PLUS/MAX) | `16:9, 9:16, 1:1, 4:3, 3:4, 3:2, 2:3, 5:4, 4:5, 21:9` |
+| `nano_pics` | Google Pics (image; `text_to_image` / `image_to_image` (1-14 refs, positional); 3-9 images per run, `keep` 1-4 or all; Gemini logo removed by default; runs on the Google accounts in Settings → Google Accounts, PLUS/MAX) | `16:9, 9:16, 1:1, 4:3, 3:4, 3:2, 2:3, 5:4, 4:5, 21:9` |
 | `veo_31_fast` | Veo 3.1 Fast | `16:9, 9:16` |
 | `veo_31_lite` | Veo 3.1 Lite | `16:9, 9:16` |
 | `veo_31_quality` | Veo 3.1 Quality | `16:9, 9:16` |
 | `veo_31_lite_relaxed` | Veo 3.1 Lite Lower Priority [0 Credit] (ULTRA only) | `16:9, 9:16` |
 | `omni_flash` | Omni Flash (video; 4/6/8/10s; up to 7 refs; 360p or 720p; edit video ≤10s via `reference_video`; no ULTRA) | `16:9, 9:16` |
-| `omni_vids` | Google Vids Omni (video; 3–10 s; 720p or 1080p generated directly; `text_to_video` / `start_image` (1 ref) / `components` (1–3 refs, `@name`); runs on the Google accounts in Settings → Google Accounts, PLUS/MAX) | `16:9, 9:16` |
-| *upscale* `model` | Whatever is installed in `bin/realesrgan/models/` — the Webhook tab's model table lists your actual set. Stock build: `upscayl-standard-4x`, `upscayl-lite-4x`, `digital-art-4x`, `high-fidelity-4x`, `remacri-4x`, `ultramix-balanced-4x`, `ultrasharp-4x` | scale `2`–`8` (aspect ratio unchanged) |
+| `omni_vids` | Google Vids Omni (video; 3-10 s; 720p or 1080p generated directly; `text_to_video` / `start_image` (1 ref) / `components` (1-3 refs, `@name`); runs on the Google accounts in Settings → Google Accounts, PLUS/MAX) | `16:9, 9:16` |
+| *upscale* `model` | Whatever is installed in `bin/realesrgan/models/` - the Webhook tab's model table lists your actual set. Stock build: `upscayl-standard-4x`, `upscayl-lite-4x`, `digital-art-4x`, `high-fidelity-4x`, `remacri-4x`, `ultramix-balanced-4x`, `ultrasharp-4x` | scale `2`-`8` (aspect ratio unchanged) |
 | Grok `mode=t2i` | Text → Image (1K) | `9:16, 16:9, 1:1, 2:3, 3:2, 4:3, 21:9, 5:2` |
 | Grok `mode=i2i` | Image → Image (1K) | `9:16, 16:9, 1:1, 2:3, 3:2, 4:3, 21:9, 5:2` |
 | Grok `mode=t2v` | Text → Video (480p/720p/1080p) | `9:16, 16:9, 1:1, 2:3, 3:2` |
@@ -665,26 +665,26 @@ via the URL rather than guessing the path on disk.
 
 ## 6. Reference image format
 
-Every endpoint that takes images accepts them **two ways** — inline base64, or a
+Every endpoint that takes images accepts them **two ways** - inline base64, or a
 path to a file already on the machine running G-Labs. This is uniform across
 `/api/image`, `/api/video`, `/api/grok`, `/api/meta` and `/api/upscale`.
 
 > ⚠️ **`path` only works when the caller and the app are on the same machine.** The
-> app opens that path on its own filesystem — it never fetches it from you. A client
+> app opens that path on its own filesystem - it never fetches it from you. A client
 > on another machine (or a container) must send base64; a path that does not exist
 > there fails the whole task with `reference path not found: <path>`.
 
 Each entry of `reference_images` is one of:
 
-1. **A base64 string** — a data URI or raw base64:
+1. **A base64 string** - a data URI or raw base64:
    - `"data:image/png;base64,iVBORw0KGgo..."`
    - `"data:image/jpeg;base64,/9j/4AAQ..."`
    - raw `"iVBORw0KGgo..."` (treated as PNG)
 2. **An object with `data`**: `{"data": "data:image/...;base64,...", "category": "subject", "name": "red_car.png"}`
 3. **An object with `path`**: `{"path": "E:/photos/red_car.png", "category": "subject"}`
-   - The file is read in place — never copied, never deleted. Your originals are
+   - The file is read in place - never copied, never deleted. Your originals are
      safe: only images G-Labs decoded from base64 get cleaned up after the task.
-   - `name` is unnecessary here — `@tag` binding (§6.1) uses the real filename.
+   - `name` is unnecessary here - `@tag` binding (§6.1) uses the real filename.
 
 `category` and `name` work the same for both forms:
 - `category` is optional: `subject` | `scene` | `style`. It is accepted but
@@ -692,7 +692,7 @@ Each entry of `reference_images` is one of:
 - `name` (or `filename`) is optional and applies to the **base64** form: the image's
   original filename, used to bind it in the prompt via `@<keyword>` (see §6.1).
 
-A **bare string is always read as base64**, never as a path — base64 uses `/` and `+`,
+A **bare string is always read as base64**, never as a path - base64 uses `/` and `+`,
 so there is no reliable way to tell the two apart. To pass a path, use the object form.
 
 You can mix both forms in one request.
@@ -701,11 +701,11 @@ Constraints:
 - Supported decoded types: PNG, JPG/JPEG, WEBP (detected from the data-URI header;
   defaults to PNG when no header). A `path` may point at any format the engine reads.
 - Decoded base64 under ~100 bytes is skipped (treated as invalid). A missing `path`,
-  by contrast, **fails the task** — a typo shouldn't silently produce a render with
+  by contrast, **fails the task** - a typo shouldn't silently produce a render with
   one reference missing.
 - Per-endpoint maximum count: **image = 10** (**Google Pics = 14**), **grok = 5**, **openai = 5**,
-  **video = 3** (**Omni Flash = 7** — only `components` uses more than 2; **Google Vids = 3**).
-  Extra entries beyond the max are ignored — except Google Pics, which rejects them
+  **video = 3** (**Omni Flash = 7** - only `components` uses more than 2; **Google Vids = 3**).
+  Extra entries beyond the max are ignored - except Google Pics, which rejects them
   (`400 TOO_MANY_REFERENCES`).
 - **Why `path` is worth using:** base64 inflates the payload by ~4/3 and every request
   is capped at 50 MB (§5). A local path has no size limit and skips the encode/decode
@@ -714,7 +714,7 @@ Constraints:
 ### 6.1 Binding images by name with `@tag`
 
 When a reference image has a `name` (or `filename`), you can point at it **inside the
-prompt** with `@<keyword>` — the **same mechanism** as the Image / Veo pages in the app
+prompt** with `@<keyword>` - the **same mechanism** as the Image / Veo pages in the app
 (the webhook signal flows through those very functions, so the payload sent to the Flow
 API matches what you'd get creating directly in the app).
 
@@ -725,7 +725,7 @@ API matches what you'd get creating directly in the app).
   "Mode-2" structured prompt) instead of passing all images as anonymous generic refs.
 - **Scope**: works for **image (Flow)**, **video (Veo)** and **Google Vids `components`** (`omni_vids`, where a library character's name is a valid tag too); **Grok**, **OpenAI (GPT Image 2)** and **Google Pics** do **not** support `@tag` (their refs are positional).
 - Filenames are sanitized (directory components and illegal characters stripped) first.
-- **Unmatched tags** stay as literal text — they never cause an error.
+- **Unmatched tags** stay as literal text - they never cause an error.
 - **No `name`**: the image is still used as a positional reference as before (backward compatible).
 
 **Image (Flow):**
@@ -739,7 +739,7 @@ API matches what you'd get creating directly in the app).
 }
 ```
 
-**Video (Veo) — `components` mode** (combine named "ingredients"; also works for
+**Video (Veo) - `components` mode** (combine named "ingredients"; also works for
 `start_image` / `start_end_image`):
 ```json
 {
@@ -772,7 +772,7 @@ with the same same-machine caveat:
 - **i2i** uses any combination of `character_image` / `scene_image` / `style_image`
   (at least one).
 - **i2v** uses `start_image` (and optionally `end_image`).
-- `t2i` / `t2v` take **no** images — any sent are ignored.
+- `t2i` / `t2v` take **no** images - any sent are ignored.
 - There is **no `@tag`** binding for Meta AI; the field name determines the role.
 
 ---
@@ -794,7 +794,7 @@ with the same same-machine caveat:
   recent **finished** tasks; older ones are dropped and then answer `404` too.
 
 ### GET `/api/result/{task_id}` → `200`
-- If not yet completed: `{ task_id, status, message: "Task not yet completed" }` — this also
+- If not yet completed: `{ task_id, status, message: "Task not yet completed" }` - this also
   applies to a `failed` task, which gets **no** error fields here: read them from
   `GET /api/status/{task_id}`.
 - If completed: `{ task_id, status: "completed", results: [...], completed_at }` (plus `meta`
@@ -818,7 +818,7 @@ with the same same-machine caveat:
 `stopped` = tasks that were pending / running and are now `failed` (`499 STOPPED_BY_CLIENT`);
 `skipped` = tasks named explicitly that had already finished. An unknown `task_id` → `404`.
 The call needs the API key only. A body that is not a JSON object → `400 {"error": "Body must
-be a JSON object"}`; a body over 64 KB → `413` — neither ever stops anything.
+be a JSON object"}`; a body over 64 KB → `413` - neither ever stops anything.
 
 ### Error responses
 | HTTP | Body | When |
@@ -830,12 +830,12 @@ be a JSON object"}`; a body over 64 KB → `413` — neither ever stops anything
 | `404` | `{"error": "Not found"}` | Unknown route |
 | `404` | `{"error": "Task <id> not found"}` | Unknown task in status/result/stop |
 | `404` | `{"error": "File not found: <name>"}` | Unknown/expired file |
-| `413` | `{"error": "Payload too large (max 52428800 bytes)"}` | Body over the **50 MB** cap — see §5 |
+| `413` | `{"error": "Payload too large (max 52428800 bytes)"}` | Body over the **50 MB** cap - see §5 |
 | `500` | `{"error": "Failed to read file"}` | Result file exists in the registry but could not be read |
 
 These are **transport-level** failures returned by the `POST`/`GET` itself. A request
 that gets past them returns `202` and any later problem shows up as a `failed` task
-with `error_code` / `error` (§8) — not as an HTTP error.
+with `error_code` / `error` (§8) - not as an HTTP error.
 
 ---
 
@@ -843,15 +843,15 @@ with `error_code` / `error` (§8) — not as an HTTP error.
 
 When a task fails, the status response carries three fields:
 
-- **`error_code`** — an integer. For upstream API errors it mirrors the HTTP-style
+- **`error_code`** - an integer. For upstream API errors it mirrors the HTTP-style
   status (`400`, `403`, `429`, `500`, …). **`429` means quota / rate limit**
   (e.g. daily generation quota reached). It is `0` when no numeric code applies
   (e.g. validation errors, "no accounts").
-- **`error`** — a human-readable status/message. For known upstream statuses it is
+- **`error`** - a human-readable status/message. For known upstream statuses it is
   the stable English status (e.g. `PERMISSION_DENIED`, `RESOURCE_EXHAUSTED`). For
   friendly messages (quota, upscale failure, timeout) the text follows the **app's
   UI language** (e.g. Vietnamese if the app is set to Vietnamese).
-- **`error_detail`** — the full original error string (e.g. `"429: Daily image quota exhausted (user@gmail.com)"`).
+- **`error_detail`** - the full original error string (e.g. `"429: Daily image quota exhausted (user@gmail.com)"`).
 
 Common cases:
 
@@ -868,7 +868,7 @@ Common cases:
 > signal to back off / rotate accounts / retry later.
 >
 > Named codes carry an explanation after them: `error` is everything after `"<code>: "`,
-> e.g. `"INVALID_MODE — omni_vids supports text_to_video, …"`. Match the **start** of
+> e.g. `"INVALID_MODE - omni_vids supports text_to_video, …"`. Match the **start** of
 > `error` (`error.startswith("INVALID_MODE")`), never the whole string.
 
 Notes specific to this app:
@@ -877,7 +877,7 @@ Notes specific to this app:
 - **Image** that requests `upscale` (`2K`/`4K`) that cannot be produced → `failed`
   with the upscale reason (it does not return the smaller base image).
 - **Upscale** has its own codes (`503 ENGINE_MISSING`, `503 NO_VULKAN_DEVICE`,
-  `507 GPU_OUT_OF_MEMORY`, `400 UNKNOWN_MODEL`, …) — see the table in §5.6. It never
+  `507 GPU_OUT_OF_MEMORY`, `400 UNKNOWN_MODEL`, …) - see the table in §5.6. It never
   returns `429`: there is no quota to exhaust.
 - **Meta AI**: an expired account cookie → `failed` `401` (`Meta cookie expired`);
   quota reached → `429` (`Meta quota exhausted`); no enabled Meta account for the
@@ -900,7 +900,7 @@ Notes specific to this app:
   after a failure no other account could take the task → `502 ALL_ACCOUNTS_FAILED` (otherwise the
   last account's own error below); a job's own failure → `401 PICS_COOKIE_EXPIRED`,
   `403 PICS_NO_ACCESS` (the account cannot use Google Pics; it stays on), `504 PICS_TIMEOUT` (the
-  request was sent but no answer came back — the run may have been charged, so it is NOT retried
+  request was sent but no answer came back - the run may have been charged, so it is NOT retried
   and not moved to another account),
   `429 PICS_QUOTA_EXHAUSTED`, `429 RATE_LIMITED`, `400 CONTENT_POLICY`, `400 BAD_REQUEST`,
   `502 UPSTREAM`, `502 NO_OUTPUT`; the webhook server stopped → `503 SERVER_STOPPED`.
@@ -923,7 +923,7 @@ Notes specific to this app:
 - **Grok** modes need an active Super Grok connection in the app.
 - **One result per Grok request** (the first generated image/video).
 - **Meta AI** needs a logged-in, **enabled** Meta (vibes.ai) account in the app
-  (Meta AI tab) — `image_enabled` for `t2i`/`i2i`, `video_enabled` for `t2v`/`i2v`.
+  (Meta AI tab) - `image_enabled` for `t2i`/`i2i`, `video_enabled` for `t2v`/`i2v`.
   The first eligible account is used (no rotation); an expired first account fails
   the task.
 - **OpenAI (GPT Image 2)** needs a logged-in, **enabled** ChatGPT/OpenAI account in
@@ -938,7 +938,7 @@ Notes specific to this app:
 - **Google Pics** (`nano_pics`) needs a **PLUS/MAX** plan and at least one Google account in
   Settings → Google Accounts that is ON (Image box ticked) and has Pics runs left. One task =
   one run = 1 unit of the account's Pics quota, however many images the run makes.
-- **Upscale** needs **no account and no tier** — it runs the Real-ESRGAN engine on
+- **Upscale** needs **no account and no tier** - it runs the Real-ESRGAN engine on
   your own GPU, so it consumes no credits and no quota. It does need the engine +
   models present in `bin/realesrgan/` (otherwise `503 ENGINE_MISSING`) and a
   Vulkan-capable GPU. Requests are processed **one at a time**; a burst queues up
@@ -1151,14 +1151,14 @@ console.log(urls);
 
 1. Start the Webhook server in the app; copy the **port** and **API key**.
 2. Always send `X-API-Key` on generate/status/result/tasks/stop calls.
-3. `POST /api/{image|video|grok|meta|openai}/generate` with a valid body (`prompt` required —
+3. `POST /api/{image|video|grok|meta|openai}/generate` with a valid body (`prompt` required -
    except an `omni_vids` `upscale`), or `POST /api/upscale/generate` with `image_path` /
    `image` and **no** `prompt`.
 4. Read `task_id` from the `202` response.
-5. Poll `GET /api/status/{task_id}` every 3–5 s until `completed` or `failed`.
+5. Poll `GET /api/status/{task_id}` every 3-5 s until `completed` or `failed`.
 6. On `completed`: `GET` each URL in `results` to download the files.
 7. On `failed`: inspect `error_code` (e.g. `429` = quota) and `error` / `error_detail`.
 8. Respect per-model ratios, per-mode reference counts, and ULTRA-only features. Google Vids
    and Google Pics reject an invalid value with a named `400` instead of falling back.
-9. To cancel, `POST /api/stop/{task_id}` (or `/api/stop` for everything) — the task turns
+9. To cancel, `POST /api/stop/{task_id}` (or `/api/stop` for everything) - the task turns
    `failed` with `499 STOPPED_BY_CLIENT` at once.
