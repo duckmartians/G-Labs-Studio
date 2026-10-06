@@ -1,6 +1,6 @@
 <h1 align="center">G-Labs Studio</h1>
 
-<p align="center"><b>Her büyük yapay zekâda toplu görüntü ve video üretmek için tek bir masaüstü uygulaması — Google Flow (Veo 3.1, Omni Flash, Nano Banana), Grok Imagine, Meta AI ve ChatGPT GPT Image 2.</b></p>
+<p align="center"><b>Her büyük yapay zekâda toplu görsel ve video üretmek için tek bir masaüstü uygulaması — Google Flow (Veo 3.1, Omni Flash, Nano Banana), Google Vids, Google Pics, ChatGPT GPT Image 2, Meta Vibes ve Grok — ayrıca video araçları, düğüm tabanlı bir workflow ve bir Webhook API.</b></p>
 
 <p align="center">
   <a href="README.en.md">English</a> ·
@@ -73,7 +73,7 @@ En son sürümü **[Releases](https://github.com/duckmartians/G-Labs-Studio/rele
 
 ### Adım 3 — Giriş yap ve bir plan seç
 
-**Bir G-Labs hesabına ihtiyacın var.** Uygulamayı aç, Google ile giriş yap ve bir plan seç. Planlar (**FREE / PLUS / MAX**) farklı araç ve modelleri açar; uygulama içinden satın alabilirsin (banka QR, PayPal veya USDT). Bir hesap **aynı anda tek makinede** çalışır — başka yerde giriş yapmak önceki makinenin oturumunu kapatır. Kenar çubuğunun sol alt köşesindeki rozet mevcut seviyeni gösterir. Aynı anda birden fazla cihaz mı gerekiyor? **Team** planı satın alabilirsin (fiyat, eklediğin ek cihaz sayısına göre artar).
+**Bir G-Labs hesabına ihtiyacın var.** Uygulamayı aç, Google ile giriş yap ve bir plan seç. Planlar (**BASIC / PLUS / MAX**) farklı araç ve modelleri açar; uygulama içinden satın alabilirsin (banka QR, PayPal veya USDT). Bir hesap **aynı anda tek makinede** çalışır — başka yerde giriş yapmak önceki makinenin oturumunu kapatır. Kenar çubuğunun sol alt köşesindeki rozet mevcut seviyeni gösterir. Aynı anda birden fazla cihaz mı gerekiyor? **Team** planı satın alabilirsin (fiyat, eklediğin ek cihaz sayısına göre artar).
 
 > **Az önce eski sürümden (G-Labs Automation) mi geçtin?** Yeni sürüm hesaplarını **taşımaz**. Yeni G-Labs Studio'da **tüm hesaplara yeniden giriş yapman** gerekir (Google/Flow, ChatGPT, Meta…).
 
@@ -83,90 +83,131 @@ Uygulama **kendini günceller**: açılışta GitHub Releases'i kontrol eder ve 
 
 ## İlk çalıştırma
 
-1. **Uygulamayı açın ve Google ile oturum açın.** Kademe rozeti (sol alt) planınızı doğrular.
-2. **Kullanacağınız araçlar için hesapları bağlayın** (Ayarlar → ilgili hesap sekmesi):
-   - **Google** hesapları → Flow Image / Flow Video
-   - **ChatGPT** hesapları → GPT Image 2
-   - **Meta** hesapları → Meta Media
-   - **Grok** → refakatçi tarayıcı uzantısı (Auth Helper) aracılığıyla oturum açtığınız `grok.com` sekmesi üzerinden çalışır — hesap havuzu yok
-   Her hesap sekmesi başlık çubuğunda **"Active: N accounts"** gösterir, böylece kaç tanesinin kullanılabilir olduğunu bilirsiniz.
-3. **Soldaki kenar çubuğundan bir sayfa seçin** ve üretmeye başlayın. Her üretim sayfası aynı ritmi paylaşır: solda istemleri yazın veya içe aktarın, sağdaki bir **tabloya** düşerler, sonra **Run**'a basın.
+1. **Uygulamayı açın ve Google ile oturum açın.** Kademe rozeti (sol alt: **BASIC / PLUS / MAX**) planınızı doğrular.
+2. **Kullanacağınız araçlar için hesapları bağlayın** (**Ayarlar** → ilgili hesap sekmesi):
+   - **Flow Hesapları** → Flow Görsel / Flow Video
+   - **Google Hesapları** → **Google Vids** ve **Google Pics** (iki sayfa da bu Google hesaplarını paylaşır; her hesap Vids videoları ve Pics görselleri için ayrı ayrı açılır)
+   - **ChatGPT Hesabı** → GPT Image 2
+   - **Vibes Hesabı** → Meta Vibes
+   - **Grok Hesabı** → hesap deposu yok: bu sekme **Auth Helper** tarayıcı uzantısını kurmanızda size yol gösterir, ardından Grok, Chrome'da oturum açtığınız `grok.com` sekmesi üzerinden çalışır
 
-Her sayfa başlığında canlı bir **durum çubuğu** bulunur — *Running · Queued · Done · Failed · Accounts* — böylece toplu işi bir bakışta görebilirsiniz. Kuyruk yöneticisini açmak için **Queued**'a, hesap ayarlarına atlamak için **Accounts**'a tıklayın.
+   Her hesap sekmesi başlık çubuğunda **"Aktif: N hesap"** gösterir, böylece kaç tanesinin kullanılabilir olduğunu bilirsiniz.
+3. **Soldaki kenar çubuğundan bir sayfa seçin** ve üretmeye başlayın. Her üretim sayfası aynı ritmi izler: solda istemleri yazın veya içe aktarın, sağdaki bir **tabloya** düşerler, sonra **Run**'a basın.
+
+Her sayfa başlığında canlı bir **durum şeridi** bulunur — *Çalışıyor · Sırada · Bitti · Hata · Hesaplar* — böylece tüm toplu işi bir bakışta görürsünüz. Kuyruk yöneticisini açmak için **Sırada**'a, hesap ayarlarına atlamak için **Hesaplar**'a tıklayın.
 
 ---
 
 ## Özellikler
 
-![G-Labs Studio](../screenshots/01-image.png)
+![G-Labs Studio](../screenshots/en/flow-image.webp)
 
-- **Her büyük üreteç, tek uygulama** — Google Flow (görüntü + video), Grok Imagine, Meta AI (vibes.ai) ve OpenAI GPT Image 2, her biri kendi sayfasında, o sağlayıcının desteklediği modeller ve oranlarla.
-- **Tasarımı gereği toplu** — bir istem listesini yapıştırın (satır başına bir tane) veya bir `.txt`/Excel dosyası içe aktarın; her biri bir satır olur. Referans görüntüler dosya adına göre otomatik eşleşir. Seçtiğiniz bir eşzamanlılıkla tüm listeyi çalıştırın.
-- **Önce ekle, hazır olunca çalıştır** — satırlar bir kuyruğa gider; **Run / Pause / Stop** ayrıdır. Siz söyleyene kadar hiçbir şey başlamaz ve bir kuyruk yöneticisi yeniden sıralayıp incelemenizi sağlar.
-- **Karakter kütüphanesi** — bir karakteri bir kez kaydedin (referans görüntü + kendi sesi + notlar) ve `@name` ile herhangi bir isteme bırakın; video o karakterin görünümünü ve sesini korur.
-- **Workflow (düğüm grafiği)** — düğümleri bir işlem hattına bağlayın: istem → görüntü → video → son kareyi çıkar → sonraki video, artı iki klibi kırpma ve geçişlerle (crossfade, wipe, slide, dissolve…) birleştiren bir **Merge Video** düğümü. Toplu düğümler tüm zinciri istem başına veya görüntü başına döngüye alır.
-- **Webhook API** — betiklerin ve yapay zekâ ajanlarının görüntü/video/Grok/Meta/OpenAI işleri göndermesi ve sonuçları sorgulaması için yerel bir REST sunucusu.
-- Tamamlama için **Image Upscaler** ve bir **Video Editor** (kesme, birleştirme, slayt gösterisi).
+- **Her büyük üreteç, tek uygulama** — Google Flow (görsel + video), Google Vids, Google Pics, GPT Image 2, Meta Vibes ve Grok, her biri kendi sayfasında, o sağlayıcının desteklediği modeller ve oranlarla.
+- **Toplu iş için tasarlandı** — bir istem listesi yapıştırın (satır başına bir tane) veya `.txt`/Excel içe aktarın; her istem bir satır olur. Referans görseller dosya adına göre otomatik eşleşir. Tüm listeyi seçtiğiniz sayıda paralel iş parçacığıyla çalıştırın.
+- **Önce ekle, hazır olunca çalıştır** — satırlar bir kuyruğa gider; **Run / Pause / Stop** ayrıdır. Siz söyleyene kadar hiçbir şey başlamaz ve kuyruk yöneticisi yeniden sıralayıp incelemenizi sağlar.
+- **Otomatik Gemini ✦ logosu kaldırma** — Google Pics görselleri ve Google Vids videoları indirmenin hemen ardından temizlenir (logoyu korumak için **Gemini logosunu göster**'i açın). Logosuz dosyalara dokunulmaz.
+- **Karakter kütüphanesi** — bir karakteri bir kez kaydedin (referans görsel + ses + notlar) ve sahneleri tutarlı tutmak için Flow Görsel, Flow Video ve Google Vids istemlerinde `@name` ile çağırın.
+- **Workflow (düğüm grafiği)** — düğümleri bir işlem hattına bağlayın: istem → görsel → video → son kareyi çıkar → sonraki video, artı iki klibi bir geçişle birleştiren bir **Video Birleştir** düğümü.
+- **Video Araçları** — zaman çizelgesinde video düzenleme, altyazıyla senkronize görsel slayt gösterileri, video bölme, kare çıkarma ve video logosu kaldırma, doğrudan uygulamanın içinde.
+- Kendi bilgisayarınızda **Görüntü Büyütme** ve otomasyon için bir **Webhook API**.
 - **Dayanıklı** — sonuçlar doğrulanır ve otomatik kaydedilir; oturumlar geri yüklenir; başarısız satırlar yeniden denenir.
-- **Koyu / açık tema**, kademeye duyarlı arayüz ve **15 dil**.
+- **Açık / koyu tema**, kademeye duyarlı arayüz ve **15 dil**.
 
 ---
 
 ## Sayfalar
 
-### 🖼 Flow Image — Google Flow görüntü üretimi
+### 🖼 Flow Görsel — Google Flow görsel üretimi
 
-![Flow Image](../screenshots/01-image.png)
+![Flow Görsel](../screenshots/en/flow-image.webp)
 
-**Nano Banana Pro / 2 / Lite** ile toplu görüntü üretin. Modeli, en boy oranını ve çözünürlüğü (**1K / 2K / 4K** — 2K/4K modelin büyütücüsünü kullanır) seçin, aynı anda kaç satırın çalışacağını ve aralarındaki gecikmeyi ayarlayın. İstemleri yapıştırın (veya bir dosya içe aktarın), satır başına referans görüntüler ekleyin (bir klasörü sürükleyin, dosya adına göre otomatik eşleşirler) ve karakterleri çekmek için `@name` kullanın. **Run** tüm listeyi kuyruğa gönderir.
+**Nano Banana Pro / 2 / 2 Lite** ile toplu görsel üretin. Modeli, en boy oranını ve çözünürlüğü (**1K / 2K / 4K** — 2K/4K modelin büyütücüsünü kullanır) seçin, aynı anda kaç satırın çalışacağını ve aralarındaki gecikmeyi ayarlayın. İstemleri yapıştırın (veya bir dosya içe aktarın), satır başına referans görseller ekleyin (bir klasör bırakın, dosya adına göre otomatik eşleşirler) ve bir karakteri çekmek için `@name` kullanın. **Veo / Gemini logosunu göster** anahtarı (varsayılan olarak kapalı) Flow Video sayfasıyla ortaktır. **Run** tüm listeyi kuyruğa gönderir.
 
 ### 🎬 Flow Video — Veo &amp; Omni Flash
 
-![Flow Video](../screenshots/02-flow-video.png)
+![Flow Video](../screenshots/en/flow-video.webp)
 
-Üç sekme: **Text / Frames → Video** (bir metin istemi veya bir başlangıç/bitiş karesi), **Image / Video ingredients → Video** (referans görüntüler veya bir referans video) ve **Scene stitch → Video**. Modeller: **Veo 3.1 Fast / Lite / Quality** ve **Omni Flash**. En boy oranını, büyütmeyi (720p / 1080p / 4K) ve seed'i seçin. Kareler ve içerikler arasındaki farkın sade dille açıklaması için sekme çubuğundaki **?** üzerine gelin.
+Üç sekme: **Metin / Kare → Video** (bir metin istemi veya başlangıç/bitiş kareleri), **Görsel / Video Bileşenleri → Video** (referans görseller veya bir referans video) ve **Sahne Zinciri → Video**. Modeller: **Veo 3.1 Fast / Lite / Quality** ve **Omni Flash**. En boy oranını, büyütmeyi (720p / 1080p / 4K) ve seed'i seçin. Kareler ile bileşenler arasındaki farkın sade dille açıklaması için sekme çubuğundaki **?** üzerine gelin.
 
-### 🤖 Grok Media — Grok Imagine
+### 📽 Google Vids
 
-![Grok Media](../screenshots/03-grok.png)
+![Google Vids](../screenshots/en/vids.webp)
 
-Grok Imagine aracılığıyla metinden görüntüye, görüntüden görüntüye, metinden videoya ve görüntüden videoya (Auth Helper uzantısı ile oturum açtığınız `grok.com` sekmesi). Görüntüler **8 en boy oranı** sunar (4:3, 21:9, 5:2 dahil); video **480p / 720p / 1080p** olarak üretilir. Görüntüden videoya iki modu vardır: **First frame** (görüntü klibi açar) ve **Reference** (14'e kadar yönlendirici görüntü).
+Google hesabınızla üç sekmede video yapın: **Metin → Video**, **Görsel → Video** (tek bir açılış görseli) ve **Bileşenler → Video** (en fazla 3 bileşen görseli). Yatay/dikey, 720p / 1080p ve 3–10 saniyelik bir süre seçin — ya da her satıra kendi uzunluğunu vermek için isteme `[4s]` gibi bir etiket koyun. Biten videolar doğrudan tablodan 1080p'ye büyütülebilir. Her hesabın video saniyesi cinsinden ölçülen bir kotası vardır; daha hızlı çalıştırmak için daha fazla hesap ekleyin. İndirilen videolardaki (720p / 1080p) Gemini ✦ logosu, **Gemini logosunu göster**'i açmadığınız sürece otomatik olarak kaldırılır.
 
-### 🎨 Meta Media — Meta AI (vibes.ai)
+### 🖼 Google Pics
 
-![Meta Media](../screenshots/04-meta.png)
+![Google Pics](../screenshots/en/pics.webp)
 
-Meta AI aracılığıyla görüntü ve video üretimi. Modlar: metinden görüntüye, görüntüden görüntüye (Character / Scene / Style bileşenleri), metinden videoya ve görüntüden videoya (başlangıç / bitiş karesi).
+İki sekme: **Metin → Görsel** ve **en fazla 14 referans görselle** (karakterler, nesneler, sahneler, stil) **Görsel → Görsel**. Her çalıştırmada Google 3–9 görsel döndürür; **Çalıştırma başına saklanacak görsel** kaç tanesinin saklanacağını belirler (1–4 veya tümü). 21:9, 3:2 ve 5:4 dahil 10 en boy oranı. Her çalıştırma, görsel sayısı ne olursa olsun 1 Google Pics çalıştırması harcar; içerik politikası tarafından reddedilen bir istem hiçbir şeye mal olmaz. Pics, **Google Hesapları**'nı Google Vids ile paylaşır.
+
+**Otomatik Gemini ✦ logosu kaldırma:** indirilen Pics görsellerinin sağ alt köşesindeki ✦ işareti, özellikle Google Pics için ölçülmüş bir logo haritası kullanılarak indirmenin hemen ardından kaldırılır — logo karışımı tersine çevrilir, böylece altındaki orijinal doku bulanıklaştırılmak yerine geri kazanılır. Logo algılanmayan görseller olduğu gibi bırakılır. Logoyu korumak için **Gemini logosunu göster**'i açın.
 
 ### ✨ GPT Image 2 — OpenAI
 
-![GPT Image 2](../screenshots/05-openai.png)
+![GPT Image 2](../screenshots/en/gpt-image.webp)
 
-ChatGPT hesaplarınızı kullanarak, en fazla 5 referans görüntüyle OpenAI **GPT Image 2** ile üretin. Oranı (21:9, 4:5 ve **özel** dahil 10 seçenek — özel olanda oranı isteme yazarsınız), kaliteyi, istem modunu, akıl yürütme çabasını ve web aramasını seçin.
+ChatGPT hesabınızı kullanarak, en fazla 5 referans görselle OpenAI **GPT Image 2** ile üretin. Oranı (21:9, 4:5 ve **custom** dahil 10 seçenek — custom'da oranı isteme yazarsınız), kaliteyi, istem modunu, akıl yürütme düzeyini ve web aramasını seçin.
 
-### 🔍 Image Upscaler
+### 🎨 Meta Vibes
 
-![Image Upscaler](../screenshots/06-upscaler.png)
+![Meta Vibes](../screenshots/en/vibes.webp)
 
-Bir görüntü klasörünü yerel olarak büyütün — hedefi seçin ve kuyruğu işlemesine izin verin; satır başına ilerleme ve durum (işleniyor / bitti / hata) ile.
+Meta Vibes'ta dört sekmede görsel ve video oluşturun: **Metin → Görsel**, **Metin → Video**, **Görsel → Görsel** (karakter / sahne / stil görselleri) ve **Görsel → Video** (başlangıç / bitiş karesi). Kuyruğa alma ve indirme otomatiktir.
 
-### 👤 Characters
+### 🤖 Grok Imagen
 
-![Characters](../screenshots/07-character.png)
+![Grok Imagen](../screenshots/en/grok.webp)
 
-Yeniden kullanılabilir karakterlerden bir kütüphane oluşturun: bir referans görüntü, isteğe bağlı özel bir ses ve görünüm/kişilik notları. Herhangi bir Flow isteminde `@name` ile etiketleyin, üretim o kimliği korur.
+Grok Imagine aracılığıyla Metin → Görsel, Görsel → Görsel, Metin → Video ve Görsel → Video (Auth Helper uzantısı ile oturum açtığınız `grok.com` sekmeniz). Görseller **8 en boy oranında** gelir (4:3, 21:9, 5:2 dahil); videolar **480p / 720p / 1080p** olarak işlenir. Görsel → Video'nun iki modu vardır: **İlk kare** (görsel klibi açar) ve **Referans görselleri** (en fazla 14 yönlendirici görsel).
+
+### 👤 Karakterler
+
+![Karakterler](../screenshots/en/characters.webp)
+
+Yeniden kullanılabilir bir oyuncu kadrosu oluşturun: bir referans görsel, bir ses (Flow'un hazır seslerinden biri, isteğe bağlı bir anlatım açıklamasıyla) ve görünüm/kişilik notları. Flow Görsel, Flow Video ve Google Vids istemlerinde `@name` ile etiketleyin, üretim o kimliği korur (ses yalnızca Flow Video tarafından kullanılır; Google Vids görseli kullanır).
 
 ### 🔗 Workflow
 
-![Workflow](../screenshots/08-workflow.png)
+![Workflow](../screenshots/en/workflow.webp)
 
-Görsel bir düğüm tuvali. Bir düğümün soketine sağ tıklayın, menü yalnızca uyan düğümleri sunar — birini seçin, otomatik olarak bağlanır. İstem → üret → video → **Extract Frame** → sonraki video zincirleyin ve iki klibi birleştirmek için **Merge Video** kullanın (her ucu kırpın, bir geçiş seçin). Tüm grafiği bir `.json` dosyası olarak kaydedin/yükleyin; **Run Flow** onu baştan sona çalıştırır.
+Görsel bir düğüm tuvali. Bir düğümün soketine sağ tıklayın, menü yalnızca uyan düğümleri sunar — birini seçin, kendiliğinden bağlanır. Flow Görsel, Flow Video, Grok, Meta ve GPT Image 2 için düğümler vardır. İstem → görsel → video → **Kare Çıkar** → sonraki video zincirleyin ve iki klibi birleştirmek için **Video Birleştir** kullanın (her ucu kırpın, bir geçiş seçin). Tüm grafiği bir `.json` dosyası olarak kaydedin/yükleyin (biçim: [`WORKFLOW_JSON_SPEC.md`](../../WORKFLOW_JSON_SPEC.md)); **Run Flow** onu baştan sona çalıştırır.
+
+### 🎞 Video Araçları
+
+Tek sayfada beş sekme:
+
+**Video Düzenleme** — video, SRT altyazıları ve ses için bir zaman çizelgesi: kesin, bölün, yeniden sıralayın, otomatik sığdırın, sonra tek bir bitmiş video dışa aktarın.
+
+![Video Düzenleme](../screenshots/en/vt-video.webp)
+
+**Altyazıya uygun görsel slayt gösterisi** — görselleri ve bir `.srt` dosyasını yükleyin; her görsel otomatik olarak bir altyazı satırıyla eşleşir, hareket efektleri, katmanlar ve altyazı stiliyle.
+
+![Altyazıya uygun görsel slayt gösterisi](../screenshots/en/vt-slideshow.webp)
+
+**Videoyu bölümlere ayır** — parça sayısına, sabit veya rastgele uzunluğa, bir zaman damgası listesine veya bir A–B aralıkları listesine göre; tek dosya veya bütün bir toplu iş, mümkün olduğunda GPU hızlandırmalı.
+
+![Videoyu bölümlere ayır](../screenshots/en/vt-slicer.webp)
+
+**Videodan kareleri çıkar** — toplam sayıya, zaman aralığına, kare aralığına veya harekete göre; tek dosya veya bütün bir klasör.
+
+![Videodan kareleri çıkar](../screenshots/en/vt-extractor.webp)
+
+**Video logosunu kaldır** — 720p ve 1080p (yatay veya dikey) Google Vids videolarından ✦ logosunu kaldırır, uygulamada önce/sonra önizlemesiyle. Logosuz videolar atlanır; orijinaller korunur ve sonuçlar `<ad>_nologo.mp4` olarak kaydedilir.
+
+![Video logosunu kaldır](../screenshots/en/vt-logo.webp)
+
+### 🔍 Görüntü Büyütme
+
+![Görüntü Büyütme](../screenshots/en/upscaler.webp)
+
+Görselleri doğrudan bilgisayarınızda büyütün ve keskinleştirin — tek tek görseller veya bütün bir klasör ekleyin, bir yapay zekâ modeli (Real-ESRGAN, UltraSharp, Remacri…) ve 2x–8x ölçek seçin, satır başına ilerlemeyi izleyin ve önce/sonra karşılaştırın.
 
 ### 🌐 Webhook API
 
-![Webhook API](../screenshots/09-webhook.png)
+![Webhook API](../screenshots/en/webhook.webp)
 
-Uygulamayı yerel bir otomasyon sunucusuna dönüştürün. Başlatın, API anahtarınızı kopyalayın ve `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` veya `/api/openai/generate` adreslerine iş POST edin, ardından `/api/status/<id>` sorgulayın. Sayfa her modeli ve desteklediği en boy oranlarını listeler. Tam şema: [`WEBHOOK_INTEGRATION.en.md`](../../WEBHOOK_INTEGRATION.en.md).
+Uygulamayı yerel bir otomasyon sunucusuna dönüştürün (MAX planı); böylece n8n, Make, Zapier, betikler veya yapay zekâ ajanları uygulamanın kuyruğuna iş gönderebilir. Başlatın, API anahtarınızı kopyalayın ve `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate`, `/api/openai/generate` veya `/api/upscale/generate` adreslerine iş POST edin, ardından `/api/status/<id>` sorgulayın. Sayfa her modeli ve desteklediği en boy oranlarını listeler. Tam şema: [`WEBHOOK_INTEGRATION.en.md`](../../WEBHOOK_INTEGRATION.en.md).
 
 ---
 
@@ -174,21 +215,25 @@ Uygulamayı yerel bir otomasyon sunucusuna dönüştürün. Başlatın, API anah
 
 | Ne | macOS | Windows |
 |---|---|---|
-| Çıktı (görüntüler / videolar) | `~/Documents/G-Labs Studio` | `%USERPROFILE%\Documents\G-Labs Studio` |
-| Ayarlar, oturumlar, hesaplar | `~/Library/Application Support/G-Labs Studio` | `%APPDATA%\G-Labs Studio` |
+| Çıktılar (görseller / videolar) | `~/Documents/G-Labs Studio/output` | `%USERPROFILE%\Documents\G-Labs Studio\output` |
+| Ayarlar, oturumlar, hesaplar, karakterler | `~/Library/Application Support/G-Labs Studio` | `%APPDATA%\G-Labs Studio` |
 
-Ayarlarınız, istem listeleriniz, oturumlarınız, karakter kütüphaneniz ve hesap listeniz kaydedilir ve uygulamayı bir sonraki açışınızda geri yüklenir.
+Her sayfanın `output` içinde kendi alt klasörü vardır (her çalıştırma için daha küçük bir klasör); kayıt klasörünü her sayfada değiştirebilirsiniz. Ayarlarınız, istem listeleriniz, oturumlarınız, karakter kütüphaneniz ve hesap listeniz kaydedilir ve uygulamayı bir sonraki açışınızda geri yüklenir.
 
 ---
 
 ## Sorun giderme
 
-**Her şey kilitli / satın alma ekranı sürekli açılıyor** — planınızın süresi doldu veya hesap başka bir makinede oturum açtı. Kademe rozetini (sol alt) kontrol edin ve yenileyin.
+**Her şey kilitli / satın alma ekranı sürekli açılıyor** — planınızın süresi doldu veya hesap başka bir makinede oturum açtı. Kademe rozetini (sol alt) kontrol edin ve yenileyin. Google Vids ve Google Pics için PLUS/MAX planı gerekir; Webhook API için MAX gerekir.
 
-**Bir Grok üretimi hiçbir şey yapmıyor** — Grok, `grok.com` sekmeniz üzerinden çalışır. **Auth Helper** tarayıcı uzantısını kurun/etkinleştirin (Ayarlar → Grok) ve grok.com'da oturum açtığınızdan emin olun.
+**Bir Grok üretimi hiçbir şey yapmıyor** — Grok, `grok.com` sekmeniz üzerinden çalışır. **Auth Helper** tarayıcı uzantısını kurun/etkinleştirin (Ayarlar → Grok Hesabı) ve grok.com'da oturum açtığınızdan emin olun.
 
-**Bir sayfada "Active: 0 accounts"** — o sayfanın hesap sekmesinde (Ayarlar) bir hesap ekleyin veya yeniden etkinleştirin ya da token'ı süresi dolmuştur — **Refresh all**'a basın.
+**Google Pics hesap olmadığını söylüyor** — Pics, Google Vids hesaplarını kullanır. Ayarlar → **Google Hesapları** bölümünden bir hesap ekleyin.
 
-**macOS uygulamanın hasarlı olduğunu / açılamadığını söylüyor** — Apple tarafından imzalanmamıştır. İlk seferinde sağ tıkla → **Open** yapın veya `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"` çalıştırın.
+**Bir sayfada "Aktif: 0 hesap"** — o sayfanın hesap sekmesinde (Ayarlar) bir hesap ekleyin veya yeniden etkinleştirin ya da token'ının süresi dolmuştur — **Tümünü Yenile**'ye basın.
 
-**Bir güncelleme kurulmuyor** — en son sürümü [Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest) sayfasından manuel olarak indirin.
+**Windows "Windows protected your PC" uyarısıyla engelliyor** — **More info → Run anyway**'e tıklayın. Uygulama henüz bir Microsoft sertifikasıyla kod imzalı olmadığı için işaretlenir — virüs değildir.
+
+**macOS uygulamanın hasarlı olduğunu / açılamadığını söylüyor** — henüz Apple tarafından imzalanmamıştır. İlk seferinde sağ tıkla → **Open** yapın veya `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"` çalıştırın.
+
+**Bir güncelleme kurulmadı** — en son sürümü [Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest) sayfasından manuel olarak indirin.

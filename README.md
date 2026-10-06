@@ -1,6 +1,6 @@
 <h1 align="center">G-Labs Studio</h1>
 
-<p align="center"><b>Một ứng dụng desktop để tạo hàng loạt ảnh &amp; video trên mọi nền tảng AI lớn — Google Flow (Veo 3.1, Omni Flash, Nano Banana), Grok Imagine, Meta AI và ChatGPT GPT Image 2.</b></p>
+<p align="center"><b>Một ứng dụng desktop để tạo hàng loạt ảnh &amp; video trên mọi nền tảng AI lớn — Google Flow (Veo 3.1, Omni Flash, Nano Banana), Google Vids, Google Pics, ChatGPT GPT Image 2, Meta Vibes và Grok — kèm công cụ video, workflow dạng node và Webhook API.</b></p>
 
 <p align="center">
   <b>Tiếng Việt</b> ·
@@ -73,7 +73,7 @@ Tải bản mới nhất từ **[Releases](https://github.com/duckmartians/G-Lab
 
 ### Bước 3 — Đăng nhập & chọn gói
 
-**Bạn cần một tài khoản G-Labs.** Mở ứng dụng, đăng nhập bằng Google và chọn gói. Các gói (**FREE / PLUS / MAX**) mở khóa những công cụ và mô hình khác nhau; bạn có thể mua ngay trong ứng dụng (QR ngân hàng, PayPal hoặc USDT). Một tài khoản chỉ chạy trên **một máy tại một thời điểm** — đăng nhập ở nơi khác sẽ đăng xuất máy trước đó. Huy hiệu ở góc dưới bên trái thanh bên hiển thị hạng hiện tại của bạn. Cần dùng **nhiều thiết bị cùng lúc** thì có thể mua gói **Team** (giá tăng theo số thiết bị bạn thêm).
+**Bạn cần một tài khoản G-Labs.** Mở ứng dụng, đăng nhập bằng Google và chọn gói. Các gói (**BASIC / PLUS / MAX**) mở khóa những công cụ và mô hình khác nhau; bạn có thể mua ngay trong ứng dụng (QR ngân hàng, PayPal hoặc USDT). Một tài khoản chỉ chạy trên **một máy tại một thời điểm** — đăng nhập ở nơi khác sẽ đăng xuất máy trước đó. Huy hiệu ở góc dưới bên trái thanh bên hiển thị hạng hiện tại của bạn. Cần dùng **nhiều thiết bị cùng lúc** thì có thể mua gói **Team** (giá tăng theo số thiết bị bạn thêm).
 
 > **Vừa chuyển từ bản cũ (G-Labs Automation)?** Bản mới **không** mang tài khoản từ bản cũ sang. Bạn cần **đăng nhập lại toàn bộ tài khoản** (Google/Flow, ChatGPT, Meta…) trong bản G-Labs Studio mới.
 
@@ -83,30 +83,33 @@ Tải bản mới nhất từ **[Releases](https://github.com/duckmartians/G-Lab
 
 ## Lần chạy đầu tiên
 
-1. **Mở ứng dụng và đăng nhập bằng Google.** Huy hiệu hạng (góc dưới bên trái) xác nhận gói của bạn.
-2. **Kết nối các tài khoản cho những công cụ bạn sẽ dùng** (Settings → tab tài khoản tương ứng):
-   - Tài khoản **Google** → Flow Image / Flow Video
-   - Tài khoản **ChatGPT** → GPT Image 2
-   - Tài khoản **Meta** → Meta Media
-   - **Grok** → chạy qua tab `grok.com` đã đăng nhập của bạn thông qua tiện ích trình duyệt đồng hành (Auth Helper) — không cần kho tài khoản
-   Mỗi tab tài khoản hiển thị **"Active: N accounts"** trên thanh tiêu đề để bạn biết có bao nhiêu tài khoản dùng được.
+1. **Mở ứng dụng và đăng nhập bằng Google.** Huy hiệu hạng (góc dưới bên trái: **BASIC / PLUS / MAX**) xác nhận gói của bạn.
+2. **Kết nối các tài khoản cho những công cụ bạn sẽ dùng** (**Cài Đặt** → tab tài khoản tương ứng):
+   - **Tài khoản Flow** → Flow Ảnh / Flow Video
+   - **Tài khoản Google** → **Google Vids** và **Google Pics** (hai trang dùng chung tài khoản Google này; mỗi tài khoản bật riêng phần video cho Vids và phần ảnh cho Pics)
+   - **Tài khoản ChatGPT** → GPT Image 2
+   - **Tài khoản Vibes** → Meta Vibes
+   - **Tài khoản Grok** → không cần kho tài khoản: tab này hướng dẫn cài tiện ích trình duyệt **Auth Helper**, rồi Grok chạy qua tab `grok.com` đã đăng nhập trong Chrome của bạn
+
+   Mỗi tab tài khoản hiển thị **"Đang hoạt động: N tài khoản"** trên thanh tiêu đề để bạn biết có bao nhiêu tài khoản dùng được.
 3. **Chọn một trang từ thanh bên trái** và bắt đầu tạo. Mọi trang tạo đều theo cùng một nhịp: gõ hoặc nhập prompt ở bên trái, chúng rơi vào một **bảng** ở bên phải, rồi nhấn **Run**.
 
-Mỗi tiêu đề trang mang một **thanh trạng thái** trực tiếp — *Running · Queued · Done · Failed · Accounts* — để bạn thấy toàn cảnh lô công việc trong nháy mắt. Nhấp **Queued** để mở trình quản lý hàng đợi, nhấp **Accounts** để nhảy tới cài đặt tài khoản.
+Mỗi tiêu đề trang mang một **thanh trạng thái** trực tiếp — *Đang chạy · Hàng đợi · Xong · Lỗi · Tài khoản* — để bạn thấy toàn cảnh lô công việc trong nháy mắt. Nhấp **Hàng đợi** để mở trình quản lý hàng đợi, nhấp **Tài khoản** để nhảy tới cài đặt tài khoản.
 
 ---
 
 ## Tính năng
 
-![G-Labs Studio](docs/screenshots/01-image.png)
+![G-Labs Studio](docs/screenshots/vi/flow-image.webp)
 
-- **Mọi trình tạo lớn, trong một ứng dụng** — Google Flow (ảnh + video), Grok Imagine, Meta AI (vibes.ai) và OpenAI GPT Image 2, mỗi cái trên trang riêng với các mô hình và tỷ lệ mà nhà cung cấp đó hỗ trợ.
+- **Mọi trình tạo lớn, trong một ứng dụng** — Google Flow (ảnh + video), Google Vids, Google Pics, GPT Image 2, Meta Vibes và Grok, mỗi cái trên trang riêng với các mô hình và tỷ lệ mà nhà cung cấp đó hỗ trợ.
 - **Được thiết kế để làm hàng loạt** — dán một danh sách prompt (mỗi dòng một prompt) hoặc nhập tệp `.txt`/Excel; mỗi prompt thành một dòng. Ảnh tham chiếu tự khớp theo tên tệp. Chạy cả danh sách với số luồng đồng thời bạn chọn.
 - **Thêm trước, chạy khi sẵn sàng** — các dòng vào hàng đợi; **Run / Pause / Stop** tách riêng. Không có gì khởi chạy cho tới khi bạn ra lệnh, và trình quản lý hàng đợi cho phép bạn sắp xếp lại và kiểm tra.
-- **Kho nhân vật** — lưu một nhân vật một lần (ảnh tham chiếu + giọng riêng + ghi chú) và thả vào bất kỳ prompt nào bằng `@name`; video giữ nguyên diện mạo và giọng của nhân vật đó.
-- **Workflow (đồ thị node)** — nối các node thành một pipeline: prompt → ảnh → video → trích khung hình cuối → video kế tiếp, cùng một node **Merge Video** ghép hai clip với cắt xén và chuyển cảnh (crossfade, wipe, slide, dissolve…). Các node lô lặp toàn bộ chuỗi theo từng prompt hoặc từng ảnh.
-- **Webhook API** — một máy chủ REST cục bộ để script và tác nhân AI có thể gửi các tác vụ image/video/Grok/Meta/OpenAI và truy vấn kết quả.
-- **Image Upscaler** và một **Video Editor** (cắt, ghép, trình chiếu) để hoàn thiện.
+- **Tự xoá logo Gemini ✦** — ảnh Google Pics và video Google Vids được gỡ logo ngay sau khi tải về (muốn giữ logo thì bật **Hiển thị logo Gemini**). Tệp không có logo được để nguyên.
+- **Kho nhân vật** — lưu một nhân vật một lần (ảnh tham chiếu + giọng + ghi chú) và gọi bằng `@tên` trong prompt ở Flow Ảnh, Flow Video và Google Vids để các cảnh không lệch nhau.
+- **Workflow (đồ thị node)** — nối các node thành một pipeline: prompt → ảnh → video → tách khung hình cuối → video kế tiếp, cùng node **Ghép video** nối hai clip có chuyển cảnh.
+- **Công cụ Video** — chỉnh sửa video trên timeline, slide ảnh khớp phụ đề, chia video, xuất khung hình và xoá logo video, ngay trong app.
+- **Nâng Cấp Ảnh** ngay trên máy và **Webhook API** cho tự động hoá.
 - **Bền bỉ** — kết quả được kiểm tra và tự lưu; phiên làm việc được khôi phục; các dòng thất bại thử lại.
 - **Giao diện Sáng / Tối**, UI theo hạng, và **15 ngôn ngữ**.
 
@@ -114,59 +117,97 @@ Mỗi tiêu đề trang mang một **thanh trạng thái** trực tiếp — *Ru
 
 ## Các trang
 
-### 🖼 Flow Image — tạo ảnh Google Flow
+### 🖼 Flow Ảnh — tạo ảnh Google Flow
 
-![Flow Image](docs/screenshots/01-image.png)
+![Flow Ảnh](docs/screenshots/vi/flow-image.webp)
 
-Tạo ảnh hàng loạt với **Nano Banana Pro / 2 / Lite**. Chọn mô hình, tỷ lệ khung hình và độ phân giải (**1K / 2K / 4K** — 2K/4K dùng bộ nâng cấp của mô hình), đặt số dòng chạy cùng lúc và độ trễ giữa chúng. Dán prompt (hoặc nhập tệp), đính kèm ảnh tham chiếu cho từng dòng (kéo một thư mục và chúng tự khớp theo tên tệp), và dùng `@name` để kéo nhân vật vào. **Run** gửi cả danh sách vào hàng đợi.
+Tạo ảnh hàng loạt với **Nano Banana Pro / 2 / 2 Lite**. Chọn mô hình, tỷ lệ khung hình và độ phân giải (**1K / 2K / 4K** — 2K/4K dùng bộ nâng cấp của mô hình), đặt số dòng chạy cùng lúc và độ trễ giữa chúng. Dán prompt (hoặc nhập tệp), đính kèm ảnh tham chiếu cho từng dòng (kéo một thư mục và chúng tự khớp theo tên tệp), và dùng `@tên` để kéo nhân vật vào. Công tắc **Hiển thị logo Veo / Gemini** (mặc định tắt) dùng chung với trang Flow Video. **Run** gửi cả danh sách vào hàng đợi.
 
 ### 🎬 Flow Video — Veo &amp; Omni Flash
 
-![Flow Video](docs/screenshots/02-flow-video.png)
+![Flow Video](docs/screenshots/vi/flow-video.webp)
 
-Ba tab: **Text / Frames → Video** (một prompt văn bản, hoặc khung đầu/cuối), **Image / Video ingredients → Video** (ảnh tham chiếu hoặc video tham chiếu) và **Scene stitch → Video**. Mô hình: **Veo 3.1 Fast / Lite / Quality** và **Omni Flash**. Chọn tỷ lệ khung hình, nâng cấp (720p / 1080p / 4K) và seed. Di chuột lên **?** trên thanh tab để có lời giải thích dễ hiểu về frames so với ingredients.
+Ba tab: **Văn bản / Khung hình → Video** (một prompt văn bản, hoặc khung đầu/cuối), **Ảnh / Video thành phần → Video** (ảnh hoặc video tham chiếu) và **Nối cảnh → Video**. Mô hình: **Veo 3.1 Fast / Lite / Quality** và **Omni Flash**. Chọn tỷ lệ khung hình, nâng cấp (720p / 1080p / 4K) và seed. Di chuột lên **?** trên thanh tab để có lời giải thích dễ hiểu về khung hình so với thành phần.
 
-### 🤖 Grok Media — Grok Imagine
+### 📽 Google Vids
 
-![Grok Media](docs/screenshots/03-grok.png)
+![Google Vids](docs/screenshots/vi/vids.webp)
 
-Text-to-image, image-to-image, text-to-video và image-to-video qua Grok Imagine (tab `grok.com` đã đăng nhập của bạn thông qua tiện ích Auth Helper). Ảnh có **8 tỷ lệ khung hình** (gồm 4:3, 21:9, 5:2); video tạo ở **480p / 720p / 1080p**. Image-to-video có hai chế độ: **First frame** (ảnh mở đầu clip) và **Reference** (tối đa 14 ảnh dẫn hướng).
+Tạo video bằng tài khoản Google của bạn, ba tab: **Văn bản → Video**, **Ảnh → Video** (một ảnh mở đầu) và **Thành phần → Video** (tối đa 3 ảnh thành phần). Chọn hướng ngang/dọc, độ phân giải 720p / 1080p và thời lượng 3–10 giây — hoặc ghi thẻ như `[4s]` ngay trong prompt để mỗi dòng có thời lượng riêng. Video đã tạo có thể nâng cấp lên 1080p ngay trong bảng. Mỗi tài khoản có hạn mức tính bằng giây video; thêm nhiều tài khoản để chạy nhanh hơn. Logo Gemini ✦ trên video tải về (720p / 1080p) được tự xoá trừ khi bạn bật **Hiển thị logo Gemini**.
 
-### 🎨 Meta Media — Meta AI (vibes.ai)
+### 🖼 Google Pics
 
-![Meta Media](docs/screenshots/04-meta.png)
+![Google Pics](docs/screenshots/vi/pics.webp)
 
-Tạo ảnh và video qua Meta AI. Các chế độ: text-to-image, image-to-image (thành phần Character / Scene / Style), text-to-video và image-to-video (khung đầu / cuối).
+Hai tab: **Văn bản → Ảnh** và **Ảnh → Ảnh** với **tối đa 14 ảnh tham chiếu** (nhân vật, đồ vật, bối cảnh, phong cách). Mỗi lượt Google trả về 3–9 ảnh; **Giữ tối đa ảnh / lượt** quyết định giữ bao nhiêu (1–4 hoặc tất cả). 10 tỷ lệ khung hình, gồm 21:9, 3:2 và 5:4. Mỗi lượt tốn 1 lượt Google Pics bất kể số ảnh; prompt bị chính sách nội dung từ chối thì không tốn. Pics dùng chung **Tài khoản Google** với Google Vids.
+
+**Tự xoá logo Gemini ✦:** ảnh Pics tải về được gỡ dấu ✦ ở góc dưới bên phải ngay sau khi tải, bằng bản đồ logo đo riêng cho Google Pics — đảo ngược phép phủ logo nên vân ảnh gốc dưới logo được khôi phục, không làm nhoè. Ảnh không nhận ra logo thì giữ nguyên. Muốn giữ logo, bật **Hiển thị logo Gemini**.
 
 ### ✨ GPT Image 2 — OpenAI
 
-![GPT Image 2](docs/screenshots/05-openai.png)
+![GPT Image 2](docs/screenshots/vi/gpt-image.webp)
 
-Tạo với OpenAI **GPT Image 2** bằng tài khoản ChatGPT của bạn, với tối đa 5 ảnh tham chiếu. Chọn tỷ lệ (10 tùy chọn gồm 21:9, 4:5 và **custom** — nơi bạn viết tỷ lệ ngay trong prompt), chất lượng, chế độ prompt, mức độ suy luận và tìm kiếm web.
+Tạo với OpenAI **GPT Image 2** bằng tài khoản ChatGPT của bạn, với tối đa 5 ảnh tham chiếu. Chọn tỷ lệ (10 tùy chọn gồm 21:9, 4:5 và **tùy chỉnh** — nơi bạn viết tỷ lệ ngay trong prompt), chất lượng, chế độ prompt, mức độ suy luận và tìm kiếm web.
 
-### 🔍 Image Upscaler
+### 🎨 Meta Vibes
 
-![Image Upscaler](docs/screenshots/06-upscaler.png)
+![Meta Vibes](docs/screenshots/vi/vibes.webp)
 
-Nâng cấp một thư mục ảnh ngay tại máy — chọn đích và để nó xử lý hàng đợi, với tiến độ và trạng thái theo từng dòng (processing / done / error).
+Tạo ảnh và video trên Meta Vibes, bốn tab: **Văn bản → Ảnh**, **Văn bản → Video**, **Ảnh → Ảnh** (ảnh nhân vật / bối cảnh / phong cách) và **Ảnh → Video** (khung đầu / cuối). Xếp hàng và tải về tự động.
 
-### 👤 Characters
+### 🤖 Grok Imagen
 
-![Characters](docs/screenshots/07-character.png)
+![Grok Imagen](docs/screenshots/vi/grok.webp)
 
-Xây dựng một kho nhân vật tái sử dụng: một ảnh tham chiếu, một giọng tùy chỉnh không bắt buộc, và ghi chú về diện mạo/tính cách. Gắn thẻ chúng bằng `@name` trong bất kỳ prompt Flow nào và bản tạo sẽ giữ nguyên danh tính đó.
+Văn bản → Ảnh, Ảnh → Ảnh, Văn bản → Video và Ảnh → Video qua Grok Imagine (tab `grok.com` đã đăng nhập của bạn thông qua tiện ích Auth Helper). Ảnh có **8 tỷ lệ khung hình** (gồm 4:3, 21:9, 5:2); video tạo ở **480p / 720p / 1080p**. Ảnh → Video có hai chế độ: **Khung hình đầu** (ảnh mở đầu clip) và **Ảnh thành phần** (tối đa 14 ảnh dẫn hướng).
+
+### 👤 Nhân vật
+
+![Nhân vật](docs/screenshots/vi/characters.webp)
+
+Xây dựng một kho nhân vật tái sử dụng: một ảnh tham chiếu, một giọng (chọn trong các giọng có sẵn của Flow, có thể thêm mô tả cách nói), và ghi chú về diện mạo/tính cách. Gắn thẻ bằng `@tên` trong prompt ở Flow Ảnh, Flow Video và Google Vids và bản tạo sẽ giữ nguyên danh tính đó (giọng chỉ dùng cho Flow Video; Google Vids chỉ dùng ảnh).
 
 ### 🔗 Workflow
 
-![Workflow](docs/screenshots/08-workflow.png)
+![Workflow](docs/screenshots/vi/workflow.webp)
 
-Một canvas node trực quan. Nhấp chuột phải vào socket của một node và menu chỉ đề xuất những node phù hợp — chọn một cái và nó tự nối dây. Nối chuỗi prompt → generate → video → **Extract Frame** → video kế tiếp, và dùng **Merge Video** để ghép hai clip (cắt xén mỗi đầu, chọn chuyển cảnh). Lưu/nạp cả đồ thị dưới dạng tệp `.json`; **Run Flow** thực thi nó từ đầu đến cuối.
+Một canvas node trực quan. Nhấp chuột phải vào socket của một node và menu chỉ đề xuất những node phù hợp — chọn một cái và nó tự nối dây. Có node cho Flow Ảnh, Flow Video, Grok, Meta và GPT Image 2. Nối chuỗi prompt → ảnh → video → **Tách Khung Hình** → video kế tiếp, và dùng **Ghép video** để ghép hai clip (cắt xén mỗi đầu, chọn chuyển cảnh). Lưu/nạp cả đồ thị dưới dạng tệp `.json` (định dạng: [`WORKFLOW_JSON_SPEC.md`](WORKFLOW_JSON_SPEC.md)); **Run Flow** thực thi nó từ đầu đến cuối.
+
+### 🎞 Công cụ Video
+
+Năm tab trong một trang:
+
+**Chỉnh sửa video** — timeline cho video, phụ đề SRT và âm thanh: cắt, tách, sắp xếp, tự động điều chỉnh, rồi xuất một video hoàn chỉnh.
+
+![Chỉnh sửa video](docs/screenshots/vi/vt-video.webp)
+
+**Tạo slide ảnh khớp file phụ đề** — nạp ảnh và tệp `.srt`, mỗi ảnh tự khớp một dòng phụ đề, có hiệu ứng chuyển động, overlay và thiết lập kiểu phụ đề.
+
+![Tạo slide ảnh khớp file phụ đề](docs/screenshots/vi/vt-slideshow.webp)
+
+**Chia video thành nhiều đoạn** — chia theo số phần, thời lượng cố định hoặc ngẫu nhiên, danh sách mốc thời gian hay danh sách khoảng A–B; một tệp hoặc hàng loạt, dùng GPU nếu có.
+
+![Chia video thành nhiều đoạn](docs/screenshots/vi/vt-slicer.webp)
+
+**Xuất khung hình từ video** — tách ảnh theo tổng số ảnh, khoảng thời gian, số khung hình hoặc theo chuyển động; một tệp hoặc cả thư mục.
+
+![Xuất khung hình từ video](docs/screenshots/vi/vt-extractor.webp)
+
+**Xoá logo video** — xoá logo ✦ trên video Google Vids 720p và 1080p (ngang hoặc dọc), xem thử trước/sau ngay trong app. Video không có logo được bỏ qua; tệp gốc giữ nguyên, kết quả lưu thành `<tên>_nologo.mp4`.
+
+![Xoá logo video](docs/screenshots/vi/vt-logo.webp)
+
+### 🔍 Nâng Cấp Ảnh
+
+![Nâng Cấp Ảnh](docs/screenshots/vi/upscaler.webp)
+
+Phóng to và làm nét ảnh ngay trên máy — thêm từng ảnh hoặc cả thư mục, chọn mô hình AI (Real-ESRGAN, UltraSharp, Remacri…) và tỷ lệ 2x–8x, theo dõi tiến độ từng dòng và so sánh trước/sau.
 
 ### 🌐 Webhook API
 
-![Webhook API](docs/screenshots/09-webhook.png)
+![Webhook API](docs/screenshots/vi/webhook.webp)
 
-Biến ứng dụng thành máy chủ tự động hóa cục bộ. Khởi chạy nó, sao chép API key, và POST các tác vụ tới `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate` hoặc `/api/openai/generate`, rồi truy vấn `/api/status/<id>`. Trang liệt kê mọi mô hình và các tỷ lệ khung hình được hỗ trợ. Lược đồ đầy đủ: [`WEBHOOK_INTEGRATION.vi.md`](WEBHOOK_INTEGRATION.vi.md).
+Biến ứng dụng thành máy chủ tự động hóa cục bộ (gói MAX) để n8n, Make, Zapier, script hay AI agent đẩy việc vào hàng đợi của app. Khởi chạy nó, sao chép API key, và POST các tác vụ tới `/api/image/generate`, `/api/video/generate`, `/api/grok/generate`, `/api/meta/generate`, `/api/openai/generate` hoặc `/api/upscale/generate`, rồi truy vấn `/api/status/<id>`. Trang liệt kê mọi mô hình và các tỷ lệ khung hình được hỗ trợ. Lược đồ đầy đủ: [`WEBHOOK_INTEGRATION.vi.md`](WEBHOOK_INTEGRATION.vi.md).
 
 ---
 
@@ -174,20 +215,22 @@ Biến ứng dụng thành máy chủ tự động hóa cục bộ. Khởi chạ
 
 | Gì | macOS | Windows |
 |---|---|---|
-| Đầu ra (ảnh / video) | `~/Documents/G-Labs Studio` | `%USERPROFILE%\Documents\G-Labs Studio` |
-| Cài đặt, phiên, tài khoản | `~/Library/Application Support/G-Labs Studio` | `%APPDATA%\G-Labs Studio` |
+| Đầu ra (ảnh / video) | `~/Documents/G-Labs Studio/output` | `%USERPROFILE%\Documents\G-Labs Studio\output` |
+| Cài đặt, phiên, tài khoản, nhân vật | `~/Library/Application Support/G-Labs Studio` | `%APPDATA%\G-Labs Studio` |
 
-Cài đặt, danh sách prompt, phiên làm việc, kho nhân vật và danh sách tài khoản của bạn được lưu và khôi phục vào lần tiếp theo bạn mở ứng dụng.
+Mỗi trang có một thư mục con riêng trong `output` (mỗi lần chạy một thư mục nhỏ); bạn có thể đổi thư mục lưu ở từng trang. Cài đặt, danh sách prompt, phiên làm việc, kho nhân vật và danh sách tài khoản của bạn được lưu và khôi phục vào lần tiếp theo bạn mở ứng dụng.
 
 ---
 
 ## Khắc phục sự cố
 
-**Mọi thứ bị khóa / màn hình mua hàng cứ mở ra** — gói của bạn đã hết hạn, hoặc tài khoản đã đăng nhập trên một máy khác. Kiểm tra huy hiệu hạng (góc dưới bên trái) và gia hạn.
+**Mọi thứ bị khóa / màn hình mua hàng cứ mở ra** — gói của bạn đã hết hạn, hoặc tài khoản đã đăng nhập trên một máy khác. Kiểm tra huy hiệu hạng (góc dưới bên trái) và gia hạn. Google Vids và Google Pics cần gói PLUS/MAX; Webhook API cần gói MAX.
 
-**Một bản tạo Grok không làm gì cả** — Grok chạy qua tab `grok.com` của bạn. Cài đặt/bật tiện ích trình duyệt **Auth Helper** (Settings → Grok) và đảm bảo bạn đã đăng nhập grok.com.
+**Một bản tạo Grok không làm gì cả** — Grok chạy qua tab `grok.com` của bạn. Cài đặt/bật tiện ích trình duyệt **Auth Helper** (Cài Đặt → Tài khoản Grok) và đảm bảo bạn đã đăng nhập grok.com.
 
-**"Active: 0 accounts" trên một trang** — thêm hoặc bật lại một tài khoản trong tab tài khoản của trang đó (Settings), hoặc token của nó đã hết hạn — nhấn **Refresh all**.
+**Google Pics báo chưa có tài khoản** — Pics dùng tài khoản Google Vids. Thêm một tài khoản trong Cài Đặt → **Tài khoản Google**.
+
+**"Đang hoạt động: 0 tài khoản" trên một trang** — thêm hoặc bật lại một tài khoản trong tab tài khoản của trang đó (Cài Đặt), hoặc token của nó đã hết hạn — nhấn **Làm mới tất cả**.
 
 **Windows chặn ở "Windows protected your PC"** — bấm **More info → Run anyway**. App chưa mua chứng chỉ ký của Microsoft nên bị cảnh báo, không phải virus.
 
