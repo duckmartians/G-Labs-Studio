@@ -84,6 +84,14 @@ handled, so browser-based clients work.
 | `GET`  | `/api/files/{filename}` | ❌ | Download a generated output file |
 | `GET`  | `/api/tasks` | ✅ | List the 50 most recent tasks |
 | `POST` | `/api/stop` | ✅ | **Stop** every pending / running task — or one: `/api/stop/{task_id}` or body `{"task_id": "..."}`. Needs the API key only (no MAX check), so a client can always cancel. |
+| `GET`  | `/api/characters` | ✅ | List the **character library** (§5.8) |
+| `GET`  | `/api/characters/{name}` | ✅ | One character (name is case-insensitive, URL-encoded) |
+| `GET`  | `/api/characters/{name}/image` | ✅ | The character's picture (needs the API key too) |
+| `POST` | `/api/characters` | ✅ | Add a character (name, picture, preset voice, notes) → `201` |
+| `PUT` / `PATCH` | `/api/characters/{name}` | ✅ | Edit a character: rename (`new_name`), new picture, voice preset, notes |
+| `DELETE` | `/api/characters/{name}` | ✅ | Delete a character and its picture |
+| `POST` | `/api/characters/preupload` | ✅ | **Pre-upload** character pictures to your accounts (§5.9) → `202` + `task_id` |
+| `POST` | `/api/preupload` | ✅ | **Pre-upload** reference images to your accounts (§5.9) → `202` + `task_id` |
 
 Trailing slashes are tolerated (e.g. `/api/health/`).
 
@@ -207,6 +215,7 @@ request is the usual way to hit it.
 | `aspect_ratio` | string | ❌ | `1:1` | One of `1:1`, `3:4`, `4:3`, `9:16`, `16:9`. Unknown → `1:1`. |
 | `reference_images` | array | ❌ | `[]` | Up to **10** base64 images (see §6). Each image may include a `name` to bind it via `@name` in the prompt (§6.1). |
 | `upscale` | array | ❌ | `[]` | Any of `"2K"`, `"4K"`. **4K requires an ULTRA account** and a model that supports upscaling. Invalid values are dropped. |
+| `use_characters` | bool | ❌ | (app switch) | Use (`true`) or ignore (`false`) the **character library** for **this task only** - the app's global Characters switch is not changed and other tasks / app runs are not affected. Omitted or `null` → follows the switch (the behaviour before this field existed). Exception: `nano_pics` and `meta_muse` use characters **only with an explicit `true`** - the switch alone does not apply to them (§6.3). Not a boolean → `400 INVALID_FIELD`. |
 
 ```json
 {
@@ -232,6 +241,13 @@ request is the usual way to hit it.
 > - `reference_images`: **1–14** images (base64 or `path`, §6), positional — Google Pics has **no
 >   `@tag`** binding, `name` / `category` are ignored. More than the server limit (14) →
 >   `400 TOO_MANY_REFERENCES` (never silently dropped).
+> - **Library characters** (only with `use_characters: true` in the request - the app switch alone
+>   does not apply here): every character the prompt names - same rule as the Google Pics page: the
+>   character's name plays the file name in the reference auto-match, following the global match
+>   mode (General settings) - is added as a reference image **after your images**, only into the
+>   free slots (never over the 14 limit, never a `TOO_MANY_REFERENCES`). An image **you sent** whose
+>   `name` (file stem) equals the character's name wins. With `mode` omitted, a matched character
+>   turns the request into `image_to_image`; an explicit `text_to_image` never adds characters.
 > - `aspect_ratio`: one of the server list — today `16:9, 9:16, 1:1, 4:3, 3:4, 3:2, 2:3, 5:4, 4:5,
 >   21:9` (the Webhook tab's model table shows the live list). Default `1:1`. Anything else →
 >   `400 INVALID_ASPECT_RATIO` (no silent fallback, unlike the Flow models).
@@ -288,6 +304,9 @@ Google Pics example — image to image, 16:9, keep 2 images:
 > - `reference_images`: **1–14** images (base64 or `path`, §6), positional - Meta Muse has **no
 >   `@tag`** binding, `name` / `category` are ignored. More than the server limit (14) →
 >   `400 TOO_MANY_REFERENCES` (never silently dropped).
+> - **Library characters**: same rule as Google Pics above (Meta Muse page match, free slots only,
+>   your same-named image wins, `mode` omitted → `image_to_image` when a character matched, never on
+>   `text_to_image`). Also for `image_to_video` on `/api/video/generate` (up to the video cap).
 > - `aspect_ratio`: one of the server list - today `1:1, 16:9, 9:16, 4:3, 3:4, 3:2, 2:3, 21:9, 5:4,
 >   4:5` (the Webhook tab's model table shows the live list). Default `1:1`. Anything else →
 >   `400 INVALID_ASPECT_RATIO` (no silent fallback).
@@ -329,12 +348,13 @@ Meta Muse example - image to image, 16:9, 2 images:
 | `model` | string | ✅ | — | One of `veo_31_fast`, `veo_31_lite`, `veo_31_quality`, `veo_31_lite_relaxed`, `omni_flash`, `omni_vids`, `meta_muse`. Missing → `400 MISSING_MODEL`; an unknown Veo name → `veo_31_fast`. **`omni_vids`** = Google Vids (see the Google Vids note below). **`meta_muse`** = Meta Muse (see the Meta Muse note below). `veo_31_lite_relaxed` requires **ULTRA** accounts. **`omni_flash`**: see the `mode` note. |
 | `aspect_ratio` | string | ❌ | `16:9` | `16:9` or `9:16`. |
 | `mode` | string | ❌ | `text_to_video` | `text_to_video` (0 refs) · `start_image` (1 ref) · `start_end_image` (2 refs: start + end frame) · `components` (Veo up to 3 refs, Omni Flash up to 7; supports `voice` and `reference_video`). **Every mode works on both Veo and Omni Flash** (Omni Flash `start_end_image` needs the server config's `i2v_end` mapping — without it the request is rejected with a clear reason). |
-| `reference_images` | array | ❌ | `[]` | Up to **3** base64 images (Veo); **Omni Flash `components` up to 7** (up to **5** when a `reference_video` is present). **Required when `mode != text_to_video`** — except `components`, which may use `reference_video` instead. Each image may include a `name` to bind it via `@name` in the prompt — Veo (§6.1). |
+| `reference_images` | array | ❌ | `[]` | Up to **3** base64 images (Veo); **Omni Flash `components` up to 7** (up to **5** when a `reference_video` is present). **Required when `mode != text_to_video`** — except `components`, which may use `reference_video` instead, or only `@Name` of a library character when characters are in use (§6.3). Each image may include a `name` to bind it via `@name` in the prompt — Veo (§6.1). |
 | `reference_video` | string/object | ❌ | — | **Omni Flash + `components` mode only** — the **edit-video** flow: the clip (≤ **10s**) is restyled per the prompt, optionally with up to 5 ingredient images. Accepts a base64/data-URI string (`data:video/mp4;base64,...`) or `{"path": "...", "name": "..."}` (file on the app machine). Always renders **720p** (cannot be combined with `"360p"`). Clips over 10s are rejected — trim before sending. |
 | `resolution` | array | ❌ | `["720p"]` | Any of `"360p"`, `"720p"`, `"1080p"`, `"4K"`. **`360p` is Omni Flash only** (server-config gated) — the base video generates at 360p, cheaper on credits; **a 360p source upscales to 720p only**, so valid combos are `["360p"]` or `["360p", "720p"]` (adding `1080p`/`4K` is rejected). `1080p`/`4K` are produced by upscaling a 720p base; **only `4K` requires an ULTRA account**. Invalid values → `720p`. One output file per produced resolution: `results` carries **every** requested resolution in processing order (before 2026-10-07 only the last resolution's file was returned). |
 | `voice` | string | ❌ | `""` | Lowercase voice name. Only used in `components` mode. |
 | `video_length` | int | ❌ | (model default) | Clip length in seconds. Veo: `4`/`6`/`8`; Omni Flash: `4`/`6`/`8`/`10`. Unsupported values → default (8s). **Veo `4`/`6` require an ULTRA account** (Omni Flash doesn't). The edit flow (`reference_video`) ignores this — length follows the source clip. |
 | `remove_logo` | bool | ❌ | (Flow Video page switch) | Remove the logo from videos made on **Pro/Free** accounts: the "Veo" text (Veo) or the ✦ mark (Omni Flash), at 720p and 1080p (360p / 4K are left as is). `true` removes, `false` keeps; omitted → follows the Flow Video page's "Show Veo / Gemini logo" switch (off = remove) **and** the master "Auto-remove logo on download" switch (Remove video logo tab; off = keep). An explicit `true` removes even when the master switch is off. **ULTRA** accounts: when omitted, Google turns the logo off at the source per that switch (no extra processing); with `true` the app still checks and removes the logo if the video has one. Wrong type → `400 INVALID_FIELD`. Logo removal runs one video at a time (adds ~1–4 s per video). |
+| `use_characters` | bool | ❌ | (app switch) | Use / ignore the **character library** for this task only (Veo, Omni Flash, `omni_vids`, `meta_muse`) - see §5.1 and §6.3. Not a boolean → `400 INVALID_FIELD`. |
 
 ```json
 {
@@ -407,7 +427,8 @@ Omni Flash example — edit video (restyle a ≤10s clip per the prompt):
 >   image at that spot (`"@luna meets @grandpa"`); images without an `@` are still sent, in front.
 >   **Characters of the library** (Settings → Characters) can be named the same way — `@Anna`
 >   adds the character's picture as an ingredient (picture only; the voice is not used by
->   Google Vids). Rules: the Characters feature must be on; the tag must be the character's
+>   Google Vids). Rules: characters must be in use (the Characters switch, or `use_characters: true`
+>   for this task; `false` turns them off for it); the tag must be the character's
 >   **full name** (case-insensitive); a character is added only while fewer than 3 images are
 >   in the request; an image **you sent** with that same `name` wins over the character. Up to 3
 >   ingredients in total; with none at all → `400 MISSING_REFERENCE`.
@@ -765,6 +786,86 @@ via the URL rather than guessing the path on disk.
 | Meta `mode=i2v` | Meta AI Image → Video (start/end) | `9:16, 16:9, 1:1` |
 | OpenAI `GPT_IMAGE` | GPT Image 2 (~1.57 MP, no upscale) | `1:1, 3:2, 4:3, 16:9, 21:9, 2:3, 3:4, 4:5, 9:16, custom` |
 
+### 5.8 Character library - `/api/characters`
+
+The same library as Settings → Characters in the app (one record per character, the picture is
+copied into the app's own folder, so it survives deleting the file you sent). Every call needs
+`X-API-Key` and the MAX plan, like generate. Changes show up in the app at once (the Characters
+page reloads and the `@Name` thumbnails of the pages refresh).
+
+**Character object** (returned by list / get / create / update):
+
+```json
+{
+  "name": "Luna",
+  "character_id": "3f2b6a4e-...",
+  "voice_preset_id": "kore",
+  "has_custom_voice": false,
+  "personality_notes": "brave, curious",
+  "has_image": true,
+  "image_url": "http://127.0.0.1:8765/api/characters/Luna/image?v=1761550000"
+}
+```
+
+`image_url` needs the `X-API-Key` header too (it is not a public link); `?v=` changes when the
+picture changes. `GET /api/characters` → `{"characters": [...], "count": n}`, sorted by name.
+
+**Create - `POST /api/characters` → `201`**
+
+| Field | Type | Required | Notes |
+|-------|------|:--------:|-------|
+| `name` | string | ✅ | Letters and digits only (Unicode letters are fine, e.g. `Ông2`; no spaces, punctuation or symbols - it is the `@tag`), max 64. Unique, **case-insensitive** (`luna` = `Luna`) → else `409 NAME_TAKEN`. |
+| `image` | string / object | ✅ | Like a `reference_images` entry: base64 / data-URI string, `{"data": "...", "name": "..."}` or `{"path": "..."}` (file on the app machine, copied). Must be a real PNG / JPEG / WEBP / GIF / BMP picture → else `400 INVALID_IMAGE`. |
+| `voice_preset_id` | string | ❌ | One of the 30 Flow preset voices (`achernar`, `kore`, `puck`, ...; case-insensitive), `""` = no voice. Unknown → `400 INVALID_VOICE`. |
+| `personality_notes` | string | ❌ | Free text, max 4000. |
+
+A **custom voice** (`voice_performance` / `voice_dialog`) cannot be made through the webhook - it
+needs a preview (and captcha) in the app → `400 CUSTOM_VOICE_UNSUPPORTED`. Unknown fields →
+`400 UNKNOWN_FIELD`.
+
+**Update - `PUT` or `PATCH /api/characters/{name}` → `200`** - send only what changes:
+`new_name` (rename; the `@tag` changes with it; `name` in the body is accepted as an alias),
+`image` (new picture, same forms as above), `voice_preset_id`, `personality_notes`. Nothing to
+change → `400 NOTHING_TO_UPDATE`. Changing the preset of a character that has a custom voice →
+`409 CUSTOM_VOICE_LOCKED` (change it in the app). A rename or a new picture drops the character's
+Flow entities so they are re-created with the new name / picture on the next run.
+
+**Delete - `DELETE /api/characters/{name}` → `200`** `{"deleted": "Luna", "character_id": "..."}`
+(the picture copy goes too).
+
+Errors: `{"error": "...", "error_code": "..."}` with `400` (`INVALID_NAME`, `INVALID_IMAGE`,
+`MISSING_IMAGE`, `INVALID_VOICE`, `INVALID_FIELD`, `UNKNOWN_FIELD`, `CUSTOM_VOICE_UNSUPPORTED`,
+`NOTHING_TO_UPDATE`), `404 NOT_FOUND`, `409` (`NAME_TAKEN`, `CUSTOM_VOICE_LOCKED`). Creates are safe
+to run in parallel: two requests for the same name never both succeed.
+
+### 5.9 Pre-upload - `/api/characters/preupload` and `/api/preupload`
+
+Uploads pictures to your accounts **ahead of time** and records them in each platform's
+persistent upload cache, so a later generation (possibly over a slow proxy / VPN) only hits the
+cache. Platforms: `flow` (the Flow accounts of the Image page; 1 captcha per upload) and `grok`.
+Meta AI is not offered: its upload tokens expire within minutes, so a pre-upload would not survive
+until generation. Already-cached pictures are skipped. One run at a time (also against a run
+started in the app) → `409 BUSY` while one is going.
+
+| Body field | Type | Default | Notes |
+|-------|------|---------|-------|
+| `names` | array | every character | `/api/characters/preupload` only: character names (case-insensitive). Unknown name → `404`. Characters without a picture on disk are listed in `skipped`. |
+| `images` | array | - | `/api/preupload` only, required: `reference_images` entries. The Flow cache is keyed by **file path**, so with `flow` send `{"path": "..."}` - the same path you will later use in `reference_images`. Grok caches by file **content**, so base64 is fine for it; base64 with `flow` in `providers` → `400 BASE64_NOT_CACHEABLE`. Max 200. |
+| `providers` | array | `["flow", "grok"]` (characters: `["flow"]`) | `/api/preupload`: any of `flow`, `grok`. `/api/characters/preupload`: `flow` only - the character library is used by the Flow pages, the Grok page never reads it. Unknown / empty → `400 INVALID_PROVIDERS`. |
+| `raw_network` | bool | `false` | `true` = upload without the accounts' proxies (faster; every account then shows one IP). |
+
+Answer `202`: `{"task_id", "status": "running", "type": "preupload", "files", "providers",
+"raw_network", "poll_url"}` (+ `characters` / `skipped` for the character variant). Poll
+`GET /api/status/{task_id}`: while running it carries `progress` `{done, total, info}`; when
+`completed`, `meta` = `{files, raw_network, providers: {flow: {uploaded, cached, failed: [{account,
+file, error}], accounts, seconds}, ...}}` (+ `characters` / `skipped`). `POST /api/stop/{task_id}`
+stops it between files.
+
+> Note: a Flow pre-upload is reused by webhook image and Veo video tasks whenever the reference is a
+> stable file: a library character, or a `{"path": ...}` reference. Base64 references are written
+> to a new temp file per request, so they cannot reuse a pre-upload (Veo still dedupes them by
+> content within the running app).
+
 ---
 
 ## 6. Reference image format
@@ -881,6 +982,30 @@ with the same same-machine caveat:
 
 ---
 
+### 6.3 Library characters and `use_characters`
+
+Characters of the library (Settings → Characters, or `/api/characters` §5.8) are used when
+**characters are in use** for the task: `use_characters: true`, or - when the field is omitted -
+the app's global Characters switch. `use_characters: false` ignores them for that task even when
+the switch is on. The choice applies to that task only.
+
+- **Image (Flow)** and **Video (Veo / Omni Flash)**: `@Name` (exact name, case-insensitive) uses the
+  character - its picture as a reference image, or its Flow entity when it has a custom voice
+  (video `components`). Characters take the reference slots your own images leave free.
+  `components` with only `@Name` (no `reference_images`) is accepted when the prompt tags at least
+  one library character.
+- **Google Vids `components`**: `@Name` adds the picture as an ingredient (§5.2).
+- **Google Pics / Meta Muse**: only with `use_characters: true` in the request (the app switch alone
+  does not apply here, so existing integrations keep their behaviour). No `@tag` needed - every
+  character the prompt names (Pics / Muse page rule, global match mode) is added after your images,
+  free slots only (§5.1).
+- Grok, Meta AI (`/api/meta/generate`), OpenAI and Upscale do not use the library (the field is
+  ignored).
+
+```json
+{ "prompt": "@Luna reads a book by the fire", "model": "nano_banana_2", "use_characters": true }
+```
+
 ## 7. Responses & status reference
 
 ### POST generate → `202`
@@ -890,7 +1015,8 @@ with the same same-machine caveat:
 
 ### GET `/api/status/{task_id}` → `200`
 - `pending` / `running`: `{ task_id, type, status, prompt, created_at }`
-- `type`: `image`, `video`, `grok`, `vibes` (a Meta AI task), `openai` or `upscale`.
+- `type`: `image`, `video`, `grok`, `vibes` (a Meta AI task), `openai`, `upscale` or `preupload` (§5.9;
+  also carries `progress` `{done, total, info}`).
 - `completed`: adds `results` (array of file URLs) and `completed_at` (unix seconds); a
   Google Vids task also adds `meta` (§5.2), a Google Pics task too (§5.1), and a Meta Muse task adds `meta`
   `{mode, aspect_ratio, count, account, partial}` (§5.1 / §5.2).
@@ -937,6 +1063,8 @@ be a JSON object"}`; a body over 64 KB → `413` — neither ever stops anything
 | `404` | `{"error": "File not found: <name>"}` | Unknown/expired file |
 | `413` | `{"error": "Payload too large (max 52428800 bytes)"}` | Body over the **50 MB** cap — see §5 |
 | `500` | `{"error": "Failed to read file"}` | Result file exists in the registry but could not be read |
+| `400` / `404` / `409` | `{"error": "...", "error_code": "NAME_TAKEN"}` | Character library / pre-upload calls (§5.8, §5.9) answer synchronously with a named `error_code` |
+| `409` | `{"error": "A pre-upload is already running ...", "error_code": "BUSY"}` | A pre-upload is already going |
 
 These are **transport-level** failures returned by the `POST`/`GET` itself. A request
 that gets past them returns `202` and any later problem shows up as a `failed` task
@@ -1181,6 +1309,26 @@ curl -X POST http://127.0.0.1:8765/api/video/generate -H "Content-Type: applicat
 curl -X POST http://127.0.0.1:8765/api/stop/abc12345 -H "X-API-Key: YOUR_API_KEY"
 curl -X POST http://127.0.0.1:8765/api/stop -H "X-API-Key: YOUR_API_KEY"
 
+# --- Character library: add, list, rename, delete ---
+curl -X POST http://127.0.0.1:8765/api/characters \
+  -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"name": "Luna", "image": {"path": "E:/chars/luna.png"}, "voice_preset_id": "kore"}'
+curl http://127.0.0.1:8765/api/characters -H "X-API-Key: YOUR_API_KEY"
+curl -X PATCH http://127.0.0.1:8765/api/characters/Luna \
+  -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"new_name": "Selene"}'
+curl -X DELETE http://127.0.0.1:8765/api/characters/Selene -H "X-API-Key: YOUR_API_KEY"
+
+# --- Use the library for this task only (app switch untouched) ---
+curl -X POST http://127.0.0.1:8765/api/image/generate \
+  -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"prompt": "@Luna reads a book by the fire", "model": "nano_banana_2", "use_characters": true}'
+
+# --- Pre-upload every character picture to Flow, then poll the task ---
+curl -X POST http://127.0.0.1:8765/api/characters/preupload \
+  -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"providers": ["flow"]}'
+
 # --- Download the result file ---
 curl -o out.png "http://127.0.0.1:8765/api/files/image_001.png"
 
@@ -1291,3 +1439,5 @@ console.log(urls);
    Google Pics and Meta Muse reject an invalid value with a named `400` instead of falling back.
 9. To cancel, `POST /api/stop/{task_id}` (or `/api/stop` for everything) — the task turns
    `failed` with `499 STOPPED_BY_CLIENT` at once.
+10. Characters: manage them with `/api/characters` (§5.8), choose per task with `use_characters`
+    (§6.3), and pre-upload their pictures with `/api/characters/preupload` (§5.9).

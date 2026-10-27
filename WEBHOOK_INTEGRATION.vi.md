@@ -82,6 +82,14 @@ client trên trình duyệt cũng dùng được.
 | `GET`  | `/api/files/{filename}` | ❌ | Tải file kết quả đã tạo |
 | `GET`  | `/api/tasks` | ✅ | Liệt kê 50 task gần nhất |
 | `POST` | `/api/stop` | ✅ | **Dừng** mọi task đang chờ / đang chạy — hoặc một task: `/api/stop/{task_id}` hay body `{"task_id": "..."}`. Chỉ cần API key (không kiểm tra gói MAX), nên client luôn huỷ được. |
+| `GET`  | `/api/characters` | ✅ | Liệt kê **thư viện nhân vật** (§5.8) |
+| `GET`  | `/api/characters/{name}` | ✅ | Một nhân vật (tên không phân biệt hoa thường, mã hoá URL) |
+| `GET`  | `/api/characters/{name}/image` | ✅ | Ảnh của nhân vật (cũng cần API key) |
+| `POST` | `/api/characters` | ✅ | Thêm nhân vật (tên, ảnh, giọng có sẵn, ghi chú) → `201` |
+| `PUT` / `PATCH` | `/api/characters/{name}` | ✅ | Sửa nhân vật: đổi tên (`new_name`), ảnh mới, giọng có sẵn, ghi chú |
+| `DELETE` | `/api/characters/{name}` | ✅ | Xoá nhân vật và ảnh của nó |
+| `POST` | `/api/characters/preupload` | ✅ | **Upload trước** ảnh nhân vật lên các tài khoản (§5.9) → `202` + `task_id` |
+| `POST` | `/api/preupload` | ✅ | **Upload trước** ảnh tham chiếu lên các tài khoản (§5.9) → `202` + `task_id` |
 
 Dấu `/` ở cuối được chấp nhận (vd `/api/health/`).
 
@@ -203,6 +211,7 @@ lớn vào cùng một request.
 | `aspect_ratio` | string | ❌ | `1:1` | Một trong `1:1`, `3:4`, `4:3`, `9:16`, `16:9`. Không hợp lệ → `1:1`. |
 | `reference_images` | array | ❌ | `[]` | Tối đa **10** ảnh base64 (xem §6). Mỗi ảnh có thể kèm `name` để gắn theo `@tên` trong prompt (§6.1). |
 | `upscale` | array | ❌ | `[]` | Bất kỳ `"2K"`, `"4K"`. **4K cần tài khoản ULTRA** và model hỗ trợ upscale. Giá trị sai bị bỏ. |
+| `use_characters` | bool | ❌ | (công tắc app) | Dùng (`true`) hay bỏ qua (`false`) **thư viện nhân vật** cho **riêng task này** - công tắc Nhân vật chung của app không đổi, task khác / lượt chạy trong app không bị ảnh hưởng. Không gửi hoặc `null` → theo công tắc (như trước khi có trường này). Riêng `nano_pics` và `meta_muse` chỉ dùng nhân vật khi gửi **rõ `true`** - công tắc app không áp dụng cho hai model này (§6.3). Không phải boolean → `400 INVALID_FIELD`. |
 
 ```json
 {
@@ -227,6 +236,13 @@ lớn vào cùng một request.
 > - `reference_images`: **1–14** ảnh (base64 hoặc `path`, §6), theo vị trí — Google Pics **không
 >   có** gắn `@tag`, `name` / `category` bị bỏ qua. Vượt giới hạn máy chủ (14) →
 >   `400 TOO_MANY_REFERENCES` (không bao giờ lặng lẽ cắt bớt).
+> - **Nhân vật trong thư viện** (chỉ khi yêu cầu gửi `use_characters: true` - riêng công tắc app không
+>   áp dụng ở đây): mọi nhân vật mà prompt nhắc tới - cùng luật với trang Google Pics: tên nhân vật
+>   đóng vai tên file trong tự động gán ảnh, theo chế độ khớp chung (Cài đặt chung) - được thêm làm
+>   ảnh tham chiếu **sau ảnh của bạn**, chỉ vào các ô còn trống (không bao giờ vượt 14, không bao giờ
+>   gây `TOO_MANY_REFERENCES`). Ảnh **bạn gửi** có `name` (tên file) trùng tên nhân vật được ưu tiên.
+>   Không gửi `mode` mà có nhân vật khớp → thành `image_to_image`; `text_to_image` gửi rõ thì không
+>   bao giờ thêm nhân vật.
 > - `aspect_ratio`: một giá trị trong danh sách máy chủ — hiện là `16:9, 9:16, 1:1, 4:3, 3:4, 3:2,
 >   2:3, 5:4, 4:5, 21:9` (bảng model ở tab Webhook hiện danh sách đang dùng). Mặc định `1:1`. Giá
 >   trị khác → `400 INVALID_ASPECT_RATIO` (không tự đổi về mặc định như các model Flow).
@@ -280,6 +296,10 @@ Ví dụ Google Pics — ảnh sang ảnh, 16:9, giữ 2 ảnh:
 > - `reference_images`: **1–14** ảnh (base64 hoặc `path`, §6), theo vị trí - Meta Muse **không
 >   có** gắn `@tag`, `name` / `category` bị bỏ qua. Vượt giới hạn máy chủ (14) →
 >   `400 TOO_MANY_REFERENCES` (không bao giờ lặng lẽ cắt bớt).
+> - **Nhân vật trong thư viện**: cùng luật với Google Pics ở trên (khớp như trang Meta Muse, chỉ vào
+>   ô trống, ảnh bạn gửi cùng tên được ưu tiên, không gửi `mode` → `image_to_image` khi có nhân vật
+>   khớp, không bao giờ với `text_to_image`). Áp dụng cả `image_to_video` trên `/api/video/generate`
+>   (trong giới hạn ảnh của video).
 > - `aspect_ratio`: một giá trị trong danh sách máy chủ - hiện là `1:1, 16:9, 9:16, 4:3, 3:4, 3:2,
 >   2:3, 21:9, 5:4, 4:5` (bảng model ở tab Webhook hiện danh sách đang dùng). Mặc định `1:1`. Giá
 >   trị khác → `400 INVALID_ASPECT_RATIO` (không tự đổi về mặc định).
@@ -320,12 +340,13 @@ Ví dụ Meta Muse - ảnh sang ảnh, 16:9, 2 ảnh:
 | `model` | string | ✅ | — | Một trong `veo_31_fast`, `veo_31_lite`, `veo_31_quality`, `veo_31_lite_relaxed`, `omni_flash`, `omni_vids`, `meta_muse`. Thiếu → `400 MISSING_MODEL`; tên Veo lạ → `veo_31_fast`. **`omni_vids`** = Google Vids (xem ghi chú Google Vids bên dưới). **`meta_muse`** = Meta Muse (xem ghi chú Meta Muse bên dưới). `veo_31_lite_relaxed` cần tài khoản **ULTRA**. **`omni_flash`**: xem ghi chú `mode`. |
 | `aspect_ratio` | string | ❌ | `16:9` | `16:9` hoặc `9:16`. |
 | `mode` | string | ❌ | `text_to_video` | `text_to_video` (0 ảnh) · `start_image` (1 ảnh) · `start_end_image` (2 ảnh: khung đầu + khung cuối) · `components` (Veo tối đa 3 ảnh, Omni Flash tối đa 7; hỗ trợ `voice` và `reference_video`). **Mọi mode dùng được cho cả Veo lẫn Omni Flash** (`start_end_image` của Omni Flash cần server config có mapping `i2v_end` — thiếu sẽ bị từ chối kèm lý do rõ). |
-| `reference_images` | array | ❌ | `[]` | Tối đa **3** ảnh base64 (Veo); **Omni Flash `components` tối đa 7** (có `reference_video` thì tối đa **5**). **Bắt buộc khi `mode != text_to_video`** — riêng `components` có thể thay bằng `reference_video`. Mỗi ảnh có thể kèm `name` để gắn theo `@tên` trong prompt — Veo (§6.1). |
+| `reference_images` | array | ❌ | `[]` | Tối đa **3** ảnh base64 (Veo); **Omni Flash `components` tối đa 7** (có `reference_video` thì tối đa **5**). **Bắt buộc khi `mode != text_to_video`** — riêng `components` có thể thay bằng `reference_video`, hoặc chỉ `@Tên` của nhân vật trong thư viện khi đang dùng nhân vật (§6.3). Mỗi ảnh có thể kèm `name` để gắn theo `@tên` trong prompt — Veo (§6.1). |
 | `reference_video` | string/object | ❌ | — | **Chỉ Omni Flash + mode `components`** — luồng **edit video**: clip (≤ **10s**) được dựng lại theo prompt, có thể kèm tối đa 5 ảnh thành phần. Nhận chuỗi base64/data-URI (`data:video/mp4;base64,...`) hoặc `{"path": "...", "name": "..."}` (file có sẵn trên máy chạy app). Luôn xuất **720p** (không dùng cùng `"360p"`). Clip dài quá 10s bị từ chối — cắt trước khi gửi. |
 | `resolution` | array | ❌ | `["720p"]` | Bất kỳ `"360p"`, `"720p"`, `"1080p"`, `"4K"`. **`360p` chỉ có ở Omni Flash** (server config quyết định) — bản gốc tạo ở 360p, rẻ credit hơn; **nguồn 360p chỉ upscale được lên 720p** nên tổ hợp hợp lệ là `["360p"]` hoặc `["360p", "720p"]` (kèm `1080p`/`4K` sẽ bị từ chối). `1080p`/`4K` tạo bằng upscale từ nguồn 720p; **chỉ `4K` cần tài khoản ULTRA**. Giá trị sai → `720p`. Mỗi độ phân giải tạo ra một file: `results` trả **mọi** độ phân giải đã yêu cầu theo thứ tự xử lý (trước 07/10/2026 chỉ trả file của độ phân giải cuối). |
 | `voice` | string | ❌ | `""` | Tên giọng (chữ thường). Chỉ dùng ở mode `components`. |
 | `video_length` | int | ❌ | (mặc định model) | Độ dài clip (giây). Veo: `4`/`6`/`8`; Omni Flash: `4`/`6`/`8`/`10`. Giá trị không hỗ trợ → dùng mặc định (8s). **Veo `4`/`6` cần tài khoản ULTRA** (Omni Flash không cần). Luồng edit (`reference_video`) bỏ qua trường này — độ dài theo clip gốc. |
 | `remove_logo` | bool | ❌ | (theo công tắc trang Flow Video) | Xoá logo khỏi video tạo bằng tài khoản **Pro/Free**: chữ "Veo" (Veo) hoặc dấu ✦ (Omni Flash), cho 720p và 1080p (360p / 4K giữ nguyên). `true` xoá, `false` giữ; không gửi → theo công tắc "Hiển thị logo Veo / Gemini" của trang Flow Video (tắt = xoá) **và** công tắc tổng "Tự động xoá logo khi tải video" (tab Xoá logo video; tắt = không xoá). `true` gửi rõ thì xoá dù công tắc tổng tắt. Tài khoản **ULTRA**: khi không gửi, Google tắt logo tận gốc theo công tắc đó (app không xử lý thêm); gửi `true` thì app vẫn kiểm tra và xoá nếu video còn logo. Sai kiểu → `400 INVALID_FIELD`. Các video xoá logo chạy lần lượt từng cái (thêm ~1–4 giây/video). |
+| `use_characters` | bool | ❌ | (công tắc app) | Dùng / bỏ qua **thư viện nhân vật** cho riêng task này (Veo, Omni Flash, `omni_vids`, `meta_muse`) - xem §5.1 và §6.3. Không phải boolean → `400 INVALID_FIELD`. |
 
 ```json
 {
@@ -397,8 +418,8 @@ Ví dụ Omni Flash — edit video (dựng lại clip ≤10s theo prompt):
 > - Ở mode `components`, đặt `"name"` cho từng ảnh và viết `@tên` trong prompt để đặt ảnh đúng vị trí
 >   (`"@luna gặp @grandpa"`); ảnh không được @ vẫn được gửi kèm ở đầu. **Nhân vật trong thư viện**
 >   (Cài đặt → Nhân vật) gọi được cùng cách — `@Anna` thêm ảnh của nhân vật làm nguyên liệu
->   (Google Vids chỉ đồng nhất hình ảnh — không đồng nhất giọng nói). Quy tắc: tính năng Nhân vật
->   phải đang bật; tag phải là **đúng tên đầy đủ** của nhân vật (không phân biệt hoa thường); nhân
+>   (Google Vids chỉ đồng nhất hình ảnh — không đồng nhất giọng nói). Quy tắc: phải đang dùng nhân
+>   vật (công tắc Nhân vật, hoặc `use_characters: true` cho task này; `false` thì tắt cho task đó); tag phải là **đúng tên đầy đủ** của nhân vật (không phân biệt hoa thường); nhân
 >   vật chỉ được thêm khi request còn dưới 3 ảnh; ảnh **bạn gửi** có cùng `name` được ưu tiên hơn
 >   nhân vật. Tổng tối đa 3 nguyên liệu; không có nguyên liệu nào → `400 MISSING_REFERENCE`.
 > - **Tài khoản:** chỉ dùng tài khoản đang **BẬT** ở Cài đặt → Tài khoản Google (và đang tích ô Video) và còn ít
@@ -753,6 +774,83 @@ vì đoán đường dẫn trên đĩa.
 | Meta `mode=i2v` | Meta AI Ảnh → Video (đầu/cuối) | `9:16, 16:9, 1:1` |
 | OpenAI `GPT_IMAGE` | GPT Image 2 (~1.57 MP, không upscale) | `1:1, 3:2, 4:3, 16:9, 21:9, 2:3, 3:4, 4:5, 9:16, custom` |
 
+### 5.8 Thư viện nhân vật - `/api/characters`
+
+Chính là thư viện ở Cài đặt → Nhân vật trong app (mỗi nhân vật một bản ghi; ảnh được sao vào thư
+mục riêng của app nên vẫn còn khi bạn xoá file đã gửi). Mọi lệnh cần `X-API-Key` và gói MAX, như
+generate. Thay đổi hiện ngay trong app (trang Nhân vật tải lại, thumbnail `@Tên` trên các trang
+được làm mới).
+
+**Đối tượng nhân vật** (list / get / create / update trả về):
+
+```json
+{
+  "name": "Luna",
+  "character_id": "3f2b6a4e-...",
+  "voice_preset_id": "kore",
+  "has_custom_voice": false,
+  "personality_notes": "dũng cảm, tò mò",
+  "has_image": true,
+  "image_url": "http://127.0.0.1:8765/api/characters/Luna/image?v=1761550000"
+}
+```
+
+`image_url` cũng cần header `X-API-Key` (không phải link công khai); `?v=` đổi khi ảnh đổi.
+`GET /api/characters` → `{"characters": [...], "count": n}`, sắp theo tên.
+
+**Tạo - `POST /api/characters` → `201`**
+
+| Trường | Kiểu | Bắt buộc | Ghi chú |
+|-------|------|:--------:|-------|
+| `name` | string | ✅ | Chỉ chữ và số (chữ Unicode được, vd `Ông2`; không dấu cách, dấu câu hay ký hiệu - đây là `@tag`), tối đa 64. Không trùng, **không phân biệt hoa thường** (`luna` = `Luna`) → nếu trùng `409 NAME_TAKEN`. |
+| `image` | string / object | ✅ | Như một mục `reference_images`: chuỗi base64 / data-URI, `{"data": "...", "name": "..."}` hoặc `{"path": "..."}` (file trên máy chạy app, được sao). Phải là ảnh PNG / JPEG / WEBP / GIF / BMP thật → nếu không `400 INVALID_IMAGE`. |
+| `voice_preset_id` | string | ❌ | Một trong 30 giọng có sẵn của Flow (`achernar`, `kore`, `puck`, ...; không phân biệt hoa thường), `""` = không giọng. Sai → `400 INVALID_VOICE`. |
+| `personality_notes` | string | ❌ | Văn bản tự do, tối đa 4000. |
+
+**Giọng tuỳ chỉnh** (`voice_performance` / `voice_dialog`) không tạo được qua webhook - cần nghe thử
+(và captcha) trong app → `400 CUSTOM_VOICE_UNSUPPORTED`. Trường lạ → `400 UNKNOWN_FIELD`.
+
+**Sửa - `PUT` hoặc `PATCH /api/characters/{name}` → `200`** - chỉ gửi phần đổi: `new_name` (đổi
+tên; `@tag` đổi theo; `name` trong body cũng được hiểu là tên mới), `image` (ảnh mới, cùng dạng như
+trên), `voice_preset_id`, `personality_notes`. Không có gì để đổi → `400 NOTHING_TO_UPDATE`. Đổi
+giọng có sẵn của nhân vật đang có giọng tuỳ chỉnh → `409 CUSTOM_VOICE_LOCKED` (đổi trong app). Đổi
+tên hoặc ảnh sẽ bỏ các entity Flow của nhân vật để lần chạy sau tạo lại theo tên / ảnh mới.
+
+**Xoá - `DELETE /api/characters/{name}` → `200`** `{"deleted": "Luna", "character_id": "..."}`
+(bản sao ảnh cũng bị xoá).
+
+Lỗi: `{"error": "...", "error_code": "..."}` với `400` (`INVALID_NAME`, `INVALID_IMAGE`,
+`MISSING_IMAGE`, `INVALID_VOICE`, `INVALID_FIELD`, `UNKNOWN_FIELD`, `CUSTOM_VOICE_UNSUPPORTED`,
+`NOTHING_TO_UPDATE`), `404 NOT_FOUND`, `409` (`NAME_TAKEN`, `CUSTOM_VOICE_LOCKED`). Tạo song song an
+toàn: hai request cùng một tên không bao giờ cùng thành công.
+
+### 5.9 Upload trước - `/api/characters/preupload` và `/api/preupload`
+
+Upload ảnh lên các tài khoản **từ trước** và ghi vào cache upload bền của từng nền tảng, để lần tạo
+sau (có thể qua proxy / VPN chậm) chỉ việc trúng cache. Nền tảng: `flow` (tài khoản Flow của trang
+Ảnh; mỗi lần upload tốn 1 captcha) và `grok`. Không có Meta AI: token upload của Meta hết hạn sau vài
+phút nên upload trước không sống tới lúc tạo. Ảnh đã có trong cache được bỏ qua. Mỗi
+lúc một lượt (tính cả lượt chạy từ app) → `409 BUSY` khi đang có lượt khác.
+
+| Trường body | Kiểu | Mặc định | Ghi chú |
+|-------|------|---------|-------|
+| `names` | array | mọi nhân vật | Chỉ `/api/characters/preupload`: tên nhân vật (không phân biệt hoa thường). Tên không có → `404`. Nhân vật không còn ảnh trên đĩa nằm trong `skipped`. |
+| `images` | array | - | Chỉ `/api/preupload`, bắt buộc: các mục kiểu `reference_images`. Cache Flow theo **đường dẫn file**, nên khi có `flow` hãy gửi `{"path": "..."}` - đúng đường dẫn bạn sẽ dùng trong `reference_images` sau này. Grok cache theo **nội dung** file nên gửi base64 được; base64 mà `providers` có `flow` → `400 BASE64_NOT_CACHEABLE`. Tối đa 200. |
+| `providers` | array | `["flow", "grok"]` (nhân vật: `["flow"]`) | `/api/preupload`: bất kỳ `flow`, `grok`. `/api/characters/preupload`: chỉ `flow` - kho nhân vật dùng ở các trang Flow, trang Grok không đọc kho nhân vật. Sai / rỗng → `400 INVALID_PROVIDERS`. |
+| `raw_network` | bool | `false` | `true` = upload không qua proxy của tài khoản (nhanh hơn; mọi tài khoản lộ cùng một IP). |
+
+Trả `202`: `{"task_id", "status": "running", "type": "preupload", "files", "providers",
+"raw_network", "poll_url"}` (+ `characters` / `skipped` với bản nhân vật). Hỏi
+`GET /api/status/{task_id}`: khi đang chạy có `progress` `{done, total, info}`; khi `completed`,
+`meta` = `{files, raw_network, providers: {flow: {uploaded, cached, failed: [{account, file, error}],
+accounts, seconds}, ...}}` (+ `characters` / `skipped`). `POST /api/stop/{task_id}` dừng nó giữa hai
+file.
+
+> Lưu ý: ảnh đã upload trước lên Flow được task ảnh và task video Veo qua webhook dùng lại khi tham
+> chiếu là file cố định: nhân vật trong thư viện, hoặc tham chiếu `{"path": ...}`. Tham chiếu base64
+> được ghi ra file tạm mới mỗi lần gọi nên không dùng lại được bản upload trước (Veo vẫn khử trùng
+> theo nội dung trong lúc app đang chạy).
+
 ---
 
 ## 6. Định dạng ảnh tham chiếu
@@ -870,6 +968,27 @@ cùng thiết bị:
 
 ---
 
+### 6.3 Nhân vật trong thư viện và `use_characters`
+
+Nhân vật trong thư viện (Cài đặt → Nhân vật, hoặc `/api/characters` §5.8) được dùng khi task **đang
+dùng nhân vật**: `use_characters: true`, hoặc - khi không gửi trường này - công tắc Nhân vật chung của
+app. `use_characters: false` bỏ qua nhân vật cho task đó kể cả khi công tắc đang bật. Lựa chọn chỉ
+áp dụng cho task đó.
+
+- **Ảnh (Flow)** và **Video (Veo / Omni Flash)**: `@Tên` (đúng tên, không phân biệt hoa thường) dùng
+  nhân vật - ảnh của nó làm ảnh tham chiếu, hoặc entity Flow khi nó có giọng tuỳ chỉnh (video
+  `components`). Nhân vật lấy các ô tham chiếu mà ảnh của bạn để trống. `components` chỉ có `@Tên`
+  (không `reference_images`) được chấp nhận khi prompt gắn tag ít nhất một nhân vật trong thư viện.
+- **Google Vids `components`**: `@Tên` thêm ảnh làm nguyên liệu (§5.2).
+- **Google Pics / Meta Muse**: chỉ khi yêu cầu gửi `use_characters: true` (riêng công tắc app không áp
+  dụng ở đây, để tích hợp đang chạy giữ nguyên hành vi). Không cần `@tag` - mọi nhân vật prompt nhắc tới
+  (luật trang Pics / Muse, chế độ khớp chung) được thêm sau ảnh của bạn, chỉ vào ô trống (§5.1).
+- Grok, Meta AI (`/api/meta/generate`), OpenAI và Upscale không dùng thư viện (trường bị bỏ qua).
+
+```json
+{ "prompt": "@Luna đọc sách bên lò sưởi", "model": "nano_banana_2", "use_characters": true }
+```
+
 ## 7. Tham chiếu Response & trạng thái
 
 ### POST generate → `202`
@@ -879,7 +998,8 @@ cùng thiết bị:
 
 ### GET `/api/status/{task_id}` → `200`
 - `pending` / `running`: `{ task_id, type, status, prompt, created_at }`
-- `type`: `image`, `video`, `grok`, `vibes` (task Meta AI), `openai` hoặc `upscale`.
+- `type`: `image`, `video`, `grok`, `vibes` (task Meta AI), `openai`, `upscale` hoặc `preupload` (§5.9;
+  kèm thêm `progress` `{done, total, info}`).
 - `completed`: thêm `results` (mảng URL file) và `completed_at` (unix giây); task Google Vids
   còn có thêm `meta` (§5.2), task Google Pics cũng vậy (§5.1), task Meta Muse thêm `meta`
   `{mode, aspect_ratio, count, account, partial}` (§5.1 / §5.2).
@@ -924,6 +1044,8 @@ object"}`; body quá 64 KB → `413` — cả hai đều không dừng gì cả.
 | `404` | `{"error": "File not found: <name>"}` | File không tồn tại/đã hết hạn |
 | `413` | `{"error": "Payload too large (max 52428800 bytes)"}` | Body vượt trần **50 MB** — xem §5 |
 | `500` | `{"error": "Failed to read file"}` | File kết quả có trong registry nhưng không đọc được |
+| `400` / `404` / `409` | `{"error": "...", "error_code": "NAME_TAKEN"}` | Lệnh thư viện nhân vật / upload trước (§5.8, §5.9) trả lời ngay với `error_code` có tên |
+| `409` | `{"error": "A pre-upload is already running ...", "error_code": "BUSY"}` | Đang có một lượt upload trước |
 
 Đây là các lỗi ở **tầng truyền tải**, do chính lệnh `POST`/`GET` trả về. Request đã đi
 qua được các lỗi này sẽ nhận `202`, và mọi trục trặc sau đó hiện ra dưới dạng task
@@ -1163,6 +1285,26 @@ curl -X POST http://127.0.0.1:8765/api/video/generate -H "Content-Type: applicat
 curl -X POST http://127.0.0.1:8765/api/stop/abc12345 -H "X-API-Key: YOUR_API_KEY"
 curl -X POST http://127.0.0.1:8765/api/stop -H "X-API-Key: YOUR_API_KEY"
 
+# --- Thư viện nhân vật: thêm, liệt kê, đổi tên, xoá ---
+curl -X POST http://127.0.0.1:8765/api/characters \
+  -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"name": "Luna", "image": {"path": "E:/chars/luna.png"}, "voice_preset_id": "kore"}'
+curl http://127.0.0.1:8765/api/characters -H "X-API-Key: YOUR_API_KEY"
+curl -X PATCH http://127.0.0.1:8765/api/characters/Luna \
+  -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"new_name": "Selene"}'
+curl -X DELETE http://127.0.0.1:8765/api/characters/Selene -H "X-API-Key: YOUR_API_KEY"
+
+# --- Dùng thư viện cho riêng task này (công tắc app giữ nguyên) ---
+curl -X POST http://127.0.0.1:8765/api/image/generate \
+  -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"prompt": "@Luna đọc sách bên lò sưởi", "model": "nano_banana_2", "use_characters": true}'
+
+# --- Upload trước mọi ảnh nhân vật lên Flow, rồi hỏi trạng thái task ---
+curl -X POST http://127.0.0.1:8765/api/characters/preupload \
+  -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"providers": ["flow"]}'
+
 # --- Tải file kết quả ---
 curl -o out.png "http://127.0.0.1:8765/api/files/image_001.png"
 
@@ -1274,3 +1416,5 @@ console.log(urls);
    tên lỗi, không tự đổi về mặc định.
 9. Muốn huỷ: `POST /api/stop/{task_id}` (hoặc `/api/stop` cho tất cả) — task chuyển ngay sang
    `failed` với `499 STOPPED_BY_CLIENT`.
+10. Nhân vật: quản lý bằng `/api/characters` (§5.8), chọn theo từng task bằng `use_characters`
+    (§6.3), upload trước ảnh của chúng bằng `/api/characters/preupload` (§5.9).
