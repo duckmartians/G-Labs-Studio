@@ -40,7 +40,7 @@ nodes wired to it.
   indices 1+ are reference-image sockets. Edges target sockets by index, so the number and
   order of a node's `inputs` must match what its settings imply (see per-node tables).
 - **Dataflow.** A node reads its inputs from the nodes wired into its sockets:
-  - Prompt socket ← a `prompt` node (or `batch_prompt`) output.
+  - Prompt socket ← a `prompt` node (or `batch_prompt` / `prompt_writer`) output.
   - Reference/image socket ← any node whose output is an image (`reference`, `batch_loader`,
     `frame_extract`, or another generator that outputs an image).
 - **Execution.** Only nodes reachable/complete run. A node missing a required input is
@@ -72,7 +72,7 @@ it by data first, then by visible text.
 
 ### 3.1 Node types
 
-There are **11** node types. Each block below lists the output type (**→ type**), the input
+There are **12** node types. Each block below lists the output type (**→ type**), the input
 sockets, and a **values** table with every setting key, its accepted values, and how it
 serializes. Two labels are used throughout:
 
@@ -103,6 +103,27 @@ no data value - omit the key to keep its default rather than hardcoding localize
 | `prompt_list` | multi-line string | one prompt per line |
 | `mode` | index/text: Sequential \| Random | **stable**; omit ⇒ Sequential |
 | `limit_mode`, `limit_val` | index/text + number | optional cap; omit ⇒ use all lines |
+
+---
+
+#### `prompt_writer` - an LLM writes a finished prompt from a short idea (+ reference images)  → `string`
+- **inputs:** `["Prompt", "Ref 1"]`: socket 0 = optional context text (from `prompt` / `batch_prompt` /
+  another `prompt_writer`); sockets 1+ = reference images the LLM looks at (up to **4**; the node adds one
+  empty image socket each time the last one is connected, so list one more label per extra image wired).
+  **outputs:** `["Prompt"]`. Default size `400`×`550`.
+- Output = the finished prompt text only (no title / notes), ready for the Prompt socket of `generate`,
+  `video_generate`, `grok`, `meta` or `openai`. `@tags` written in the idea / context are kept inline.
+- Needs a **PLUS** (or higher) license and an LLM source set up in the app's **Settings › LLM Assistant**
+  (Claude CLI, Antigravity CLI, Codex CLI, 9Router or a direct API key). Runs once per batch iteration.
+
+| key | values | notes |
+|-----|--------|-------|
+| `model` | `""` or a model selector | `""` = use the model chosen in Settings › LLM Assistant (recommended in shared files). Otherwise e.g. `"claude-cli:claude-haiku-4-5"`, `"agy"`, `"codex"`, `"gemini:<model>"`, or a 9Router model id; machine-dependent (must be installed / signed in there) |
+| `target` | `"image"` \| `"video"` | **stable**; kind of prompt to write |
+| `category` | image: `default`, `photo_portrait`, `product_commercial`, `cinematic_still`, `illustration_anime`, `render_3d`, `infographic_text`, `logo_minimal`, `architecture_interior`, `food_drink`, `fashion_editorial`, `character_sheet`, `nature_wildlife` · video: `default`, `cinematic_narrative`, `documentary_nature`, `product_commercial_video`, `dialogue_scene`, `action_sequence`, `establishing_timelapse`, `music_video`, `animation_style`, `ugc_vlog`, `asmr_closeup`, `horror_suspense` | **stable**; must belong to `target`; omit ⇒ `default` |
+| `lang` | `"en"` \| `"same"` | **stable**; `en` = English prompt (spoken dialogue and on-image text keep their own language), `same` = same language as the idea |
+| `idea` | multi-line string | the short idea / instructions; may be empty when socket 0 or images are wired |
+| `result` | string | last prompt written (display only, ignored at run; use `""`) |
 
 ---
 
@@ -234,6 +255,7 @@ type matches the target input socket's type. There are four types: `string`, `im
 |------|-------------|---------|
 | `prompt` | `string` | a text prompt |
 | `batch_prompt` | `string` | a text prompt (loops per line) |
+| `prompt_writer` | `string` | a prompt written by the LLM |
 | `reference` | `image` | an image file |
 | `batch_loader` | `image` | an image (loops per file) |
 | `frame_extract` | `image` | a still frame |
@@ -254,16 +276,18 @@ Socket **index** is the value you put in an edge's `end_socket`.
 | `batch_prompt` | - | (no inputs) | - | - |
 | `reference` | - | (no inputs) | - | - |
 | `batch_loader` | - | (no inputs) | - | - |
-| `generate` | 0 | Prompt | `string` | `prompt` / `batch_prompt` |
+| `prompt_writer` | 0 | Prompt / context (opt.) | `string` | `prompt` / `batch_prompt` / `prompt_writer` |
+| `prompt_writer` | 1+ | Ref image (≤4) | `image` | image producer |
+| `generate` | 0 | Prompt | `string` | `prompt` / `batch_prompt` / `prompt_writer` |
 | `generate` | 1+ | Ref image | `image` | `reference` / `batch_loader` / `frame_extract` / image generator |
-| `openai` | 0 | Prompt | `string` | `prompt` / `batch_prompt` |
+| `openai` | 0 | Prompt | `string` | `prompt` / `batch_prompt` / `prompt_writer` |
 | `openai` | 1+ | Ref image (≤5) | `image` | image producer (above) |
-| `video_generate` | 0 | Prompt | `string` | `prompt` / `batch_prompt` |
+| `video_generate` | 0 | Prompt | `string` | `prompt` / `batch_prompt` / `prompt_writer` |
 | `video_generate` | 1 | Start Image | `image` | image producer |
 | `video_generate` | 2 | End Image (opt.) | `image` | image producer |
-| `grok` | 0 | Prompt | `string` | `prompt` / `batch_prompt` |
+| `grok` | 0 | Prompt | `string` | `prompt` / `batch_prompt` / `prompt_writer` |
 | `grok` | 1 | Ref image (`i2i`/`i2v`) | `image` | image producer |
-| `meta` | 0 | Prompt | `string` | `prompt` / `batch_prompt` |
+| `meta` | 0 | Prompt | `string` | `prompt` / `batch_prompt` / `prompt_writer` |
 | `meta` | 1 | Character (`i2i`) / Start (`i2v`) | `image` | image producer |
 | `meta` | 2 | Scene (`i2i`) / End (`i2v`, opt.) | `image` | image producer |
 | `meta` | 3 | Style (`i2i`) | `image` | image producer |
@@ -273,8 +297,8 @@ Socket **index** is the value you put in an edge's `end_socket`.
 
 ### 4.3 Compatibility summary (source output → target socket)
 
-- **`string`** (prompt / batch_prompt) → **only the Prompt socket** (index 0) of
-  `generate` / `video_generate` / `grok` / `meta` / `openai`.
+- **`string`** (prompt / batch_prompt / prompt_writer) → **only the Prompt socket** (index 0) of
+  `generate` / `video_generate` / `grok` / `meta` / `openai` / `prompt_writer`.
   Never wire a string into a Ref/image socket, and never wire an image/video into a Prompt
   socket. (The prompt socket accepts **one** connection.)
 - **`image`** (reference / batch_loader / frame_extract / generate / openai / grok-image /
@@ -312,12 +336,17 @@ most one incoming edge.
    input sockets so `end_socket` 1/2/3 are valid for Character/Scene/Style).
 3. **Combo values = data value**, not display text (except the index-based batch combos).
 4. **`id` must be unique**; `title` is cosmetic (re-translated on load).
-5. **Every generation chain needs a prompt source** feeding socket 0 (a `prompt` or
-   `batch_prompt` node), and image/video modes need their reference image(s) wired.
+5. **Every generation chain needs a prompt source** feeding socket 0 (a `prompt`,
+   `batch_prompt` or `prompt_writer` node), and image/video modes need their reference image(s) wired.
 6. **Files must exist** on the machine running the app (`reference.file_path`,
    `batch_loader.file_path`).
 7. Running requires a **PLUS/MAX** license and the relevant logged-in accounts (Google for
-   generate/video, Grok session, Meta account, ChatGPT account for openai).
+   generate/video, Grok session, Meta account, ChatGPT account for openai). `prompt_writer` also
+   needs an LLM source in Settings › LLM Assistant.
+8. **Blocked prompts are auto-fixed.** With *Settings › LLM Assistant › Auto-fix prompts when blocked* on
+   (PLUS+), a `generate` / `video_generate` node whose prompt Google blocks for content (celebrity,
+   sensitive content, minors, copyright...) is rewritten by the LLM and run again, at most 2 times.
+   Blocked reference / input images are not rewritten.
 
 ---
 
@@ -454,3 +483,39 @@ reference. Every value here is **stable**, so the file loads and runs as-is.
 Edges: the `batch_prompt` (index 0) feeds both `meta` (index 1, socket 0) and `openai`
 (index 3, socket 0); `meta`'s video output (index 1) feeds `frame_extract` (index 2); and the
 extracted frame (index 2) feeds `openai`'s **Ref 1** socket (index 3, `end_socket: 1`).
+
+
+### 6.3 Prompt Writer → GPT Image (LLM writes the prompt from an idea + a reference photo)
+
+`prompt_writer` reads the idea and the wired photo, writes an image prompt in the
+`product_commercial` category, and feeds it to `openai`, which also gets the same photo as a
+reference. `model: ""` uses the model chosen in Settings › LLM Assistant.
+
+```json
+{
+  "nodes": [
+    { "id": 1, "type": "reference", "title": "Product photo", "x": -460, "y": 0, "w": 400, "h": 320,
+      "ref_mode": "pro", "inputs": [], "outputs": ["Image"],
+      "values": { "file_path": "C:/images/bottle.png" } },
+    { "id": 2, "type": "prompt_writer", "title": "Prompt Writer", "x": 0, "y": 0, "w": 400, "h": 550,
+      "inputs": ["Prompt", "Ref 1", "Ref 2"], "outputs": ["Prompt"],
+      "values": { "model": "", "target": "image", "category": "product_commercial", "lang": "en",
+                  "idea": "summer ad for this bottle on a sunny beach, headline FRESH", "result": "" } },
+    { "id": 3, "type": "openai", "title": "GPT Image 2", "x": 460, "y": 0, "w": 400, "h": 400,
+      "inputs": ["Prompt", "Ref 1"], "outputs": ["Image"],
+      "values": { "ratio": "landscape_16_9", "quality": "medium",
+                  "prompt_mode": "auto", "reasoning": "none", "web_search": false } }
+  ],
+  "edges": [
+    { "start_node": 0, "start_socket": 0, "end_node": 1, "end_socket": 1 },
+    { "start_node": 1, "start_socket": 0, "end_node": 2, "end_socket": 0 },
+    { "start_node": 0, "start_socket": 0, "end_node": 2, "end_socket": 1 }
+  ],
+  "groups": []
+}
+```
+
+Edges: the photo (index 0) feeds the writer's **Ref 1** (`end_socket: 1`; the writer lists
+`"Ref 2"` too because it always keeps one empty image socket after the last connected one) and
+`openai`'s **Ref 1**; the writer's prompt (index 1) feeds `openai`'s Prompt socket (index 2,
+`end_socket: 0`).
