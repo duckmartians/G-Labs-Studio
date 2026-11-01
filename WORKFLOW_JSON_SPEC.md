@@ -108,7 +108,7 @@ no data value - omit the key to keep its default rather than hardcoding localize
 
 #### `prompt_writer` - an LLM writes a finished prompt from a short idea (+ reference images)  → `string`
 - **inputs:** `["Prompt", "Ref 1"]`: socket 0 = optional context text (from `prompt` / `batch_prompt` /
-  another `prompt_writer`); sockets 1+ = reference images the LLM looks at (up to **4**; the node adds one
+  another `prompt_writer`); sockets 1+ = reference images the LLM looks at (up to **10**; the node adds one
   empty image socket each time the last one is connected, so list one more label per extra image wired).
   **outputs:** `["Prompt"]`. Default size `400`×`550`.
 - Output = the finished prompt text only (no title / notes), ready for the Prompt socket of `generate`,
@@ -277,7 +277,7 @@ Socket **index** is the value you put in an edge's `end_socket`.
 | `reference` | - | (no inputs) | - | - |
 | `batch_loader` | - | (no inputs) | - | - |
 | `prompt_writer` | 0 | Prompt / context (opt.) | `string` | `prompt` / `batch_prompt` / `prompt_writer` |
-| `prompt_writer` | 1+ | Ref image (≤4) | `image` | image producer |
+| `prompt_writer` | 1+ | Ref image (≤10) | `image` | image producer |
 | `generate` | 0 | Prompt | `string` | `prompt` / `batch_prompt` / `prompt_writer` |
 | `generate` | 1+ | Ref image | `image` | `reference` / `batch_loader` / `frame_extract` / image generator |
 | `openai` | 0 | Prompt | `string` | `prompt` / `batch_prompt` / `prompt_writer` |
