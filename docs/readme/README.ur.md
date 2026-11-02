@@ -52,7 +52,7 @@
 <summary><b>🪟 Windows پر</b></summary>
 
 1. ڈاؤن لوڈ کردہ **`G-Labs-Studio-setup.exe`** کھولیں۔
-2. اگر **“Windows protected your PC”** (SmartScreen) آئے: **More info** → **Run anyway** پر کلک کریں۔ *(ایپ ابھی Microsoft سرٹیفکیٹ سے دستخط شدہ نہیں، اس لیے انتباہ آتا ہے - یہ وائرس نہیں۔)*
+2. انسٹالر پر **DUCKMARTIANS** کے ڈیجیٹل دستخط ہیں۔ اگر بالکل نئے ورژن پر پھر بھی **“Windows protected your PC”** (SmartScreen) آئے تو دیکھیں کہ پبلشر DUCKMARTIANS ہے، پھر **More info** → **Run anyway** پر کلک کریں۔
 3. ایڈمن (UAC) پرامپٹ پر **Yes** کلک کریں، پھر انسٹالر کو آخر تک مکمل کریں۔
 4. اسے **Start Menu** یا **Desktop** شارٹ کٹ سے کھولیں۔
 
@@ -232,7 +232,7 @@ Grok Imagine کے ذریعے متن → تصویر، تصویر → تصویر،
 
 **کسی صفحے پر "فعال: 0 اکاؤنٹس"** - اس صفحے کے اکاؤنٹ ٹیب (ترتیبات) میں ایک اکاؤنٹ شامل یا دوبارہ فعال کریں، یا اس کا ٹوکن ختم ہو گیا ہے - **سب ریفریش کریں** دبائیں۔
 
-**Windows اسے "Windows protected your PC" پر روک دیتا ہے** - **More info → Run anyway** پر کلک کریں۔ ایپ ابھی Microsoft سرٹیفکیٹ سے کوڈ سائن شدہ نہیں ہے، اس لیے اسے نشان زد کیا جاتا ہے - یہ وائرس نہیں ہے۔
+**Windows "Windows protected your PC" دکھاتا ہے** - انسٹالر پر DUCKMARTIANS کے ڈیجیٹل دستخط ہیں، لیکن ابھی جاری ہونے والے ورژن پر SmartScreen پھر بھی خبردار کر سکتا ہے۔ دیکھیں کہ پبلشر DUCKMARTIANS ہے، پھر **More info → Run anyway** پر کلک کریں۔
 
 **macOS کہتا ہے ایپ خراب ہے / کھولی نہیں جا سکتی** - یہ ابھی Apple کی طرف سے دستخط شدہ نہیں ہے۔ پہلی بار رائٹ کلک → **Open** کریں، یا `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"` چلائیں۔
 

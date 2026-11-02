@@ -52,7 +52,7 @@
 <summary><b>🪟 在 Windows 上</b></summary>
 
 1. 打开下载好的 **`G-Labs-Studio-setup.exe`**。
-2. 如果出现 **“Windows protected your PC”**（SmartScreen）：点击 **More info** → **Run anyway**。*（该应用尚未用微软证书签名，所以会被提示--并非病毒。）*
+2. 安装包已由 **DUCKMARTIANS** 进行数字签名。如果刚发布的版本仍出现 **“Windows protected your PC”**（SmartScreen），请确认发布者为 DUCKMARTIANS，然后点击 **More info** → **Run anyway**。
 3. 在管理员（UAC）提示中点击 **Yes**，然后按照安装程序完成安装。
 4. 从 **Start Menu** 或 **Desktop** 快捷方式启动它。
 
@@ -232,7 +232,7 @@
 
 **某页面显示 "活跃中：0 个账号"** -- 在该页面的账户标签页（设置）中添加或重新启用一个账户，或者它的 token 已过期 -- 按 **全部刷新**。
 
-**Windows 在 "Windows protected your PC" 处拦截** -- 点击 **More info → Run anyway**。该应用尚未使用 Microsoft 证书进行代码签名，因此会被标记 -- 它不是病毒。
+**Windows 显示 "Windows protected your PC"** - 安装包已由 DUCKMARTIANS 数字签名，但刚发布的版本仍可能被 SmartScreen 提示。请确认发布者为 DUCKMARTIANS，然后点击 **More info → Run anyway**。
 
 **macOS 提示应用已损坏 / 无法打开** -- 它尚未经过 Apple 签名。首次请右键 → **Open**，或运行 `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"`。
 

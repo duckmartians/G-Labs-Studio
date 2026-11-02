@@ -52,7 +52,7 @@ Unduh versi terbaru dari **[Releases](https://github.com/duckmartians/G-Labs-Stu
 <summary><b>🪟 Di Windows</b></summary>
 
 1. Buka **`G-Labs-Studio-setup.exe`** yang sudah diunduh.
-2. Jika muncul **“Windows protected your PC”** (SmartScreen): klik **More info** → **Run anyway**. *(Aplikasi belum ditandatangani dengan sertifikat Microsoft, jadi ditandai - bukan virus.)*
+2. Installer sudah ditandatangani secara digital oleh **DUCKMARTIANS**. Jika versi yang baru rilis masih memunculkan **“Windows protected your PC”** (SmartScreen), pastikan penerbitnya DUCKMARTIANS, lalu klik **More info** → **Run anyway**.
 3. Klik **Yes** pada permintaan admin (UAC), lalu ikuti pemasang sampai selesai.
 4. Jalankan dari **Start Menu** atau pintasan **Desktop**.
 
@@ -232,7 +232,7 @@ Setiap halaman memiliki subfolder sendiri di dalam `output` (satu folder lebih k
 
 **"Aktif: 0 akun" di sebuah halaman** - tambahkan atau aktifkan kembali akun di tab akun halaman itu (Pengaturan), atau tokennya kedaluwarsa - tekan **Segarkan Semua**.
 
-**Windows memblokirnya dengan "Windows protected your PC"** - klik **More info → Run anyway**. Aplikasi ini belum ditandatangani dengan sertifikat Microsoft, jadi ditandai - ini bukan virus.
+**Windows menampilkan "Windows protected your PC"** - installer sudah ditandatangani secara digital oleh DUCKMARTIANS, tetapi SmartScreen masih bisa memperingatkan versi yang baru rilis. Pastikan penerbitnya DUCKMARTIANS, lalu klik **More info → Run anyway**.
 
 **macOS mengatakan aplikasi rusak / tidak dapat dibuka** - aplikasi belum ditandatangani oleh Apple. Klik kanan → **Open** pertama kali, atau jalankan `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"`.
 

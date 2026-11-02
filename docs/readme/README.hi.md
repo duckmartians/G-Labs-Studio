@@ -52,7 +52,7 @@
 <summary><b>🪟 Windows पर</b></summary>
 
 1. डाउनलोड की गई **`G-Labs-Studio-setup.exe`** खोलें।
-2. अगर **“Windows protected your PC”** (SmartScreen) दिखे: **More info** → **Run anyway** पर क्लिक करें। *(ऐप अभी Microsoft प्रमाणपत्र से साइन नहीं है, इसलिए चेतावनी आती है - यह वायरस नहीं है।)*
+2. इंस्टॉलर पर **DUCKMARTIANS** का डिजिटल हस्ताक्षर है। अगर बिल्कुल नए संस्करण पर फिर भी **“Windows protected your PC”** (SmartScreen) दिखे, तो देखें कि प्रकाशक DUCKMARTIANS है, फिर **More info** → **Run anyway** पर क्लिक करें।
 3. एडमिन (UAC) संकेत पर **Yes** क्लिक करें, फिर इंस्टॉलर को अंत तक पूरा करें।
 4. इसे **Start Menu** या **Desktop** शॉर्टकट से खोलें।
 
@@ -232,7 +232,7 @@ Grok Imagine के ज़रिए टेक्स्ट → छवि, छव�
 
 **किसी पेज पर "सक्रिय: 0 खाते"** - उस पेज के अकाउंट टैब (सेटिंग्स) में कोई अकाउंट जोड़ें या फिर से इनेबल करें, या उसका टोकन समाप्त हो गया - **सभी रिफ्रेश करें** दबाएँ।
 
-**Windows "Windows protected your PC" पर इसे रोक देता है** - **More info → Run anyway** पर क्लिक करें। ऐप अभी Microsoft प्रमाणपत्र से कोड-साइन नहीं है, इसलिए इसे फ़्लैग किया जाता है - यह वायरस नहीं है।
+**Windows "Windows protected your PC" दिखाता है** - इंस्टॉलर पर DUCKMARTIANS का डिजिटल हस्ताक्षर है, लेकिन अभी जारी हुए संस्करण पर SmartScreen फिर भी चेतावनी दे सकता है। देखें कि प्रकाशक DUCKMARTIANS है, फिर **More info → Run anyway** पर क्लिक करें।
 
 **macOS कहता है ऐप damaged है / खोला नहीं जा सकता** - यह अभी Apple द्वारा साइन नहीं है। पहली बार राइट-क्लिक → **Open** करें, या `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"` चलाएँ।
 

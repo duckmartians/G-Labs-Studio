@@ -52,7 +52,7 @@
 <summary><b>🪟 على Windows</b></summary>
 
 1. افتح ملف **`G-Labs-Studio-setup.exe`** الذي نزّلته.
-2. إذا ظهر **«Windows protected your PC»** (SmartScreen): انقر **More info** → **Run anyway**. *(التطبيق غير موقّع بشهادة Microsoft بعد، لذا يظهر التحذير - إنه ليس فيروسًا.)*
+2. المثبّت موقّع رقميًا من **DUCKMARTIANS**. إذا ظهر **«Windows protected your PC»** (SmartScreen) مع إصدار جديد جدًا، فتأكد أن الناشر هو DUCKMARTIANS ثم انقر **More info** → **Run anyway**.
 3. انقر **Yes** في طلب المسؤول (UAC)، ثم أكمل المثبّت حتى النهاية.
 4. شغّله من **Start Menu** أو اختصار **Desktop**.
 
@@ -232,7 +232,7 @@
 
 **"نشِط: 0 حساب" على صفحة** - أضِف حسابًا أو أعِد تفعيله في علامة تبويب الحسابات الخاصة بتلك الصفحة (الإعدادات)، أو انتهت صلاحية رمزه - اضغط **تحديث الكل**.
 
-**يحظره Windows عند "Windows protected your PC"** - انقر **More info → Run anyway**. التطبيق غير موقّع برمجيًا بشهادة Microsoft بعد، لذلك يُعلَّم - وهو ليس فيروسًا.
+**يظهر Windows رسالة "Windows protected your PC"** - المثبّت موقّع رقميًا من DUCKMARTIANS، لكن SmartScreen قد يحذّر من إصدار صدر للتو. تأكد أن الناشر هو DUCKMARTIANS ثم انقر **More info → Run anyway**.
 
 **يقول macOS إن التطبيق تالف / يتعذر فتحه** - إنه غير موقّع من Apple بعد. انقر بالزر الأيمن → **Open** في المرة الأولى، أو شغّل `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"`.
 

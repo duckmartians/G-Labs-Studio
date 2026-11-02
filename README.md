@@ -52,7 +52,7 @@ Tải bản mới nhất từ **[Releases](https://github.com/duckmartians/G-Lab
 <summary><b>🪟 Trên Windows</b></summary>
 
 1. Mở tệp **`G-Labs-Studio-setup.exe`** vừa tải.
-2. Nếu hiện bảng **"Windows protected your PC"** (SmartScreen): bấm **More info** → **Run anyway**. *(App chưa mua chứng chỉ ký của Microsoft nên bị cảnh báo - không phải virus.)*
+2. Bộ cài đã ký số, nhà phát hành **DUCKMARTIANS**. Nếu bản mới vẫn hiện bảng **"Windows protected your PC"** (SmartScreen), kiểm tra nhà phát hành là DUCKMARTIANS rồi bấm **More info** → **Run anyway**.
 3. Bấm **Yes** khi Windows hỏi quyền admin (UAC), rồi làm theo trình cài đặt tới khi xong.
 4. Mở app từ **Start Menu** hoặc lối tắt trên **Desktop**.
 
@@ -232,7 +232,7 @@ Mỗi trang có một thư mục con riêng trong `output` (mỗi lần chạy m
 
 **"Đang hoạt động: 0 tài khoản" trên một trang** - thêm hoặc bật lại một tài khoản trong tab tài khoản của trang đó (Cài Đặt), hoặc token của nó đã hết hạn - nhấn **Làm mới tất cả**.
 
-**Windows chặn ở "Windows protected your PC"** - bấm **More info → Run anyway**. App chưa mua chứng chỉ ký của Microsoft nên bị cảnh báo, không phải virus.
+**Windows hiện bảng "Windows protected your PC"** - bộ cài đã ký số DUCKMARTIANS, nhưng SmartScreen vẫn có thể cảnh báo với bản vừa phát hành. Kiểm tra nhà phát hành là DUCKMARTIANS rồi bấm **More info → Run anyway**.
 
 **macOS báo ứng dụng bị hỏng / không mở được** - nó chưa được Apple ký. Chuột phải → **Open** ở lần đầu, hoặc chạy `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"`.
 

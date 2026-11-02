@@ -52,7 +52,7 @@ Download the latest build from **[Releases](https://github.com/duckmartians/G-La
 <summary><b>🪟 On Windows</b></summary>
 
 1. Open the downloaded **`G-Labs-Studio-setup.exe`**.
-2. If **"Windows protected your PC"** (SmartScreen) appears: click **More info** → **Run anyway**. *(The app isn't code-signed with a Microsoft certificate yet, so it's flagged - it isn't a virus.)*
+2. The installer is digitally signed by **DUCKMARTIANS**. If **"Windows protected your PC"** (SmartScreen) still appears for a brand-new version, check that the publisher shows DUCKMARTIANS, then click **More info** → **Run anyway**.
 3. Click **Yes** on the admin (UAC) prompt, then follow the installer to the end.
 4. Launch it from the **Start Menu** or the **Desktop** shortcut.
 
@@ -232,7 +232,7 @@ Each page has its own subfolder inside `output` (one smaller folder per run); yo
 
 **"Active: 0 accounts" on a page** - add or re-enable an account in that page's accounts tab (Settings), or its token expired - hit **Refresh All**.
 
-**Windows blocks it at "Windows protected your PC"** - click **More info → Run anyway**. The app isn't code-signed with a Microsoft certificate yet, so it's flagged - it isn't a virus.
+**Windows shows "Windows protected your PC"** - the installer is digitally signed by DUCKMARTIANS, but SmartScreen can still warn about a version that was just released. Check that the publisher is DUCKMARTIANS, then click **More info → Run anyway**.
 
 **macOS says the app is damaged / can't be opened** - it isn't Apple-signed yet. Right-click → **Open** the first time, or run `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"`.
 

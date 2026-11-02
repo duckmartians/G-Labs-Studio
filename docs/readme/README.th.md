@@ -52,7 +52,7 @@
 <summary><b>🪟 บน Windows</b></summary>
 
 1. เปิดไฟล์ **`G-Labs-Studio-setup.exe`** ที่ดาวน์โหลดมา
-2. ถ้าขึ้น **“Windows protected your PC”** (SmartScreen): คลิก **More info** → **Run anyway** *(แอปยังไม่ได้เซ็นด้วยใบรับรองของ Microsoft จึงถูกเตือน - ไม่ใช่ไวรัส)*
+2. ตัวติดตั้งมีลายเซ็นดิจิทัลของ **DUCKMARTIANS** ถ้าเวอร์ชันที่เพิ่งออกยังขึ้น **“Windows protected your PC”** (SmartScreen) ให้ตรวจว่าผู้เผยแพร่เป็น DUCKMARTIANS แล้วคลิก **More info** → **Run anyway**
 3. คลิก **Yes** ที่หน้าต่างสิทธิ์ผู้ดูแล (UAC) แล้วทำตามตัวติดตั้งจนเสร็จ
 4. เปิดจาก **Start Menu** หรือทางลัดบน **Desktop**
 
@@ -232,7 +232,7 @@
 
 **"ใช้งาน: 0 บัญชี" บนหน้าหนึ่ง** - เพิ่มหรือเปิดใช้งานบัญชีอีกครั้งในแท็บบัญชีของหน้านั้น (การตั้งค่า) หรือโทเคนหมดอายุ - กด **รีเฟรชทั้งหมด**
 
-**Windows บล็อกที่ "Windows protected your PC"** - คลิก **More info → Run anyway** แอปยังไม่ได้เซ็นโค้ดด้วยใบรับรองของ Microsoft จึงถูกตั้งค่าสถานะ - ไม่ใช่ไวรัส
+**Windows ขึ้น "Windows protected your PC"** - ตัวติดตั้งมีลายเซ็นดิจิทัลของ DUCKMARTIANS แต่ SmartScreen อาจยังเตือนกับเวอร์ชันที่เพิ่งออก ให้ตรวจว่าผู้เผยแพร่เป็น DUCKMARTIANS แล้วคลิก **More info → Run anyway**
 
 **macOS บอกว่าแอปเสียหาย / เปิดไม่ได้** - แอปยังไม่ได้เซ็นโดย Apple คลิกขวา → **Open** ในครั้งแรก หรือรัน `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"`
 

@@ -52,7 +52,7 @@
 <summary><b>🪟 Windows-এ</b></summary>
 
 1. ডাউনলোড করা **`G-Labs-Studio-setup.exe`** খুলুন।
-2. যদি **“Windows protected your PC”** (SmartScreen) দেখায়: **More info** → **Run anyway** ক্লিক করুন। *(অ্যাপটি এখনো Microsoft সার্টিফিকেটে সাইন করা নয়, তাই সতর্কতা দেখায় - এটি ভাইরাস নয়।)*
+2. ইনস্টলারটি **DUCKMARTIANS** দ্বারা ডিজিটালি স্বাক্ষরিত। একদম নতুন সংস্করণে যদি এখনও **“Windows protected your PC”** (SmartScreen) দেখায়, প্রকাশক DUCKMARTIANS কি না দেখে নিন, তারপর **More info** → **Run anyway** ক্লিক করুন।
 3. অ্যাডমিন (UAC) প্রম্পটে **Yes** ক্লিক করুন, তারপর ইনস্টলার শেষ পর্যন্ত সম্পন্ন করুন।
 4. এটি **Start Menu** বা **Desktop** শর্টকাট থেকে খুলুন।
 
@@ -232,7 +232,7 @@ Grok Imagine-এর মাধ্যমে টেক্সট → ছবি, ছ�
 
 **একটি পেজে "সক্রিয়: 0 অ্যাকাউন্ট"** - সেই পেজের অ্যাকাউন্ট ট্যাবে (সেটিংস) একটি অ্যাকাউন্ট যোগ করুন বা পুনরায় সক্রিয় করুন, অথবা তার টোকেনের মেয়াদ শেষ হয়েছে - **সব রিফ্রেশ** চাপুন।
 
-**Windows "Windows protected your PC"-এ এটি আটকে দেয়** - **More info → Run anyway**-এ ক্লিক করুন। অ্যাপটি এখনও Microsoft সার্টিফিকেট দিয়ে কোড-সাইন করা নয়, তাই এটি চিহ্নিত হয় - এটি ভাইরাস নয়।
+**Windows "Windows protected your PC" দেখায়** - ইনস্টলারটি DUCKMARTIANS দ্বারা ডিজিটালি স্বাক্ষরিত, তবে সদ্য প্রকাশিত সংস্করণে SmartScreen তবুও সতর্ক করতে পারে। প্রকাশক DUCKMARTIANS কি না দেখে নিন, তারপর **More info → Run anyway**-এ ক্লিক করুন।
 
 **macOS বলে অ্যাপটি damaged / খোলা যাচ্ছে না** - এটি এখনও Apple দ্বারা সাইন করা নয়। প্রথমবার রাইট-ক্লিক → **Open** করুন, অথবা `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"` চালান।
 

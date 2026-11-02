@@ -52,7 +52,7 @@ En son sürümü **[Releases](https://github.com/duckmartians/G-Labs-Studio/rele
 <summary><b>🪟 Windows'ta</b></summary>
 
 1. İndirdiğin **`G-Labs-Studio-setup.exe`** dosyasını aç.
-2. **“Windows protected your PC”** (SmartScreen) çıkarsa: **More info** → **Run anyway** tıkla. *(Uygulama henüz bir Microsoft sertifikasıyla imzalanmadı, bu yüzden uyarı çıkıyor - virüs değil.)*
+2. Yükleyici **DUCKMARTIANS** tarafından dijital olarak imzalandı. Yeni çıkmış bir sürümde yine de **“Windows protected your PC”** (SmartScreen) çıkarsa yayıncının DUCKMARTIANS olduğunu kontrol et, sonra **More info** → **Run anyway** tıkla.
 3. Yönetici (UAC) isteminde **Yes** tıkla, sonra kurulumu sonuna kadar tamamla.
 4. **Start Menu** ya da **Desktop** kısayolundan aç.
 
@@ -232,7 +232,7 @@ Her sayfanın `output` içinde kendi alt klasörü vardır (her çalıştırma i
 
 **Bir sayfada "Aktif: 0 hesap"** - o sayfanın hesap sekmesinde (Ayarlar) bir hesap ekleyin veya yeniden etkinleştirin ya da token'ının süresi dolmuştur - **Tümünü Yenile**'ye basın.
 
-**Windows "Windows protected your PC" uyarısıyla engelliyor** - **More info → Run anyway**'e tıklayın. Uygulama henüz bir Microsoft sertifikasıyla kod imzalı olmadığı için işaretlenir - virüs değildir.
+**Windows "Windows protected your PC" uyarısı gösteriyor** - yükleyici DUCKMARTIANS tarafından dijital olarak imzalı, ancak SmartScreen yeni çıkmış bir sürüm için yine de uyarabilir. Yayıncının DUCKMARTIANS olduğunu kontrol edin, sonra **More info → Run anyway**'e tıklayın.
 
 **macOS uygulamanın hasarlı olduğunu / açılamadığını söylüyor** - henüz Apple tarafından imzalanmamıştır. İlk seferinde sağ tıkla → **Open** yapın veya `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"` çalıştırın.
 

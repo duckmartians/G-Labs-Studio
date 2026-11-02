@@ -52,7 +52,7 @@
 <summary><b>🪟 Windows에서</b></summary>
 
 1. 내려받은 **`G-Labs-Studio-setup.exe`** 를 엽니다.
-2. **“Windows protected your PC”**(SmartScreen)가 뜨면: **More info** → **Run anyway** 를 클릭하세요. *(아직 Microsoft 인증서로 서명되지 않아 경고가 뜨는 것이며 바이러스가 아닙니다.)*
+2. 설치 파일은 **DUCKMARTIANS**의 디지털 서명이 되어 있습니다. 갓 나온 버전에서 그래도 **“Windows protected your PC”**(SmartScreen)가 뜨면 게시자가 DUCKMARTIANS인지 확인한 뒤 **More info** → **Run anyway** 를 클릭하세요.
 3. 관리자(UAC) 창에서 **Yes** 를 클릭한 뒤 설치를 끝까지 진행합니다.
 4. **Start Menu** 또는 **Desktop** 바로가기에서 실행합니다.
 
@@ -232,7 +232,7 @@ Grok Imagine을 통한 텍스트 → 이미지, 이미지 → 이미지, 텍스�
 
 **페이지에 "활성: 계정 0개"** - 해당 페이지의 계정 탭(설정)에서 계정을 추가하거나 다시 활성화하세요. 또는 토큰이 만료되었을 수 있으니 **모두 새로고침** 을 누르세요.
 
-**Windows가 "Windows protected your PC" 에서 차단함** - **More info → Run anyway** 를 클릭하세요. 앱이 아직 Microsoft 인증서로 코드 서명되지 않아 표시되는 것이며 - 바이러스가 아닙니다.
+**Windows에 "Windows protected your PC"가 표시됨** - 설치 파일은 DUCKMARTIANS의 디지털 서명이 되어 있지만, 막 출시된 버전은 SmartScreen이 경고할 수 있습니다. 게시자가 DUCKMARTIANS인지 확인한 뒤 **More info → Run anyway** 를 클릭하세요.
 
 **macOS가 앱이 손상되었다 / 열 수 없다고 함** - 아직 Apple 서명이 없어서입니다. 처음에는 마우스 오른쪽 클릭 → **Open** 으로 열거나, `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"` 를 실행하세요.
 

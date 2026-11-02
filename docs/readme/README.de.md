@@ -52,7 +52,7 @@ Lade die neueste Version von **[Releases](https://github.com/duckmartians/G-Labs
 <summary><b>🪟 Unter Windows</b></summary>
 
 1. Öffne die heruntergeladene **`G-Labs-Studio-setup.exe`**.
-2. Falls **„Windows protected your PC“** (SmartScreen) erscheint: klick **More info** → **Run anyway**. *(Die App ist noch nicht mit einem Microsoft-Zertifikat signiert, daher die Warnung - es ist kein Virus.)*
+2. Der Installer ist von **DUCKMARTIANS** digital signiert. Erscheint bei einer ganz neuen Version trotzdem **„Windows protected your PC“** (SmartScreen), prüfe, dass als Herausgeber DUCKMARTIANS steht, und klicke **More info** → **Run anyway**.
 3. Klick **Yes** bei der Administrator-Abfrage (UAC) und folge dem Installer bis zum Ende.
 4. Starte sie über das **Start Menu** oder die **Desktop**-Verknüpfung.
 
@@ -232,7 +232,7 @@ Jede Seite hat einen eigenen Unterordner in `output` (ein kleinerer Ordner pro D
 
 **„Aktiv: 0 Konten“ auf einer Seite** - füge im Konten-Tab dieser Seite (Einstellungen) ein Konto hinzu oder aktiviere es erneut, oder sein Token ist abgelaufen - drücke **Alle aktualisieren**.
 
-**Windows blockiert sie mit „Windows protected your PC“** - klicke auf **More info → Run anyway**. Die App ist noch nicht mit einem Microsoft-Zertifikat signiert, daher die Warnung - es ist kein Virus.
+**Windows zeigt „Windows protected your PC“** - der Installer ist von DUCKMARTIANS digital signiert, SmartScreen kann bei einer gerade erschienenen Version aber trotzdem warnen. Prüfe, dass als Herausgeber DUCKMARTIANS steht, und klicke auf **More info → Run anyway**.
 
 **macOS sagt, die App sei beschädigt / lasse sich nicht öffnen** - sie ist noch nicht von Apple signiert. Beim ersten Mal Rechtsklick → **Open**, oder führe `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"` aus.
 
