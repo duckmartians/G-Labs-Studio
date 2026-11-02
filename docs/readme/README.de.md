@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="Herunterladen - Windows" src="https://img.shields.io/badge/Herunterladen-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe"><img alt="Herunterladen - Windows" src="https://img.shields.io/badge/Herunterladen-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
   <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="Herunterladen - macOS (Apple Silicon)" src="https://img.shields.io/badge/Herunterladen-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
   <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="Herunterladen - macOS (Intel)" src="https://img.shields.io/badge/Herunterladen-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
@@ -36,7 +36,7 @@ Lade die neueste Version von **[Releases](https://github.com/duckmartians/G-Labs
 
 | Dein Rechner | Download | Google Drive | Hinweise |
 |---|---|---|---|
-| 🪟 **Windows 10/11 (64-Bit)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | Für jeden Windows-PC |
+| 🪟 **Windows 10/11 (64-Bit)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | Für jeden Windows-PC |
 | 🍎 **Mac mit Apple-Chip (M1/M2/M3/M4)** | [macOS ARM](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | Macs ab etwa Ende 2020 |
 | 🍎 **Mac mit Intel-Chip** | [macOS Intel](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | Ältere Macs (vor 2020) |
 
@@ -51,7 +51,7 @@ Lade die neueste Version von **[Releases](https://github.com/duckmartians/G-Labs
 <details open>
 <summary><b>🪟 Unter Windows</b></summary>
 
-1. Öffne die heruntergeladene **`G-Labs-Studio-win.exe`**.
+1. Öffne die heruntergeladene **`G-Labs-Studio-setup.exe`**.
 2. Falls **„Windows protected your PC“** (SmartScreen) erscheint: klick **More info** → **Run anyway**. *(Die App ist noch nicht mit einem Microsoft-Zertifikat signiert, daher die Warnung - es ist kein Virus.)*
 3. Klick **Yes** bei der Administrator-Abfrage (UAC) und folge dem Installer bis zum Ende.
 4. Starte sie über das **Start Menu** oder die **Desktop**-Verknüpfung.

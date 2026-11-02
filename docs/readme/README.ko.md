@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="다운로드 - Windows" src="https://img.shields.io/badge/%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe"><img alt="다운로드 - Windows" src="https://img.shields.io/badge/%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
   <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="다운로드 - macOS (Apple Silicon)" src="https://img.shields.io/badge/%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
   <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="다운로드 - macOS (Intel)" src="https://img.shields.io/badge/%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
@@ -36,7 +36,7 @@
 
 | 내 컴퓨터 | 다운로드 | Google Drive | 비고 |
 |---|---|---|---|
-| 🪟 **Windows 10/11 (64비트)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | 모든 Windows PC용 |
+| 🪟 **Windows 10/11 (64비트)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | 모든 Windows PC용 |
 | 🍎 **Apple 칩 Mac (M1/M2/M3/M4)** | [macOS ARM](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | 2020년 말 이후 출시된 Mac |
 | 🍎 **Intel 칩 Mac** | [macOS Intel](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | 구형 Mac (2020년 이전) |
 
@@ -51,7 +51,7 @@
 <details open>
 <summary><b>🪟 Windows에서</b></summary>
 
-1. 내려받은 **`G-Labs-Studio-win.exe`** 를 엽니다.
+1. 내려받은 **`G-Labs-Studio-setup.exe`** 를 엽니다.
 2. **“Windows protected your PC”**(SmartScreen)가 뜨면: **More info** → **Run anyway** 를 클릭하세요. *(아직 Microsoft 인증서로 서명되지 않아 경고가 뜨는 것이며 바이러스가 아닙니다.)*
 3. 관리자(UAC) 창에서 **Yes** 를 클릭한 뒤 설치를 끝까지 진행합니다.
 4. **Start Menu** 또는 **Desktop** 바로가기에서 실행합니다.

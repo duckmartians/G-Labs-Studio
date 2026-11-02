@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="ডাউনলোড - Windows" src="https://img.shields.io/badge/%E0%A6%A1%E0%A6%BE%E0%A6%89%E0%A6%A8%E0%A6%B2%E0%A7%8B%E0%A6%A1-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe"><img alt="ডাউনলোড - Windows" src="https://img.shields.io/badge/%E0%A6%A1%E0%A6%BE%E0%A6%89%E0%A6%A8%E0%A6%B2%E0%A7%8B%E0%A6%A1-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
   <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="ডাউনলোড - macOS (Apple Silicon)" src="https://img.shields.io/badge/%E0%A6%A1%E0%A6%BE%E0%A6%89%E0%A6%A8%E0%A6%B2%E0%A7%8B%E0%A6%A1-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
   <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="ডাউনলোড - macOS (Intel)" src="https://img.shields.io/badge/%E0%A6%A1%E0%A6%BE%E0%A6%89%E0%A6%A8%E0%A6%B2%E0%A7%8B%E0%A6%A1-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
@@ -36,7 +36,7 @@
 
 | আপনার কম্পিউটার | ডাউনলোড | Google Drive | মন্তব্য |
 |---|---|---|---|
-| 🪟 **Windows 10/11 (64-বিট)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | যেকোনো Windows PC-র জন্য |
+| 🪟 **Windows 10/11 (64-বিট)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | যেকোনো Windows PC-র জন্য |
 | 🍎 **Apple চিপযুক্ত Mac (M1/M2/M3/M4)** | [macOS ARM](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | প্রায় ২০২০-এর শেষ থেকে পরবর্তী Mac |
 | 🍎 **Intel চিপযুক্ত Mac** | [macOS Intel](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | পুরনো Mac (২০২০-এর আগে) |
 
@@ -51,7 +51,7 @@
 <details open>
 <summary><b>🪟 Windows-এ</b></summary>
 
-1. ডাউনলোড করা **`G-Labs-Studio-win.exe`** খুলুন।
+1. ডাউনলোড করা **`G-Labs-Studio-setup.exe`** খুলুন।
 2. যদি **“Windows protected your PC”** (SmartScreen) দেখায়: **More info** → **Run anyway** ক্লিক করুন। *(অ্যাপটি এখনো Microsoft সার্টিফিকেটে সাইন করা নয়, তাই সতর্কতা দেখায় - এটি ভাইরাস নয়।)*
 3. অ্যাডমিন (UAC) প্রম্পটে **Yes** ক্লিক করুন, তারপর ইনস্টলার শেষ পর্যন্ত সম্পন্ন করুন।
 4. এটি **Start Menu** বা **Desktop** শর্টকাট থেকে খুলুন।

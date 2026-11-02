@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="ڈاؤن لوڈ - Windows" src="https://img.shields.io/badge/%DA%88%D8%A7%D8%A4%D9%86%20%D9%84%D9%88%DA%88-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe"><img alt="ڈاؤن لوڈ - Windows" src="https://img.shields.io/badge/%DA%88%D8%A7%D8%A4%D9%86%20%D9%84%D9%88%DA%88-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
   <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="ڈاؤن لوڈ - macOS (Apple Silicon)" src="https://img.shields.io/badge/%DA%88%D8%A7%D8%A4%D9%86%20%D9%84%D9%88%DA%88-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
   <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="ڈاؤن لوڈ - macOS (Intel)" src="https://img.shields.io/badge/%DA%88%D8%A7%D8%A4%D9%86%20%D9%84%D9%88%DA%88-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
@@ -36,7 +36,7 @@
 
 | آپ کی مشین | ڈاؤن لوڈ | Google Drive | نوٹس |
 |---|---|---|---|
-| 🪟 **Windows 10/11 (64-bit)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | کسی بھی Windows PC کے لیے |
+| 🪟 **Windows 10/11 (64-bit)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | کسی بھی Windows PC کے لیے |
 | 🍎 **Apple چپ والا Mac (M1/M2/M3/M4)** | [macOS ARM](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | تقریباً 2020 کے آخر سے آگے کے Mac |
 | 🍎 **Intel چپ والا Mac** | [macOS Intel](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | پرانے Mac (2020 سے پہلے) |
 
@@ -51,7 +51,7 @@
 <details open>
 <summary><b>🪟 Windows پر</b></summary>
 
-1. ڈاؤن لوڈ کردہ **`G-Labs-Studio-win.exe`** کھولیں۔
+1. ڈاؤن لوڈ کردہ **`G-Labs-Studio-setup.exe`** کھولیں۔
 2. اگر **“Windows protected your PC”** (SmartScreen) آئے: **More info** → **Run anyway** پر کلک کریں۔ *(ایپ ابھی Microsoft سرٹیفکیٹ سے دستخط شدہ نہیں، اس لیے انتباہ آتا ہے - یہ وائرس نہیں۔)*
 3. ایڈمن (UAC) پرامپٹ پر **Yes** کلک کریں، پھر انسٹالر کو آخر تک مکمل کریں۔
 4. اسے **Start Menu** یا **Desktop** شارٹ کٹ سے کھولیں۔

@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="ดาวน์โหลด - Windows" src="https://img.shields.io/badge/%E0%B8%94%E0%B8%B2%E0%B8%A7%E0%B8%99%E0%B9%8C%E0%B9%82%E0%B8%AB%E0%B8%A5%E0%B8%94-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe"><img alt="ดาวน์โหลด - Windows" src="https://img.shields.io/badge/%E0%B8%94%E0%B8%B2%E0%B8%A7%E0%B8%99%E0%B9%8C%E0%B9%82%E0%B8%AB%E0%B8%A5%E0%B8%94-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
   <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="ดาวน์โหลด - macOS (Apple Silicon)" src="https://img.shields.io/badge/%E0%B8%94%E0%B8%B2%E0%B8%A7%E0%B8%99%E0%B9%8C%E0%B9%82%E0%B8%AB%E0%B8%A5%E0%B8%94-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
   <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="ดาวน์โหลด - macOS (Intel)" src="https://img.shields.io/badge/%E0%B8%94%E0%B8%B2%E0%B8%A7%E0%B8%99%E0%B9%8C%E0%B9%82%E0%B8%AB%E0%B8%A5%E0%B8%94-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
@@ -36,7 +36,7 @@
 
 | เครื่องของคุณ | ดาวน์โหลด | Google Drive | หมายเหตุ |
 |---|---|---|---|
-| 🪟 **Windows 10/11 (64 บิต)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | สำหรับพีซี Windows ทุกเครื่อง |
+| 🪟 **Windows 10/11 (64 บิต)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | สำหรับพีซี Windows ทุกเครื่อง |
 | 🍎 **Mac ชิป Apple (M1/M2/M3/M4)** | [macOS ARM](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | Mac ตั้งแต่ราวปลายปี 2020 เป็นต้นมา |
 | 🍎 **Mac ชิป Intel** | [macOS Intel](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | Mac รุ่นเก่า (ก่อนปี 2020) |
 
@@ -51,7 +51,7 @@
 <details open>
 <summary><b>🪟 บน Windows</b></summary>
 
-1. เปิดไฟล์ **`G-Labs-Studio-win.exe`** ที่ดาวน์โหลดมา
+1. เปิดไฟล์ **`G-Labs-Studio-setup.exe`** ที่ดาวน์โหลดมา
 2. ถ้าขึ้น **“Windows protected your PC”** (SmartScreen): คลิก **More info** → **Run anyway** *(แอปยังไม่ได้เซ็นด้วยใบรับรองของ Microsoft จึงถูกเตือน - ไม่ใช่ไวรัส)*
 3. คลิก **Yes** ที่หน้าต่างสิทธิ์ผู้ดูแล (UAC) แล้วทำตามตัวติดตั้งจนเสร็จ
 4. เปิดจาก **Start Menu** หรือทางลัดบน **Desktop**

@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="İndir - Windows" src="https://img.shields.io/badge/%C4%B0ndir-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe"><img alt="İndir - Windows" src="https://img.shields.io/badge/%C4%B0ndir-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
   <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="İndir - macOS (Apple Silicon)" src="https://img.shields.io/badge/%C4%B0ndir-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
   <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="İndir - macOS (Intel)" src="https://img.shields.io/badge/%C4%B0ndir-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
@@ -36,7 +36,7 @@ En son sürümü **[Releases](https://github.com/duckmartians/G-Labs-Studio/rele
 
 | Makinen | İndir | Google Drive | Notlar |
 |---|---|---|---|
-| 🪟 **Windows 10/11 (64 bit)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | Her Windows PC için |
+| 🪟 **Windows 10/11 (64 bit)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | Her Windows PC için |
 | 🍎 **Apple çipli Mac (M1/M2/M3/M4)** | [macOS ARM](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | Yaklaşık 2020 sonundan itibaren Mac'ler |
 | 🍎 **Intel çipli Mac** | [macOS Intel](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | Daha eski Mac'ler (2020 öncesi) |
 
@@ -51,7 +51,7 @@ En son sürümü **[Releases](https://github.com/duckmartians/G-Labs-Studio/rele
 <details open>
 <summary><b>🪟 Windows'ta</b></summary>
 
-1. İndirdiğin **`G-Labs-Studio-win.exe`** dosyasını aç.
+1. İndirdiğin **`G-Labs-Studio-setup.exe`** dosyasını aç.
 2. **“Windows protected your PC”** (SmartScreen) çıkarsa: **More info** → **Run anyway** tıkla. *(Uygulama henüz bir Microsoft sertifikasıyla imzalanmadı, bu yüzden uyarı çıkıyor - virüs değil.)*
 3. Yönetici (UAC) isteminde **Yes** tıkla, sonra kurulumu sonuna kadar tamamla.
 4. **Start Menu** ya da **Desktop** kısayolundan aç.

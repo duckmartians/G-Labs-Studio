@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="Unduh - Windows" src="https://img.shields.io/badge/Unduh-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe"><img alt="Unduh - Windows" src="https://img.shields.io/badge/Unduh-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
   <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="Unduh - macOS (Apple Silicon)" src="https://img.shields.io/badge/Unduh-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
   <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="Unduh - macOS (Intel)" src="https://img.shields.io/badge/Unduh-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
@@ -36,7 +36,7 @@ Unduh versi terbaru dari **[Releases](https://github.com/duckmartians/G-Labs-Stu
 
 | Perangkatmu | Unduh | Google Drive | Catatan |
 |---|---|---|---|
-| 🪟 **Windows 10/11 (64-bit)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | Untuk PC Windows apa pun |
+| 🪟 **Windows 10/11 (64-bit)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | Untuk PC Windows apa pun |
 | 🍎 **Mac dengan chip Apple (M1/M2/M3/M4)** | [macOS ARM](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | Mac dari sekitar akhir 2020 ke atas |
 | 🍎 **Mac dengan chip Intel** | [macOS Intel](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | Mac lama (sebelum 2020) |
 
@@ -51,7 +51,7 @@ Unduh versi terbaru dari **[Releases](https://github.com/duckmartians/G-Labs-Stu
 <details open>
 <summary><b>🪟 Di Windows</b></summary>
 
-1. Buka **`G-Labs-Studio-win.exe`** yang sudah diunduh.
+1. Buka **`G-Labs-Studio-setup.exe`** yang sudah diunduh.
 2. Jika muncul **“Windows protected your PC”** (SmartScreen): klik **More info** → **Run anyway**. *(Aplikasi belum ditandatangani dengan sertifikat Microsoft, jadi ditandai - bukan virus.)*
 3. Klik **Yes** pada permintaan admin (UAC), lalu ikuti pemasang sampai selesai.
 4. Jalankan dari **Start Menu** atau pintasan **Desktop**.

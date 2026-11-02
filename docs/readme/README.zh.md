@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe"><img alt="下载 - Windows" src="https://img.shields.io/badge/%E4%B8%8B%E8%BD%BD-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe"><img alt="下载 - Windows" src="https://img.shields.io/badge/%E4%B8%8B%E8%BD%BD-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
   <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="下载 - macOS (Apple Silicon)" src="https://img.shields.io/badge/%E4%B8%8B%E8%BD%BD-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
   <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="下载 - macOS (Intel)" src="https://img.shields.io/badge/%E4%B8%8B%E8%BD%BD-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
@@ -36,7 +36,7 @@
 
 | 你的电脑 | 下载 | Google Drive | 说明 |
 |---|---|---|---|
-| 🪟 **Windows 10/11（64 位）** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-win.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | 适用于所有 Windows 电脑 |
+| 🪟 **Windows 10/11（64 位）** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | 适用于所有 Windows 电脑 |
 | 🍎 **搭载 Apple 芯片的 Mac（M1/M2/M3/M4）** | [macOS ARM](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | 约 2020 年底及以后的 Mac |
 | 🍎 **搭载 Intel 芯片的 Mac** | [macOS Intel](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | 较旧的 Mac（2020 年前） |
 
@@ -51,7 +51,7 @@
 <details open>
 <summary><b>🪟 在 Windows 上</b></summary>
 
-1. 打开下载好的 **`G-Labs-Studio-win.exe`**。
+1. 打开下载好的 **`G-Labs-Studio-setup.exe`**。
 2. 如果出现 **“Windows protected your PC”**（SmartScreen）：点击 **More info** → **Run anyway**。*（该应用尚未用微软证书签名，所以会被提示--并非病毒。）*
 3. 在管理员（UAC）提示中点击 **Yes**，然后按照安装程序完成安装。
 4. 从 **Start Menu** 或 **Desktop** 快捷方式启动它。
