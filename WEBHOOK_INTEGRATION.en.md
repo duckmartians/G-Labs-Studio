@@ -6,8 +6,8 @@
 > and the async (submit → poll → download) workflow.
 
 This document describes the API exposed by the **Webhook** tab of the G-Labs
-Automation desktop app (v5.0.8+). It lets external tools (n8n, Make.com, custom
-scripts, AI agents) drive image (Flow, Google Pics, Meta Muse) / video (Veo, Omni Flash, Google Vids, Meta Muse) / Grok /
+Automation desktop app (v5.0.3+). It lets external tools (n8n, Make.com, custom
+scripts, AI agents) drive image (Flow, Google Pics, Meta Muse, Dreamina) / video (Veo, Omni Flash, Google Vids, Meta Muse, Dreamina) / Grok /
 Meta AI / OpenAI generation — and local image upscaling — over a simple REST API.
 
 ---
@@ -33,10 +33,10 @@ Meta AI / OpenAI generation — and local image upscaling — over a simple REST
   3. On `completed`, download the files from the returned `results` URLs.
 - **Concurrency.** The server accepts many requests at once. Up to **10 tasks are
   parsed concurrently**; how many then *generate* at once follows your account count: every
-  account-based endpoint (Image/Video, Meta AI, OpenAI, Grok, Google Vids, Google Pics, Meta Muse)
+  account-based endpoint (Image/Video, Meta AI, OpenAI, Grok, Google Vids, Google Pics, Meta Muse, Dreamina)
   runs at most **usable accounts × the server's per-account job count** (today 5, MAX plan only).
-  Grok in extension mode counts as 1 account. Google Vids, Google Pics and Meta Muse wait for a
-  free slot (Meta Muse up to 900 s), and Upscale runs **one at a time** (a single GPU — see §5.6).
+  Grok in extension mode counts as 1 account. Google Vids, Google Pics, Meta Muse and Dreamina wait for a
+  free slot (Meta Muse and Dreamina up to 900 s), and Upscale runs **one at a time** (a single GPU — see §5.6).
 - **Generation runs on the app's logged-in accounts.** Image/Video use the
   Google (Flow/Veo) accounts configured in the app; Grok uses the Grok accounts of
   Settings → Grok (or the grok.com tab through the extension when the Extension run mode is
@@ -44,7 +44,8 @@ Meta AI / OpenAI generation — and local image upscaling — over a simple REST
   **OpenAI (GPT Image 2)** uses a logged-in ChatGPT/OpenAI account; **Google Vids**
   (`omni_vids`) and **Google Pics** (`nano_pics`) use the Google accounts of Settings →
   Google Accounts; **Meta Muse** (`meta_muse`) uses the Muse accounts of Settings → Muse
-  accounts (muse.ai, Meta account login). If no
+  accounts (muse.ai, Meta account login); **Dreamina** (`dreamina`) uses the Dreamina accounts of
+  Settings → Dreamina accounts (CapCut). If no
   eligible account is available, the task fails (see error table). The app must be
   running with those accounts logged in & enabled.
 
@@ -73,8 +74,8 @@ handled, so browser-based clients work.
 | Method | Path | Auth | Purpose |
 |--------|------|:----:|---------|
 | `GET`  | `/api/health` | ❌ | Server health / uptime / queue counts |
-| `POST` | `/api/image/generate` | ✅ | Queue an **image** generation task (Flow, or Google Pics with `model: "nano_pics"`, or Meta Muse with `model: "meta_muse"`) |
-| `POST` | `/api/video/generate` | ✅ | Queue a **video** generation task (Veo / Omni Flash / Google Vids, or Meta Muse with `model: "meta_muse"`) |
+| `POST` | `/api/image/generate` | ✅ | Queue an **image** generation task (Flow, or Google Pics with `model: "nano_pics"`, Meta Muse with `model: "meta_muse"`, or Dreamina with `model: "dreamina"`) |
+| `POST` | `/api/video/generate` | ✅ | Queue a **video** generation task (Veo / Omni Flash / Google Vids, Meta Muse with `model: "meta_muse"`, or Dreamina with `model: "dreamina"`) |
 | `POST` | `/api/grok/generate`  | ✅ | Queue a **Grok** image/video task |
 | `POST` | `/api/meta/generate`  | ✅ | Queue a **Meta AI** image/video task |
 | `POST` | `/api/openai/generate` | ✅ | Queue an **OpenAI GPT Image 2** task |
@@ -211,7 +212,7 @@ request is the usual way to hit it.
 | Field | Type | Required | Default | Notes |
 |-------|------|:--------:|---------|-------|
 | `prompt` | string | ✅ | — | Image description. |
-| `model` | string | ❌ | `nano_banana_2` | One of `nano_banana_pro`, `nano_banana_2`, `nano_banana_2_lite`, `nano_pics`, `meta_muse`. Unknown → `nano_banana_2`. **`nano_pics`** = Google Pics, with its own fields (`mode`, `keep`, `remove_logo`) and strict validation — see the Google Pics note below. **`meta_muse`** = Meta Muse, with its own fields (`mode`, `count`) and strict validation - see the Meta Muse note below. |
+| `model` | string | ❌ | `nano_banana_2` | One of `nano_banana_pro`, `nano_banana_2`, `nano_banana_2_lite`, `nano_pics`, `meta_muse`, `dreamina`. Unknown → `nano_banana_2`. **`nano_pics`** = Google Pics, with its own fields (`mode`, `keep`, `remove_logo`) and strict validation — see the Google Pics note below. **`meta_muse`** = Meta Muse, with its own fields (`mode`, `count`) and strict validation - see the Meta Muse note below. **`dreamina`** = Dreamina (CapCut), with its own fields (`dreamina_model`, `mode`, `resolution`, `count`, `quality`) - see the Dreamina note below. |
 | `aspect_ratio` | string | ❌ | `1:1` | One of `1:1`, `3:4`, `4:3`, `9:16`, `16:9`. Unknown → `1:1`. |
 | `reference_images` | array | ❌ | `[]` | Up to **10** base64 images (see §6). Each image may include a `name` to bind it via `@name` in the prompt (§6.1). |
 | `upscale` | array | ❌ | `[]` | Any of `"2K"`, `"4K"`. **4K requires an ULTRA account** and a model that supports upscaling. Invalid values are dropped. |
@@ -341,19 +342,54 @@ Meta Muse example - image to image, 16:9, 2 images:
 }
 ```
 
+> **Dreamina (`model: "dreamina"`)** - CapCut's Dreamina, run on the **Dreamina accounts** in
+> Settings → Dreamina accounts (PLUS/MAX plan). Same endpoint, own fields and rules; every option is
+> checked against the model's own lists on Dreamina (a value it does not offer → `400`, never swapped).
+> - `dreamina_model` (optional): a Dreamina model key (e.g. `high_aes_general_v50`) or its display name
+>   (e.g. `Seedream 5.0 Lite`). Omitted → the first model that offers the mode. Unknown / not for the
+>   mode → `400 INVALID_MODEL` (the error lists the usable keys).
+> - `mode`: `text_to_image` or `image_to_image` (aliases `t2i` / `i2i` / `reference`). Omitted →
+>   `image_to_image` when reference images are sent (or the prompt `@`-names a library character),
+>   else `text_to_image`. `text_to_image` ignores images sent along.
+> - `reference_images`: up to the model's cap (GPT Image 16, Nano Banana 14, Seedream 5.0 10 ...).
+>   `@tag` works: `@luna` in the prompt points to the image with `"name": "luna"` (§6.1). Over the cap
+>   → `400 TOO_MANY_REFERENCES`.
+> - `aspect_ratio` (default `1:1`), `resolution` (e.g. `1k` / `2k` / `4k`, default `2k`), `count`
+>   (images, from the model's list, default `1`), `quality` (GPT Image models only: `low` / `medium` /
+>   `high` ...). Invalid → `400 INVALID_ASPECT_RATIO` / `INVALID_RESOLUTION` / `INVALID_COUNT` /
+>   `INVALID_QUALITY`.
+> - Alternative field names are accepted too: `model_key` = `dreamina_model`, `num_images` = `count`.
+> - **Accounts:** enabled Dreamina accounts (Image column on) with credit left; per-account job cap
+>   from the server; round-robin; expired cookie / no credit before any file was made → the next
+>   account; every account busy → the task waits for a slot up to 15 minutes (`503 NO_FREE_SLOT`).
+> - **Result:** `results` = the images; `meta`: `mode` (`img_t2i` / `img_ref`), `model`,
+>   `aspect_ratio`, `resolution`, `count`, `account`, `partial`.
+
+Dreamina example - reference image with `@tag`:
+
+```json
+{
+  "prompt": "@luna reading in a cozy cafe",
+  "model": "dreamina",
+  "aspect_ratio": "16:9",
+  "resolution": "2k",
+  "reference_images": [{"data": "data:image/png;base64,...", "name": "luna"}]
+}
+```
+
 ### 5.2 Video — `POST /api/video/generate`
 
 | Field | Type | Required | Default | Notes |
 |-------|------|:--------:|---------|-------|
 | `prompt` | string | ✅ | — | Motion / scene description. Optional only for an `omni_vids` `upscale` request. |
-| `model` | string | ✅ | — | One of `veo_31_fast`, `veo_31_lite`, `veo_31_quality`, `veo_31_lite_relaxed`, `omni_flash`, `omni_vids`, `meta_muse`. Missing → `400 MISSING_MODEL`; an unknown Veo name → `veo_31_fast`. **`omni_vids`** = Google Vids (see the Google Vids note below). **`meta_muse`** = Meta Muse (see the Meta Muse note below). `veo_31_lite_relaxed` requires **ULTRA** accounts. **`omni_flash`**: see the `mode` note. |
+| `model` | string | ✅ | — | One of `veo_31_lite`, `veo_31_lite_relaxed`, `omni_flash_12`, `veo_31_fast`, `veo_31_quality`, `omni_flash`, `omni_vids`, `meta_muse`, `dreamina`. Missing → `400 MISSING_MODEL`; an unknown Veo name → the server's default model (`veo_31_fast`; `veo_31_lite` from 2026-12-05). **A model Google retired** (from 2026-12-05: `veo_31_fast`, `veo_31_quality` → use `veo_31_lite`; `omni_flash` → use `omni_flash_12`) returns `400 MODEL_RETIRED` naming the replacement id. **`omni_vids`** = Google Vids (see the Google Vids note below). **`meta_muse`** = Meta Muse (see the Meta Muse note below). **`dreamina`** = Dreamina, also takes `reference_videos` / `reference_audios` on mode `omni` (see the Dreamina note below). `veo_31_lite_relaxed` requires **ULTRA** accounts. **`omni_flash`** / **`omni_flash_12`**: see the `mode` note. |
 | `aspect_ratio` | string | ❌ | `16:9` | `16:9` or `9:16`. |
 | `mode` | string | ❌ | `text_to_video` | `text_to_video` (0 refs) · `start_image` (1 ref) · `start_end_image` (2 refs: start + end frame) · `components` (Veo up to 3 refs, Omni Flash up to 7; supports `voice` and `reference_video`). **Every mode works on both Veo and Omni Flash** (Omni Flash `start_end_image` needs the server config's `i2v_end` mapping — without it the request is rejected with a clear reason). |
 | `reference_images` | array | ❌ | `[]` | Up to **3** base64 images (Veo); **Omni Flash `components` up to 7** (up to **5** when a `reference_video` is present). **Required when `mode != text_to_video`** — except `components`, which may use `reference_video` instead, or only `@Name` of a library character when characters are in use (§6.3). Each image may include a `name` to bind it via `@name` in the prompt — Veo (§6.1). |
-| `reference_video` | string/object | ❌ | — | **Omni Flash + `components` mode only** — the **edit-video** flow: the clip (≤ **10s**) is restyled per the prompt, optionally with up to 5 ingredient images. Accepts a base64/data-URI string (`data:video/mp4;base64,...`) or `{"path": "...", "name": "..."}` (file on the app machine). Always renders **720p** (cannot be combined with `"360p"`). Clips over 10s are rejected — trim before sending. |
+| `reference_video` | string/object | ❌ | — | **Omni Flash + `components` mode only** — the **edit-video** flow: the clip (≤ **10s**; Omni Flash 1.2 ≤ **15s**) is restyled per the prompt, optionally with up to 5 ingredient images. Accepts a base64/data-URI string (`data:video/mp4;base64,...`) or `{"path": "...", "name": "..."}` (file on the app machine). Always renders **720p** (cannot be combined with `"360p"`). Clips over the limit (10s, 15s on Omni Flash 1.2) are rejected — trim before sending. |
 | `resolution` | array | ❌ | `["720p"]` | Any of `"360p"`, `"720p"`, `"1080p"`, `"4K"`. **`360p` is Omni Flash only** (server-config gated) — the base video generates at 360p, cheaper on credits; **a 360p source upscales to 720p only**, so valid combos are `["360p"]` or `["360p", "720p"]` (adding `1080p`/`4K` is rejected). `1080p`/`4K` are produced by upscaling a 720p base; **only `4K` requires an ULTRA account**. Invalid values → `720p`. One output file per produced resolution: `results` carries **every** requested resolution in processing order (before 2026-10-07 only the last resolution's file was returned). |
 | `voice` | string | ❌ | `""` | Lowercase voice name. Only used in `components` mode. |
-| `video_length` | int | ❌ | (model default) | Clip length in seconds. Veo: `4`/`6`/`8`; Omni Flash: `4`/`6`/`8`/`10`. Unsupported values → default (8s). **Veo `4`/`6` require an ULTRA account** (Omni Flash doesn't). The edit flow (`reference_video`) ignores this — length follows the source clip. |
+| `video_length` | int | ❌ | (model default) | Clip length in seconds. Veo: `4`/`6`/`8`; Omni Flash: `4`/`6`/`8`/`10`; Omni Flash 1.2: `3`–`15` (`11`–`15` need a paid Google AI plan; `start_end_image` over 10s uses the start frame only, like the Flow web). Veo `components` mode runs `8` only (other values → 8s). Unsupported values → default (8s). **Veo `4`/`6` require an ULTRA account** (Omni Flash doesn't); with no ULTRA account (Veo `4`/`6`) or no paid account (Omni Flash 1.2 `11`–`15`) the default 8s is used. The edit flow (`reference_video`) ignores this — length follows the source clip. |
 | `remove_logo` | bool | ❌ | (Flow Video page switch) | Remove the logo from videos made on **Pro/Free** accounts: the "Veo" text (Veo) or the ✦ mark (Omni Flash), at 720p and 1080p (360p / 4K are left as is). `true` removes, `false` keeps; omitted → follows the Flow Video page's "Show Veo / Gemini logo" switch (off = remove) **and** the master "Auto-remove logo on download" switch (Remove video logo tab; off = keep). An explicit `true` removes even when the master switch is off. **ULTRA** accounts: when omitted, Google turns the logo off at the source per that switch (no extra processing); with `true` the app still checks and removes the logo if the video has one. Wrong type → `400 INVALID_FIELD`. Logo removal runs one video at a time (adds ~1–4 s per video). |
 | `use_characters` | bool | ❌ | (app switch) | Use / ignore the **character library** for this task only (Veo, Omni Flash, `omni_vids`, `meta_muse`) - see §5.1 and §6.3. Not a boolean → `400 INVALID_FIELD`. |
 | `auto_fix_prompt` | bool | ❌ | `true` | When the server blocks the request because of the **prompt** (celebrity, sensitive content, minor, copyright...), the app asks an LLM to rewrite it and runs again, at most 2 times, while the task stays `running` (Flow models only; needs PLUS+ and Settings → LLM assistant turned on). Blocked **reference / input images** are never rewritten. `false` → fail right away with the original 400 (for clients that rewrite prompts themselves). A rewritten task adds `prompt_rewrites`, `original_prompt`, `final_prompt` to `/api/status` and `/api/result` (`prompt` stays what you sent). Not a boolean → `400 INVALID_FIELD`. |
@@ -361,7 +397,7 @@ Meta Muse example - image to image, 16:9, 2 images:
 ```json
 {
   "prompt": "water flowing over rocks, cinematic",
-  "model": "veo_31_fast",
+  "model": "veo_31_lite",
   "aspect_ratio": "16:9",
   "mode": "start_image",
   "reference_images": ["data:image/png;base64,iVBORw0KGgo..."],
@@ -380,31 +416,31 @@ Meta Muse example - image to image, 16:9, 2 images:
 > it validates `mode`, `resolution`, `video_length` and `aspect_ratio` strictly and answers
 > `400` with a named reason (see the Google Vids note).
 >
-> **Both Veo and Omni Flash are available.** Omni Flash (`model: "omni_flash"`)
+> **Both Veo and Omni Flash are available.** Omni Flash (`model: "omni_flash"` or `"omni_flash_12"`)
 > supports all of `text_to_video`, `start_image`, `start_end_image`, `components` —
-> and exclusively adds: the **10s** `video_length` option, **360p** output, and the
+> and exclusively adds: the **10s** `video_length` option (Omni Flash 1.2: **3–15s**), **360p** output, and the
 > **edit-video** flow (`reference_video` in `components` mode). It needs no ULTRA account.
 >
 > `resolution` may list multiple values; each is produced if the account tier allows it.
 
-Omni Flash example — start + end frame, cheap 360p draft:
+Omni Flash 1.2 example — start + end frame, cheap 360p draft:
 
 ```json
 {
   "prompt": "animate",
-  "model": "omni_flash",
+  "model": "omni_flash_12",
   "mode": "start_end_image",
   "reference_images": ["data:image/png;base64,...", "data:image/png;base64,..."],
   "resolution": ["360p"]
 }
 ```
 
-Omni Flash example — edit video (restyle a ≤10s clip per the prompt):
+Omni Flash 1.2 example — edit video (restyle a ≤15s clip per the prompt):
 
 ```json
 {
   "prompt": "make it snow heavily",
-  "model": "omni_flash",
+  "model": "omni_flash_12",
   "mode": "components",
   "reference_video": "data:video/mp4;base64,...",
   "reference_images": ["data:image/png;base64,..."]
@@ -420,7 +456,7 @@ Omni Flash example — edit video (restyle a ≤10s clip per the prompt):
 > - `resolution`: **one** of the server list (today `720p` / `1080p`), as a string or a one-item
 >   list — generated directly, no upscale step. Omitted → the first value of the server list.
 >   Two values, `360p`, `4K` or any other value → `400 INVALID_RESOLUTION`.
-> - `video_length`: an integer **3–10** s (default 5); 1 s of video costs 1 s of the account's
+> - `video_length`: an integer **3–15** s (default 5); 1 s of video costs 1 s of the account's
 >   quota. Out of range → `400 INVALID_VIDEO_LENGTH`.
 > - `orientation` (`landscape` / `portrait`) or `aspect_ratio` (`16:9` / `9:16`); when both are
 >   sent, `orientation` wins. Default `16:9`. Anything else → `400 INVALID_ASPECT_RATIO`.
@@ -532,6 +568,46 @@ Meta Muse example - image to video (first frame, 8 s, 9:16):
 }
 ```
 
+> **Dreamina (`model: "dreamina"`)** runs on the Dreamina accounts (Video column on; PLUS/MAX plan) -
+> the same `dreamina` model as on `/api/image/generate`, same `dreamina_model` field.
+> - `mode`: `text_to_video` (alias `t2v`), `image_to_video` (aliases `i2v` / `frames` / `start_image`:
+>   1 image = first frame, 2 images = first + last frame when the model has a last frame), `omni`
+>   (aliases `omni_reference` / `reference`: image + video + audio references, named with `@tag`).
+>   Omitted → `omni` when videos / audios or 3+ images are sent, `image_to_video` for 1-2 images,
+>   else `text_to_video`.
+> - `reference_videos` / `reference_audios` (**`omni` only**): lists with the same entries as
+>   `reference_images` - a base64 / data-URI string, `{"data": "...", "name": "beat"}`, or
+>   `{"path": "D:/..."}` (a file on the machine running the app). Video: mp4 / mov / webm / m4v;
+>   audio: mp3 / wav / m4a / aac / ogg. `"name"` is the `@` name in the prompt (`@beat`); without it
+>   the file name is used. Sent on another mode → `400 INVALID_FIELD`; bad base64 / wrong file type → `400`.
+> - Omni reference caps per model, **per kind and in total** (e.g. Seedance 2.5: 30 images, 10 videos,
+>   10 audios, 50 in total; Seedance 2.0: 9 / 3 / 3, 12 in total, needs at least one image or video).
+>   Over a cap → `400 TOO_MANY_REFERENCES`; a required kind missing → `400 MISSING_REFERENCE`.
+> - `aspect_ratio` (default `16:9`; `image_to_video` takes `auto` = the image's ratio when the model
+>   offers it), `resolution` (default `720p`), `video_length` (seconds within the model's range,
+>   default = the model's default), `count` (videos 1-4, default 1 - each video is one generation,
+>   charged apart).
+> - Alternative field names are accepted too: `model_key` = `dreamina_model`, `duration` = `video_length`,
+>   `num_videos` = `count`.
+> - A generation Dreamina accepted then failed → `502 DREAMINA_FAILED`, **not** re-sent (it may have
+>   been charged).
+> - **Result:** `results` = the MP4 videos; `meta`: `mode` (`vid_t2v` / `vid_frames` / `vid_omni`),
+>   `model`, `aspect_ratio`, `resolution`, `video_length`, `count`, `account`, `partial`.
+
+Dreamina example - Omni with one image, one video and one audio reference:
+
+```json
+{
+  "prompt": "@luna dances to @beat, camera moves like @move",
+  "model": "dreamina",
+  "mode": "omni",
+  "video_length": 5,
+  "reference_images": [{"data": "data:image/png;base64,...", "name": "luna"}],
+  "reference_videos": [{"path": "D:/clips/move.mp4"}],
+  "reference_audios": [{"path": "D:/audio/beat.mp3"}]
+}
+```
+
 ### 5.3 Grok — `POST /api/grok/generate`
 
 | Field | Type | Required | Default | Notes |
@@ -539,10 +615,10 @@ Meta Muse example - image to video (first frame, 8 s, 9:16):
 | `prompt` | string | ✅ | — | Prompt. |
 | `mode` | string | ❌ | `t2v` | `t2i` (text→image) · `i2i` (image→image) · `t2v` (text→video) · `i2v` (image→video). Invalid mode → task fails. |
 | `aspect_ratio` | string | ❌ | `9:16` | Image (`t2i`/`i2i`): `9:16, 16:9, 1:1, 2:3, 3:2, 4:3, 21:9, 5:2`. Video (`t2v`/`i2v`): `9:16, 16:9, 1:1, 2:3, 3:2`. Unknown → `9:16`. |
-| `reference_images` | array | ❌ | `[]` | Up to **5** base64 images. **Required for `i2i` and `i2v`** (≥1, else the task fails). Ignored for `t2i` / `t2v`. |
+| `reference_images` | array | ❌ | `[]` | `i2i` up to **5** images; `i2v` up to **14** component images (up to **3** frames with `first_frame: true`). Base64 or `path` (§6); more than that → `400 TOO_MANY_REFERENCES`. **Required for `i2i` and `i2v`** (≥1, else the task fails). Ignored for `t2i` / `t2v`. |
 | `video_length` | int | ❌ | `6` | `6`, `10` or `15` (seconds). **Video modes only** (`t2v`/`i2v`). Other values → `6`. |
 | `resolution` | string | ❌ | `480p` | `480p`, `720p` or `1080p`. **Video modes only.** Image modes (`t2i`/`i2i`) always output **1K**. |
-| `first_frame` | bool | ❌ | `false` | **`i2v` only.** `true` = images are frames: 1 image = opening frame, 2 = opening + closing frame, 3 = opening + middle + closing frame (a 4th-5th image is ignored); `false` = reference ingredients (multiple refs). |
+| `first_frame` | bool | ❌ | `false` | **`i2v` only.** `true` = images are frames: 1 image = opening frame, 2 = opening + closing frame, 3 = opening + middle + closing frame (more than 3 → `400 TOO_MANY_REFERENCES`); `false` = reference ingredients (multiple refs). |
 
 ```json
 {
@@ -638,7 +714,7 @@ result). Reference images are **positional** (no `@tag`).
 | `prompt_mode` | string | ❌ | `auto` | `auto` (model refines the prompt) or `direct` (use the prompt verbatim). Unknown → `auto`. |
 | `reasoning` | string | ❌ | `none` | Reasoning effort: `none`, `low`, `medium`, `high`, `xhigh`, `max`. Unknown → `none`. |
 | `web_search` | bool | ❌ | `false` | Allow web-search grounding before generating. |
-| `reference_images` | array | ❌ | `[]` | Up to **5** base64 images (see §6). Passed **positionally** — GPT Image 2 does **not** support `@tag` name-binding. |
+| `reference_images` | array | ❌ | `[]` | Up to the server's default model cap (currently **15** images), base64 or `path` (see §6); more than that → `400 TOO_MANY_REFERENCES`. Passed **positionally** — GPT Image 2 does **not** support `@tag` name-binding. |
 
 ```json
 {
@@ -770,13 +846,16 @@ via the URL rather than guessing the path on disk.
 | `nano_banana_2_lite` | Nano Banana 2 Lite | `1:1, 3:4, 4:3, 9:16, 16:9` |
 | `nano_pics` | Google Pics (image; `text_to_image` / `image_to_image` (1–14 refs, positional); 3–9 images per run, `keep` 1–4 or all; Gemini logo removed by default; runs on the Google accounts in Settings → Google Accounts, PLUS/MAX) | `16:9, 9:16, 1:1, 4:3, 3:4, 3:2, 2:3, 5:4, 4:5, 21:9` |
 | `meta_muse` | Meta Muse (image; `text_to_image` / `image_to_image` (1–14 refs, positional); 1–4 images per prompt (`count`); JPG, no logo; runs on the Muse accounts in Settings → Muse accounts, PLUS/MAX) | `1:1, 16:9, 9:16, 4:3, 3:4, 3:2, 2:3, 21:9, 5:4, 4:5` |
-| `veo_31_fast` | Veo 3.1 Fast | `16:9, 9:16` |
+| `dreamina` | Dreamina (image; `text_to_image` / `image_to_image` with `@tag`; pick the model with `dreamina_model`; references, ratios, resolutions and counts per model; runs on the Dreamina accounts, PLUS/MAX) | per model (table in the Webhook tab) |
+| `veo_31_fast` | Veo 3.1 Fast — **retires on 2026-12-05**, use `veo_31_lite` | `16:9, 9:16` |
 | `veo_31_lite` | Veo 3.1 Lite | `16:9, 9:16` |
-| `veo_31_quality` | Veo 3.1 Quality | `16:9, 9:16` |
+| `veo_31_quality` | Veo 3.1 Quality — **retires on 2026-12-05**, use `veo_31_lite` | `16:9, 9:16` |
 | `veo_31_lite_relaxed` | Veo 3.1 Lite Lower Priority [0 Credit] (ULTRA only) | `16:9, 9:16` |
-| `omni_flash` | Omni Flash (video; 4/6/8/10s; up to 7 refs; 360p or 720p; edit video ≤10s via `reference_video`; no ULTRA) | `16:9, 9:16` |
-| `omni_vids` | Google Vids Omni (video; 3–10 s; 720p or 1080p generated directly; `text_to_video` / `start_image` (1 ref) / `components` (1–3 refs, `@name`); runs on the Google accounts in Settings → Google Accounts, PLUS/MAX) | `16:9, 9:16` |
+| `omni_flash` | Omni Flash (video; 4/6/8/10s; up to 7 refs; 360p or 720p; edit video ≤10s via `reference_video`; no ULTRA) — **retires on 2026-12-05**, use `omni_flash_12` | `16:9, 9:16` |
+| `omni_flash_12` | Omni Flash 1.2 (video; 3–15s, 11–15s need a paid plan; start + end frames up to 10s (11–15s: start frame only); up to 7 refs, characters share the image slots (max 3); 360p or 720p; edit video ≤15s via `reference_video`; no ULTRA) | `16:9, 9:16` |
+| `omni_vids` | Google Vids Omni (video; 3–15 s; 720p or 1080p generated directly; `text_to_video` / `start_image` (1 ref) / `components` (1–3 refs, `@name`); runs on the Google accounts in Settings → Google Accounts, PLUS/MAX) | `16:9, 9:16` |
 | `meta_muse` | Meta Muse (video; `text_to_video` / `image_to_video` (1 ref = first frame, 2–3 refs = references); 1–2 videos per prompt (`count`); optional `video_length` 1–60 s; MP4 with sound; runs on the Muse accounts in Settings → Muse accounts, PLUS/MAX) | `16:9, 9:16, 1:1, 4:3, 3:4, 21:9` |
+| `dreamina` | Dreamina (video; `text_to_video` / `image_to_video` (first, last frame) / `omni` (image + video + audio references, `@tag`); pick the model with `dreamina_model`; 1-4 videos; runs on the Dreamina accounts, PLUS/MAX) | per model (table in the Webhook tab) |
 | *upscale* `model` | Whatever is installed in `bin/realesrgan/models/` — the Webhook tab's model table lists your actual set. Stock build: `upscayl-standard-4x`, `upscayl-lite-4x`, `digital-art-4x`, `high-fidelity-4x`, `remacri-4x`, `ultramix-balanced-4x`, `ultrasharp-4x` | scale `2`–`8` (aspect ratio unchanged) |
 | Grok `mode=t2i` | Text → Image (1K) | `9:16, 16:9, 1:1, 2:3, 3:2, 4:3, 21:9, 5:2` |
 | Grok `mode=i2i` | Image → Image (1K) | `9:16, 16:9, 1:1, 2:3, 3:2, 4:3, 21:9, 5:2` |
@@ -930,7 +1009,7 @@ API matches what you'd get creating directly in the app).
   image in `reference_images` order wins.
 - **Effect**: binds that specific image to that noun's position in the sentence (Flow
   "Mode-2" structured prompt) instead of passing all images as anonymous generic refs.
-- **Scope**: works for **image (Flow)**, **video (Veo)** and **Google Vids `components`** (`omni_vids`, where a library character's name is a valid tag too); **Grok**, **OpenAI (GPT Image 2)**, **Google Pics** and **Meta Muse** (`meta_muse`) do **not** support `@tag` (their refs are positional).
+- **Scope**: works for **image (Flow)**, **video (Veo)** and **Google Vids `components`** (`omni_vids`, where a library character's name is a valid tag too), **Dreamina** (`dreamina`: reference images and Omni - a tag points to an image, video or audio by its `name`, or a library character by name); **Grok**, **OpenAI (GPT Image 2)**, **Google Pics** and **Meta Muse** (`meta_muse`) do **not** support `@tag` (their refs are positional).
 - Filenames are sanitized (directory components and illegal characters stripped) first.
 - **Unmatched tags** stay as literal text — they never cause an error.
 - **No `name`**: the image is still used as a positional reference as before (backward compatible).
@@ -951,7 +1030,7 @@ API matches what you'd get creating directly in the app).
 ```json
 {
   "prompt": "the @character walks through the @forest at dawn",
-  "model": "veo_31_fast",
+  "model": "veo_31_lite",
   "mode": "components",
   "aspect_ratio": "16:9",
   "reference_images": [
@@ -1119,6 +1198,8 @@ Notes specific to this app:
   requested kind → `error_code 0` (`No enabled Meta account for image/video`);
   nothing produced → `Meta produced no output`.
 - **Any task** stopped through `POST /api/stop` → `failed` with `499` / `STOPPED_BY_CLIENT`.
+- **Flow Video** (Veo / Omni Flash): missing `model` → `400 MISSING_MODEL`; a model Google retired →
+  `400 MODEL_RETIRED` (`error` names the replacement id, e.g. `use 'veo_31_lite'`).
 - **Google Vids** (`omni_vids`): request rejected → `400` `INVALID_MODE` / `INVALID_RESOLUTION` /
   `INVALID_VIDEO_LENGTH` / `INVALID_ASPECT_RATIO` / `INVALID_FIELD` / `MISSING_REFERENCE` /
   `UNKNOWN_CLIP` / `ALREADY_UPSCALED`; plan too low → `403 PLAN_REQUIRED`; server config missing →
@@ -1150,6 +1231,15 @@ Notes specific to this app:
   is NOT retried), `400 CONTENT_POLICY` (Muse answered without an image / video),
   `502 DOWNLOAD_FAILED`, `502 UPSTREAM`, `502 NO_OUTPUT`; the webhook server stopped →
   `503 SERVER_STOPPED`.
+- **Dreamina** (`dreamina`, image and video): request rejected → `400` `INVALID_MODE` /
+  `INVALID_MODEL` / `INVALID_FIELD` / `MISSING_REFERENCE` / `TOO_MANY_REFERENCES` /
+  `INVALID_ASPECT_RATIO` / `INVALID_RESOLUTION` / `INVALID_VIDEO_LENGTH` / `INVALID_COUNT` /
+  `INVALID_QUALITY`; plan too low → `403 PLAN_REQUIRED`; no usable Dreamina account →
+  `503 NO_DREAMINA_ACCOUNT`; thread cap not received from the server → `503 RUNTIME_CONFIG`; every
+  account busy for 15 minutes → `503 NO_FREE_SLOT`; every account tried failed →
+  `502 ALL_ACCOUNTS_FAILED`; the job itself failed → `401 DREAMINA_COOKIE_EXPIRED`,
+  `429 DREAMINA_CREDIT` (not enough credit), `503 DREAMINA_CONFIG`, `502 DREAMINA_FAILED` (Dreamina's
+  generation failed - not re-sent); webhook server stopped → `503 SERVER_STOPPED`.
 
 ---
 
@@ -1165,6 +1255,8 @@ Notes specific to this app:
   - `4K` image upscale, **`4K` video**, and `veo_31_lite_relaxed` require
     **ULTRA** accounts (`1080p` video works without ULTRA). Without an eligible
     account the task is `failed`.
+  - `video_length` Veo `4`/`6` needs **ULTRA**; Omni Flash 1.2 `11`–`15` needs a **non-FREE** account.
+    Without one the default 8s length is used (the task still runs).
   - Accounts toggled **OFF** in the app are not used.
 - **Grok** needs at least one enabled Grok account in Settings → Grok (**Accounts** run mode,
   the default), or a connected extension with a logged-in grok.com tab (**Extension** run mode,
@@ -1189,6 +1281,9 @@ Notes specific to this app:
 - **Meta Muse** (`meta_muse`) needs a **PLUS/MAX** plan and at least one enabled Muse account in
   Settings → Muse accounts with quota left. Quota = the account's Muse tokens (the weekly plan
   first, then bought tokens). Each account runs at most the server's per-account job count (today 5).
+- **Dreamina** (`dreamina`) needs a **PLUS/MAX** plan and at least one enabled Dreamina account in
+  Settings → Dreamina accounts (the matching Image / Video column on) with credit left. Generations are
+  sent from the account's hidden Chrome (opened when needed, closed after 90 idle seconds).
 - **Upscale** needs **no account and no tier** — it runs the Real-ESRGAN engine on
   your own GPU, so it consumes no credits and no quota. It does need the engine +
   models present in `bin/realesrgan/` (otherwise `503 ENGINE_MISSING`) and a
@@ -1227,12 +1322,12 @@ curl -X POST http://127.0.0.1:8765/api/image/generate \
 # --- Video (start image) ---
 curl -X POST http://127.0.0.1:8765/api/video/generate \
   -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
-  -d '{"prompt":"flowing water","mode":"start_image","reference_images":["data:image/png;base64,..."],"resolution":["1080p"]}'
+  -d '{"prompt":"flowing water","model":"veo_31_lite","mode":"start_image","reference_images":["data:image/png;base64,..."],"resolution":["1080p"]}'
 
 # --- Video (components + voice) ---
 curl -X POST http://127.0.0.1:8765/api/video/generate \
   -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
-  -d '{"prompt":"she says hello","mode":"components","reference_images":["data:image/png;base64,..."],"voice":"aoede"}'
+  -d '{"prompt":"she says hello","model":"veo_31_lite","mode":"components","reference_images":["data:image/png;base64,..."],"voice":"aoede"}'
 
 # --- Grok: text → image ---
 curl -X POST http://127.0.0.1:8765/api/grok/generate \
@@ -1306,6 +1401,14 @@ curl -X POST http://127.0.0.1:8765/api/image/generate -H "Content-Type: applicat
 # --- Meta Muse: image → video (first frame, 8 s, 9:16) ---
 curl -X POST http://127.0.0.1:8765/api/video/generate -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
   -d '{"prompt":"slow push in, steam rising","model":"meta_muse","mode":"image_to_video","aspect_ratio":"9:16","video_length":8,"reference_images":["data:image/png;base64,..."]}'
+
+# --- Dreamina: text → image (Seedream 5.0 Lite, 2 images 16:9) ---
+curl -X POST http://127.0.0.1:8765/api/image/generate -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"prompt":"a red fox in the snow","model":"dreamina","dreamina_model":"high_aes_general_v50","aspect_ratio":"16:9","count":2}'
+
+# --- Dreamina: Omni (image + video + audio references, @tag) ---
+curl -X POST http://127.0.0.1:8765/api/video/generate -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"prompt":"@luna dances to @beat, camera like @move","model":"dreamina","mode":"omni","video_length":5,"reference_images":[{"path":"D:/refs/luna.png"}],"reference_videos":[{"path":"D:/clips/move.mp4"}],"reference_audios":[{"path":"D:/audio/beat.mp3"}]}'
 
 # --- Stop one task / stop everything ---
 curl -X POST http://127.0.0.1:8765/api/stop/abc12345 -H "X-API-Key: YOUR_API_KEY"
@@ -1417,7 +1520,7 @@ async function generate(endpoint, body, { poll = 4000, timeout = 900000 } = {}) 
 // Video, text-to-video
 const urls = await generate("video", {
   prompt: "neon city at night, drone shot",
-  model: "veo_31_fast",
+  model: "veo_31_lite",
   aspect_ratio: "16:9",
   resolution: ["720p"],
 });
@@ -1438,7 +1541,7 @@ console.log(urls);
 6. On `completed`: `GET` each URL in `results` to download the files.
 7. On `failed`: inspect `error_code` (e.g. `429` = quota) and `error` / `error_detail`.
 8. Respect per-model ratios, per-mode reference counts, and ULTRA-only features. Google Vids,
-   Google Pics and Meta Muse reject an invalid value with a named `400` instead of falling back.
+   Google Pics, Meta Muse and Dreamina reject an invalid value with a named `400` instead of falling back.
 9. To cancel, `POST /api/stop/{task_id}` (or `/api/stop` for everything) — the task turns
    `failed` with `499 STOPPED_BY_CLIENT` at once.
 10. Characters: manage them with `/api/characters` (§5.8), choose per task with `use_characters`

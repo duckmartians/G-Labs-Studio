@@ -6,8 +6,8 @@
 > và quy trình bất đồng bộ (gửi yêu cầu → hỏi trạng thái → tải kết quả).
 
 Tài liệu này mô tả API do tab **Webhook** của ứng dụng desktop G-Labs Automation
-(v5.0.8+) cung cấp. Nó cho phép các công cụ bên ngoài (n8n, Make.com, script tự
-viết, AI agent) điều khiển việc tạo ảnh (Flow, Google Pics, Meta Muse) / video (Veo, Omni Flash, Google Vids, Meta Muse) / Grok /
+(v5.0.3+) cung cấp. Nó cho phép các công cụ bên ngoài (n8n, Make.com, script tự
+viết, AI agent) điều khiển việc tạo ảnh (Flow, Google Pics, Meta Muse, Dreamina) / video (Veo, Omni Flash, Google Vids, Meta Muse, Dreamina) / Grok /
 Meta AI / OpenAI — và nâng cấp ảnh cục bộ — qua REST API đơn giản.
 
 ---
@@ -32,10 +32,10 @@ Meta AI / OpenAI — và nâng cấp ảnh cục bộ — qua REST API đơn gi�
   3. Khi `completed`, tải file từ các URL trong `results`.
 - **Đồng thời.** Máy chủ nhận nhiều request cùng lúc. Tối đa **10 task được bóc
   tách song song**; còn *chạy tạo* được bao nhiêu cái một lúc thì theo số tài khoản: mọi
-  endpoint có tài khoản (Ảnh/Video, Meta AI, OpenAI, Grok, Google Vids, Google Pics, Meta Muse)
+  endpoint có tài khoản (Ảnh/Video, Meta AI, OpenAI, Grok, Google Vids, Google Pics, Meta Muse, Dreamina)
   chạy tối đa **số tài khoản dùng được × số việc mỗi tài khoản do máy chủ cấp** (hiện là 5, chỉ
-  gói MAX). Grok ở chế độ extension tính là 1 tài khoản. Google Vids, Google Pics và Meta Muse chờ
-  slot trống (Meta Muse tối đa 900 giây),
+  gói MAX). Grok ở chế độ extension tính là 1 tài khoản. Google Vids, Google Pics, Meta Muse và Dreamina chờ
+  slot trống (Meta Muse và Dreamina tối đa 900 giây),
   riêng Upscale chạy **lần lượt từng cái** (chỉ có một GPU — xem §5.6).
 - **Tạo nội dung dùng tài khoản đã đăng nhập trong app.** Ảnh/Video dùng tài khoản
   Google (Flow/Veo) cấu hình trong app; Grok dùng các tài khoản Grok ở Cài đặt → Grok
@@ -43,7 +43,8 @@ Meta AI / OpenAI — và nâng cấp ảnh cục bộ — qua REST API đơn gi�
   **Meta AI** dùng tài khoản Meta (vibes.ai) đã đăng nhập; **OpenAI (GPT Image 2)**
   dùng tài khoản ChatGPT/OpenAI đã đăng nhập; **Google Vids** (`omni_vids`) và **Google Pics**
   (`nano_pics`) dùng tài khoản Google ở Cài đặt → Tài khoản Google; **Meta Muse** (`meta_muse`) dùng
-  tài khoản Muse ở Cài đặt → Tài khoản Muse (muse.ai, đăng nhập bằng tài khoản Meta). Nếu không có tài khoản hợp lệ, task sẽ
+  tài khoản Muse ở Cài đặt → Tài khoản Muse (muse.ai, đăng nhập bằng tài khoản Meta); **Dreamina** (`dreamina`) dùng
+  tài khoản Dreamina ở Cài đặt → Tài khoản Dreamina (CapCut). Nếu không có tài khoản hợp lệ, task sẽ
   thất bại (xem bảng lỗi). App phải đang chạy với các tài khoản đó đã đăng nhập & đang bật.
 
 ---
@@ -71,8 +72,8 @@ client trên trình duyệt cũng dùng được.
 | Method | Path | Auth | Mục đích |
 |--------|------|:----:|----------|
 | `GET`  | `/api/health` | ❌ | Tình trạng máy chủ / uptime / số task trong hàng đợi |
-| `POST` | `/api/image/generate` | ✅ | Đưa task tạo **ảnh** vào hàng đợi (Flow, Google Pics với `model: "nano_pics"`, hoặc Meta Muse với `model: "meta_muse"`) |
-| `POST` | `/api/video/generate` | ✅ | Đưa task tạo **video** vào hàng đợi (Veo / Omni Flash / Google Vids, hoặc Meta Muse với `model: "meta_muse"`) |
+| `POST` | `/api/image/generate` | ✅ | Đưa task tạo **ảnh** vào hàng đợi (Flow, Google Pics với `model: "nano_pics"`, Meta Muse với `model: "meta_muse"`, hoặc Dreamina với `model: "dreamina"`) |
+| `POST` | `/api/video/generate` | ✅ | Đưa task tạo **video** vào hàng đợi (Veo / Omni Flash / Google Vids, Meta Muse với `model: "meta_muse"`, hoặc Dreamina với `model: "dreamina"`) |
 | `POST` | `/api/grok/generate`  | ✅ | Đưa task **Grok** (ảnh/video) vào hàng đợi |
 | `POST` | `/api/meta/generate`  | ✅ | Đưa task **Meta AI** (ảnh/video) vào hàng đợi |
 | `POST` | `/api/openai/generate` | ✅ | Đưa task **OpenAI GPT Image 2** vào hàng đợi |
@@ -207,7 +208,7 @@ lớn vào cùng một request.
 | Trường | Kiểu | Bắt buộc | Mặc định | Ghi chú |
 |--------|------|:--------:|----------|---------|
 | `prompt` | string | ✅ | — | Mô tả ảnh. |
-| `model` | string | ❌ | `nano_banana_2` | Một trong `nano_banana_pro`, `nano_banana_2`, `nano_banana_2_lite`, `nano_pics`, `meta_muse`. Không hợp lệ → `nano_banana_2`. **`nano_pics`** = Google Pics, có trường riêng (`mode`, `keep`, `remove_logo`) và kiểm tra chặt — xem ghi chú Google Pics bên dưới. **`meta_muse`** = Meta Muse, có trường riêng (`mode`, `count`) và kiểm tra chặt - xem ghi chú Meta Muse bên dưới. |
+| `model` | string | ❌ | `nano_banana_2` | Một trong `nano_banana_pro`, `nano_banana_2`, `nano_banana_2_lite`, `nano_pics`, `meta_muse`, `dreamina`. Không hợp lệ → `nano_banana_2`. **`nano_pics`** = Google Pics, có trường riêng (`mode`, `keep`, `remove_logo`) và kiểm tra chặt — xem ghi chú Google Pics bên dưới. **`meta_muse`** = Meta Muse, có trường riêng (`mode`, `count`) và kiểm tra chặt - xem ghi chú Meta Muse bên dưới. **`dreamina`** = Dreamina (CapCut), có trường riêng (`dreamina_model`, `mode`, `resolution`, `count`, `quality`) - xem ghi chú Dreamina bên dưới. |
 | `aspect_ratio` | string | ❌ | `1:1` | Một trong `1:1`, `3:4`, `4:3`, `9:16`, `16:9`. Không hợp lệ → `1:1`. |
 | `reference_images` | array | ❌ | `[]` | Tối đa **10** ảnh base64 (xem §6). Mỗi ảnh có thể kèm `name` để gắn theo `@tên` trong prompt (§6.1). |
 | `upscale` | array | ❌ | `[]` | Bất kỳ `"2K"`, `"4K"`. **4K cần tài khoản ULTRA** và model hỗ trợ upscale. Giá trị sai bị bỏ. |
@@ -333,19 +334,54 @@ Ví dụ Meta Muse - ảnh sang ảnh, 16:9, 2 ảnh:
 }
 ```
 
+> **Dreamina (`model: "dreamina"`)** - Dreamina của CapCut, chạy bằng **tài khoản Dreamina** ở
+> Cài đặt → Tài khoản Dreamina (gói PLUS/MAX). Cùng endpoint, có trường và quy tắc riêng; mọi lựa
+> chọn được kiểm theo đúng danh sách của model trên Dreamina (giá trị không có → `400`, không tự đổi).
+> - `dreamina_model` (không bắt buộc): khoá model Dreamina (vd `high_aes_general_v50`) hoặc tên hiển
+>   thị (vd `Seedream 5.0 Lite`). Bỏ trống → model đầu tiên hỗ trợ chế độ. Không có / không hợp chế
+>   độ → `400 INVALID_MODEL` (lỗi liệt kê các khoá dùng được).
+> - `mode`: `text_to_image` hoặc `image_to_image` (bí danh `t2i` / `i2i` / `reference`). Bỏ trống →
+>   `image_to_image` nếu có ảnh tham chiếu (hoặc prompt `@` gọi tên nhân vật thư viện), ngược lại
+>   `text_to_image`. `text_to_image` bỏ qua ảnh gửi kèm.
+> - `reference_images`: ảnh tham chiếu, tối đa theo model (GPT Image 16, Nano Banana 14, Seedream 5.0
+>   10 ...). Có `@tag`: `@luna` trong prompt trỏ tới ảnh có `"name": "luna"` (§6.1). Quá trần →
+>   `400 TOO_MANY_REFERENCES`.
+> - `aspect_ratio` (mặc định `1:1`), `resolution` (vd `1k` / `2k` / `4k`, mặc định `2k`), `count`
+>   (số ảnh, theo danh sách của model, mặc định `1`), `quality` (chỉ model GPT Image: `low` /
+>   `medium` / `high` ...). Sai → `400 INVALID_ASPECT_RATIO` / `INVALID_RESOLUTION` / `INVALID_COUNT`
+>   / `INVALID_QUALITY`.
+> - Tên trường thay thế cũng được nhận: `model_key` = `dreamina_model`, `num_images` = `count`.
+> - **Tài khoản:** tài khoản Dreamina đang bật (cột Ảnh bật) và chưa hết credit; trần số việc mỗi tài
+>   khoản do máy chủ cấp; xoay vòng; cookie hết hạn / hết credit trước khi tạo ra file thì chuyển sang
+>   tài khoản kế; mọi tài khoản bận thì chờ slot tối đa 15 phút (`503 NO_FREE_SLOT`).
+> - **Kết quả:** `results` = các ảnh; `meta`: `mode` (`img_t2i` / `img_ref`), `model`, `aspect_ratio`,
+>   `resolution`, `count`, `account`, `partial`.
+
+Ví dụ Dreamina - ảnh tham chiếu có `@tag`:
+
+```json
+{
+  "prompt": "@luna reading in a cozy cafe",
+  "model": "dreamina",
+  "aspect_ratio": "16:9",
+  "resolution": "2k",
+  "reference_images": [{"data": "data:image/png;base64,...", "name": "luna"}]
+}
+```
+
 ### 5.2 Video — `POST /api/video/generate`
 
 | Trường | Kiểu | Bắt buộc | Mặc định | Ghi chú |
 |--------|------|:--------:|----------|---------|
 | `prompt` | string | ✅ | — | Mô tả chuyển động / khung cảnh. Chỉ không bắt buộc với request `upscale` của `omni_vids`. |
-| `model` | string | ✅ | — | Một trong `veo_31_fast`, `veo_31_lite`, `veo_31_quality`, `veo_31_lite_relaxed`, `omni_flash`, `omni_vids`, `meta_muse`. Thiếu → `400 MISSING_MODEL`; tên Veo lạ → `veo_31_fast`. **`omni_vids`** = Google Vids (xem ghi chú Google Vids bên dưới). **`meta_muse`** = Meta Muse (xem ghi chú Meta Muse bên dưới). `veo_31_lite_relaxed` cần tài khoản **ULTRA**. **`omni_flash`**: xem ghi chú `mode`. |
+| `model` | string | ✅ | — | Một trong `veo_31_lite`, `veo_31_lite_relaxed`, `omni_flash_12`, `veo_31_fast`, `veo_31_quality`, `omni_flash`, `omni_vids`, `meta_muse`, `dreamina`. Thiếu → `400 MISSING_MODEL`; tên Veo lạ → model mặc định của máy chủ (`veo_31_fast`; từ 05/12/2026 là `veo_31_lite`). **Model Google đã tắt** (từ 05/12/2026: `veo_31_fast`, `veo_31_quality` → dùng `veo_31_lite`; `omni_flash` → dùng `omni_flash_12`) trả `400 MODEL_RETIRED` kèm tên id thay thế. **`omni_vids`** = Google Vids (xem ghi chú Google Vids bên dưới). **`meta_muse`** = Meta Muse (xem ghi chú Meta Muse bên dưới). **`dreamina`** = Dreamina, nhận thêm `reference_videos` / `reference_audios` ở chế độ `omni` (xem ghi chú Dreamina bên dưới). `veo_31_lite_relaxed` cần tài khoản **ULTRA**. **`omni_flash`** / **`omni_flash_12`**: xem ghi chú `mode`. |
 | `aspect_ratio` | string | ❌ | `16:9` | `16:9` hoặc `9:16`. |
 | `mode` | string | ❌ | `text_to_video` | `text_to_video` (0 ảnh) · `start_image` (1 ảnh) · `start_end_image` (2 ảnh: khung đầu + khung cuối) · `components` (Veo tối đa 3 ảnh, Omni Flash tối đa 7; hỗ trợ `voice` và `reference_video`). **Mọi mode dùng được cho cả Veo lẫn Omni Flash** (`start_end_image` của Omni Flash cần server config có mapping `i2v_end` — thiếu sẽ bị từ chối kèm lý do rõ). |
 | `reference_images` | array | ❌ | `[]` | Tối đa **3** ảnh base64 (Veo); **Omni Flash `components` tối đa 7** (có `reference_video` thì tối đa **5**). **Bắt buộc khi `mode != text_to_video`** — riêng `components` có thể thay bằng `reference_video`, hoặc chỉ `@Tên` của nhân vật trong thư viện khi đang dùng nhân vật (§6.3). Mỗi ảnh có thể kèm `name` để gắn theo `@tên` trong prompt — Veo (§6.1). |
-| `reference_video` | string/object | ❌ | — | **Chỉ Omni Flash + mode `components`** — luồng **edit video**: clip (≤ **10s**) được dựng lại theo prompt, có thể kèm tối đa 5 ảnh thành phần. Nhận chuỗi base64/data-URI (`data:video/mp4;base64,...`) hoặc `{"path": "...", "name": "..."}` (file có sẵn trên máy chạy app). Luôn xuất **720p** (không dùng cùng `"360p"`). Clip dài quá 10s bị từ chối — cắt trước khi gửi. |
+| `reference_video` | string/object | ❌ | — | **Chỉ Omni Flash + mode `components`** — luồng **edit video**: clip (≤ **10s**; Omni Flash 1.2 ≤ **15s**) được dựng lại theo prompt, có thể kèm tối đa 5 ảnh thành phần. Nhận chuỗi base64/data-URI (`data:video/mp4;base64,...`) hoặc `{"path": "...", "name": "..."}` (file có sẵn trên máy chạy app). Luôn xuất **720p** (không dùng cùng `"360p"`). Clip dài quá mức (10s, Omni Flash 1.2 là 15s) bị từ chối — cắt trước khi gửi. |
 | `resolution` | array | ❌ | `["720p"]` | Bất kỳ `"360p"`, `"720p"`, `"1080p"`, `"4K"`. **`360p` chỉ có ở Omni Flash** (server config quyết định) — bản gốc tạo ở 360p, rẻ credit hơn; **nguồn 360p chỉ upscale được lên 720p** nên tổ hợp hợp lệ là `["360p"]` hoặc `["360p", "720p"]` (kèm `1080p`/`4K` sẽ bị từ chối). `1080p`/`4K` tạo bằng upscale từ nguồn 720p; **chỉ `4K` cần tài khoản ULTRA**. Giá trị sai → `720p`. Mỗi độ phân giải tạo ra một file: `results` trả **mọi** độ phân giải đã yêu cầu theo thứ tự xử lý (trước 07/10/2026 chỉ trả file của độ phân giải cuối). |
 | `voice` | string | ❌ | `""` | Tên giọng (chữ thường). Chỉ dùng ở mode `components`. |
-| `video_length` | int | ❌ | (mặc định model) | Độ dài clip (giây). Veo: `4`/`6`/`8`; Omni Flash: `4`/`6`/`8`/`10`. Giá trị không hỗ trợ → dùng mặc định (8s). **Veo `4`/`6` cần tài khoản ULTRA** (Omni Flash không cần). Luồng edit (`reference_video`) bỏ qua trường này — độ dài theo clip gốc. |
+| `video_length` | int | ❌ | (mặc định model) | Độ dài clip (giây). Veo: `4`/`6`/`8`; Omni Flash: `4`/`6`/`8`/`10`; Omni Flash 1.2: `3`–`15` (`11`–`15` cần gói Google AI trả phí; `start_end_image` quá 10s thì chỉ dùng ảnh đầu, giống web Flow). Mode `components` của Veo chỉ chạy `8` (giá trị khác → 8s). Giá trị không hỗ trợ → dùng mặc định (8s). **Veo `4`/`6` cần tài khoản ULTRA** (Omni Flash không cần); không có tài khoản ULTRA (Veo `4`/`6`) hoặc không có tài khoản trả phí (Omni Flash 1.2 `11`–`15`) → dùng mặc định 8s. Luồng edit (`reference_video`) bỏ qua trường này — độ dài theo clip gốc. |
 | `remove_logo` | bool | ❌ | (theo công tắc trang Flow Video) | Xoá logo khỏi video tạo bằng tài khoản **Pro/Free**: chữ "Veo" (Veo) hoặc dấu ✦ (Omni Flash), cho 720p và 1080p (360p / 4K giữ nguyên). `true` xoá, `false` giữ; không gửi → theo công tắc "Hiển thị logo Veo / Gemini" của trang Flow Video (tắt = xoá) **và** công tắc tổng "Tự động xoá logo khi tải video" (tab Xoá logo video; tắt = không xoá). `true` gửi rõ thì xoá dù công tắc tổng tắt. Tài khoản **ULTRA**: khi không gửi, Google tắt logo tận gốc theo công tắc đó (app không xử lý thêm); gửi `true` thì app vẫn kiểm tra và xoá nếu video còn logo. Sai kiểu → `400 INVALID_FIELD`. Các video xoá logo chạy lần lượt từng cái (thêm ~1–4 giây/video). |
 | `use_characters` | bool | ❌ | (công tắc app) | Dùng / bỏ qua **thư viện nhân vật** cho riêng task này (Veo, Omni Flash, `omni_vids`, `meta_muse`) - xem §5.1 và §6.3. Không phải boolean → `400 INVALID_FIELD`. |
 | `auto_fix_prompt` | bool | ❌ | `true` | Máy chủ chặn yêu cầu vì **prompt** (người nổi tiếng, nội dung nhạy cảm, trẻ em, bản quyền...) thì app nhờ LLM viết lại rồi chạy lại, tối đa 2 lần, task vẫn `running` (chỉ model Flow; cần gói PLUS+ và bật Cài đặt → Trợ lý LLM). **Ảnh tham chiếu / ảnh đầu vào** bị chặn thì không sửa. `false` → báo lỗi 400 gốc ngay (cho client tự viết lại prompt). Task đã được sửa có thêm `prompt_rewrites`, `original_prompt`, `final_prompt` trong `/api/status` và `/api/result` (`prompt` vẫn là prompt bạn gửi). Không phải boolean → `400 INVALID_FIELD`. |
@@ -353,7 +389,7 @@ Ví dụ Meta Muse - ảnh sang ảnh, 16:9, 2 ảnh:
 ```json
 {
   "prompt": "water flowing over rocks, cinematic",
-  "model": "veo_31_fast",
+  "model": "veo_31_lite",
   "aspect_ratio": "16:9",
   "mode": "start_image",
   "reference_images": ["data:image/png;base64,iVBORw0KGgo..."],
@@ -371,32 +407,32 @@ Ví dụ Meta Muse - ảnh sang ảnh, 16:9, 2 ảnh:
 > (Veo tối đa 3 ảnh tham chiếu, Omni Flash tối đa 7). **Riêng `omni_vids`** kiểm tra chặt
 > `mode`, `resolution`, `video_length`, `aspect_ratio` và trả `400` kèm tên lỗi (xem ghi chú Google Vids).
 >
-> **Dùng được cả Veo lẫn Omni Flash.** Omni Flash (`model: "omni_flash"`) hỗ trợ
+> **Dùng được cả Veo lẫn Omni Flash.** Omni Flash (`model: "omni_flash"` hoặc `"omni_flash_12"`) hỗ trợ
 > đủ `text_to_video`, `start_image`, `start_end_image`, `components` — và riêng nó
-> có thêm: mốc `video_length` **10s**, độ phân giải **360p**, và luồng **edit video**
+> có thêm: mốc `video_length` **10s** (Omni Flash 1.2: **3–15s**), độ phân giải **360p**, và luồng **edit video**
 > (`reference_video` trong mode `components`). Nó không cần tài khoản ULTRA.
 >
 > `resolution` có thể liệt kê nhiều giá trị; mỗi giá trị được tạo nếu hạng tài khoản
 > cho phép.
 
-Ví dụ Omni Flash — khung đầu + khung cuối, bản nháp 360p:
+Ví dụ Omni Flash 1.2 — khung đầu + khung cuối, bản nháp 360p:
 
 ```json
 {
   "prompt": "animate",
-  "model": "omni_flash",
+  "model": "omni_flash_12",
   "mode": "start_end_image",
   "reference_images": ["data:image/png;base64,...", "data:image/png;base64,..."],
   "resolution": ["360p"]
 }
 ```
 
-Ví dụ Omni Flash — edit video (dựng lại clip ≤10s theo prompt):
+Ví dụ Omni Flash 1.2 — edit video (dựng lại clip ≤15s theo prompt):
 
 ```json
 {
   "prompt": "make it snow heavily",
-  "model": "omni_flash",
+  "model": "omni_flash_12",
   "mode": "components",
   "reference_video": "data:video/mp4;base64,...",
   "reference_images": ["data:image/png;base64,..."]
@@ -412,7 +448,7 @@ Ví dụ Omni Flash — edit video (dựng lại clip ≤10s theo prompt):
 > - `resolution`: **một** giá trị trong danh sách máy chủ (hiện `720p` / `1080p`), chuỗi hoặc list một
 >   phần tử — tạo thẳng, không qua bước upscale. Bỏ trống → giá trị đầu tiên của danh sách máy chủ.
 >   Hai giá trị, `360p`, `4K` hay giá trị lạ → `400 INVALID_RESOLUTION`.
-> - `video_length`: số nguyên **3–10** giây (mặc định 5); 1 giây video trừ 1 giây hạn mức tài khoản.
+> - `video_length`: số nguyên **3–15** giây (mặc định 5); 1 giây video trừ 1 giây hạn mức tài khoản.
 >   Ngoài khoảng → `400 INVALID_VIDEO_LENGTH`.
 > - `orientation` (`landscape` / `portrait`) hoặc `aspect_ratio` (`16:9` / `9:16`); gửi cả hai thì
 >   `orientation` được ưu tiên. Mặc định `16:9`. Giá trị khác → `400 INVALID_ASPECT_RATIO`.
@@ -520,6 +556,45 @@ Ví dụ Meta Muse - ảnh sang video (khung hình đầu, 8 giây, 9:16):
 }
 ```
 
+> **Dreamina (`model: "dreamina"`)** chạy bằng tài khoản Dreamina (cột Video bật; gói PLUS/MAX) -
+> cùng model `dreamina` như ở `/api/image/generate`, cùng trường `dreamina_model`.
+> - `mode`: `text_to_video` (bí danh `t2v`), `image_to_video` (bí danh `i2v` / `frames` /
+>   `start_image`: 1 ảnh = khung đầu, 2 ảnh = khung đầu + khung cuối khi model có khung cuối), `omni`
+>   (bí danh `omni_reference` / `reference`: ảnh + video + âm thanh tham chiếu, gọi tên bằng `@tag`).
+>   Bỏ trống → `omni` khi có video / âm thanh hoặc từ 3 ảnh, `image_to_video` với 1-2 ảnh, ngược lại
+>   `text_to_video`.
+> - `reference_videos` / `reference_audios` (**chỉ `omni`**): danh sách cùng dạng phần tử với
+>   `reference_images` - chuỗi base64 / data-URI, hoặc `{"data": "...", "name": "beat"}`, hoặc
+>   `{"path": "D:/..."}` (file trên máy chạy app). Video: mp4 / mov / webm / m4v; âm thanh: mp3 / wav
+>   / m4a / aac / ogg. `"name"` là tên `@` trong prompt (`@beat`); không có `name` thì dùng tên file.
+>   Gửi ở chế độ khác → `400 INVALID_FIELD`; base64 hỏng / file không đúng loại → `400`.
+> - Trần tham chiếu Omni theo model, **từng loại và tổng** (vd Seedance 2.5: 30 ảnh, 10 video, 10 âm
+>   thanh, tổng 50; Seedance 2.0: 9 / 3 / 3, tổng 12, cần ít nhất 1 ảnh hoặc video). Quá trần →
+>   `400 TOO_MANY_REFERENCES`; thiếu loại bắt buộc → `400 MISSING_REFERENCE`.
+> - `aspect_ratio` (mặc định `16:9`; `image_to_video` nhận `auto` = theo ảnh khi model hỗ trợ),
+>   `resolution` (mặc định `720p`), `video_length` (giây, trong khoảng của model, mặc định theo model),
+>   `count` (số video 1-4, mặc định 1 - mỗi video là một lần tạo, tính credit riêng).
+> - Tên trường thay thế cũng được nhận: `model_key` = `dreamina_model`, `duration` = `video_length`,
+>   `num_videos` = `count`.
+> - Dreamina đã nhận lệnh tạo mà tạo hỏng → `502 DREAMINA_FAILED`, **không** tự gửi lại (có thể đã trừ
+>   credit).
+> - **Kết quả:** `results` = các video MP4; `meta`: `mode` (`vid_t2v` / `vid_frames` / `vid_omni`),
+>   `model`, `aspect_ratio`, `resolution`, `video_length`, `count`, `account`, `partial`.
+
+Ví dụ Dreamina - Omni với một ảnh, một video và một âm thanh tham chiếu:
+
+```json
+{
+  "prompt": "@luna dances to @beat, camera moves like @move",
+  "model": "dreamina",
+  "mode": "omni",
+  "video_length": 5,
+  "reference_images": [{"data": "data:image/png;base64,...", "name": "luna"}],
+  "reference_videos": [{"path": "D:/clips/move.mp4"}],
+  "reference_audios": [{"path": "D:/audio/beat.mp3"}]
+}
+```
+
 ### 5.3 Grok — `POST /api/grok/generate`
 
 | Trường | Kiểu | Bắt buộc | Mặc định | Ghi chú |
@@ -527,10 +602,10 @@ Ví dụ Meta Muse - ảnh sang video (khung hình đầu, 8 giây, 9:16):
 | `prompt` | string | ✅ | — | Prompt. |
 | `mode` | string | ❌ | `t2v` | `t2i` (văn bản→ảnh) · `i2i` (ảnh→ảnh) · `t2v` (văn bản→video) · `i2v` (ảnh→video). Mode sai → task thất bại. |
 | `aspect_ratio` | string | ❌ | `9:16` | Ảnh (`t2i`/`i2i`): `9:16, 16:9, 1:1, 2:3, 3:2, 4:3, 21:9, 5:2`. Video (`t2v`/`i2v`): `9:16, 16:9, 1:1, 2:3, 3:2`. Không hợp lệ → `9:16`. |
-| `reference_images` | array | ❌ | `[]` | Tối đa **5** ảnh base64. **Bắt buộc cho `i2i` và `i2v`** (≥1, không có thì task thất bại). Bị bỏ qua với `t2i` / `t2v`. |
+| `reference_images` | array | ❌ | `[]` | `i2i` tối đa **5** ảnh; `i2v` tối đa **14** ảnh thành phần (với `first_frame: true` tối đa **3** khung). Base64 hoặc `path` (§6); gửi quá → `400 TOO_MANY_REFERENCES`. **Bắt buộc cho `i2i` và `i2v`** (≥1, không có thì task thất bại). Bị bỏ qua với `t2i` / `t2v`. |
 | `video_length` | int | ❌ | `6` | `6`, `10` hoặc `15` (giây). **Chỉ mode video** (`t2v`/`i2v`). Giá trị khác → `6`. |
 | `resolution` | string | ❌ | `480p` | `480p`, `720p` hoặc `1080p`. **Chỉ mode video.** Mode ảnh (`t2i`/`i2i`) luôn xuất **1K**. |
-| `first_frame` | bool | ❌ | `false` | **Chỉ `i2v`.** `true` = ảnh làm khung hình: 1 ảnh = khung đầu, 2 ảnh = khung đầu + cuối, 3 ảnh = khung đầu + giữa + cuối (ảnh thứ 4-5 bị bỏ qua); `false` = ảnh thành phần tham chiếu (nhiều ảnh). |
+| `first_frame` | bool | ❌ | `false` | **Chỉ `i2v`.** `true` = ảnh làm khung hình: 1 ảnh = khung đầu, 2 ảnh = khung đầu + cuối, 3 ảnh = khung đầu + giữa + cuối (gửi quá 3 → `400 TOO_MANY_REFERENCES`); `false` = ảnh thành phần tham chiếu (nhiều ảnh). |
 
 ```json
 {
@@ -626,7 +701,7 @@ theo **VỊ TRÍ** (không có `@tag`).
 | `prompt_mode` | string | ❌ | `auto` | `auto` (model tinh chỉnh prompt) hoặc `direct` (dùng nguyên văn). Không hợp lệ → `auto`. |
 | `reasoning` | string | ❌ | `none` | Mức suy luận: `none`, `low`, `medium`, `high`, `xhigh`, `max`. Không hợp lệ → `none`. |
 | `web_search` | bool | ❌ | `false` | Cho phép tra cứu web trước khi tạo. |
-| `reference_images` | array | ❌ | `[]` | Tối đa **5** ảnh base64 (xem §6). Truyền theo **vị trí** — GPT Image 2 **không** hỗ trợ `@tag`. |
+| `reference_images` | array | ❌ | `[]` | Tối đa theo model mặc định trên máy chủ (hiện **15** ảnh), base64 hoặc `path` (xem §6); gửi quá → `400 TOO_MANY_REFERENCES`. Truyền theo **vị trí** — GPT Image 2 **không** hỗ trợ `@tag`. |
 
 ```json
 {
@@ -758,13 +833,16 @@ vì đoán đường dẫn trên đĩa.
 | `nano_banana_2_lite` | Nano Banana 2 Lite | `1:1, 3:4, 4:3, 9:16, 16:9` |
 | `nano_pics` | Google Pics (ảnh; `text_to_image` / `image_to_image` (1–14 ảnh, theo vị trí); 3–9 ảnh mỗi lượt, `keep` 1–4 hoặc tất cả; mặc định xoá logo Gemini; chạy bằng tài khoản Google ở Cài đặt → Tài khoản Google, gói PLUS/MAX) | `16:9, 9:16, 1:1, 4:3, 3:4, 3:2, 2:3, 5:4, 4:5, 21:9` |
 | `meta_muse` | Meta Muse (ảnh; `text_to_image` / `image_to_image` (1–14 ảnh, theo vị trí); 1–4 ảnh mỗi prompt (`count`); JPG, không logo; chạy bằng tài khoản Muse ở Cài đặt → Tài khoản Muse, gói PLUS/MAX) | `1:1, 16:9, 9:16, 4:3, 3:4, 3:2, 2:3, 21:9, 5:4, 4:5` |
-| `veo_31_fast` | Veo 3.1 Fast | `16:9, 9:16` |
+| `dreamina` | Dreamina (ảnh; `text_to_image` / `image_to_image` có `@tag`; chọn model bằng `dreamina_model`; tham chiếu, tỉ lệ, độ phân giải, số ảnh theo từng model; chạy bằng tài khoản Dreamina, gói PLUS/MAX) | theo model (bảng ở tab Webhook) |
+| `veo_31_fast` | Veo 3.1 Fast — **tắt từ 05/12/2026**, dùng `veo_31_lite` | `16:9, 9:16` |
 | `veo_31_lite` | Veo 3.1 Lite | `16:9, 9:16` |
-| `veo_31_quality` | Veo 3.1 Quality | `16:9, 9:16` |
+| `veo_31_quality` | Veo 3.1 Quality — **tắt từ 05/12/2026**, dùng `veo_31_lite` | `16:9, 9:16` |
 | `veo_31_lite_relaxed` | Veo 3.1 Lite Lower Priority [0 Credit] (chỉ ULTRA) | `16:9, 9:16` |
-| `omni_flash` | Omni Flash (video; 4/6/8/10s; tối đa 7 ảnh ref; 360p hoặc 720p; edit video ≤10s qua `reference_video`; không cần ULTRA) | `16:9, 9:16` |
-| `omni_vids` | Google Vids Omni (video; 3–10 s; 720p hoặc 1080p tạo thẳng; `text_to_video` / `start_image` (1 ảnh) / `components` (1–3 ảnh, `@tên`); chạy bằng tài khoản Google ở Cài đặt → Tài khoản Google, gói PLUS/MAX) | `16:9, 9:16` |
+| `omni_flash` | Omni Flash (video; 4/6/8/10s; tối đa 7 ảnh ref; 360p hoặc 720p; edit video ≤10s qua `reference_video`; không cần ULTRA) — **tắt từ 05/12/2026**, dùng `omni_flash_12` | `16:9, 9:16` |
+| `omni_flash_12` | Omni Flash 1.2 (video; 3–15s, 11–15s cần gói trả phí; ảnh đầu + cuối tối đa 10s (11–15s chỉ dùng ảnh đầu); tối đa 7 ảnh ref, nhân vật dùng chung ô ảnh (tối đa 3); 360p hoặc 720p; edit video ≤15s qua `reference_video`; không cần ULTRA) | `16:9, 9:16` |
+| `omni_vids` | Google Vids Omni (video; 3–15 s; 720p hoặc 1080p tạo thẳng; `text_to_video` / `start_image` (1 ảnh) / `components` (1–3 ảnh, `@tên`); chạy bằng tài khoản Google ở Cài đặt → Tài khoản Google, gói PLUS/MAX) | `16:9, 9:16` |
 | `meta_muse` | Meta Muse (video; `text_to_video` / `image_to_video` (1 ảnh = khung hình đầu, 2–3 ảnh = ảnh tham chiếu); 1–2 video mỗi prompt (`count`); `video_length` tuỳ chọn 1–60 s; MP4 có tiếng; chạy bằng tài khoản Muse ở Cài đặt → Tài khoản Muse, gói PLUS/MAX) | `16:9, 9:16, 1:1, 4:3, 3:4, 21:9` |
+| `dreamina` | Dreamina (video; `text_to_video` / `image_to_video` (khung đầu, khung cuối) / `omni` (ảnh + video + âm thanh tham chiếu, `@tag`); chọn model bằng `dreamina_model`; 1-4 video; chạy bằng tài khoản Dreamina, gói PLUS/MAX) | theo model (bảng ở tab Webhook) |
 | *upscale* `model` | Tuỳ những gì đang có trong `bin/realesrgan/models/` — bảng model ở tab Webhook liệt kê đúng bộ trên máy bạn. Bản gốc: `upscayl-standard-4x`, `upscayl-lite-4x`, `digital-art-4x`, `high-fidelity-4x`, `remacri-4x`, `ultramix-balanced-4x`, `ultrasharp-4x` | scale `2`–`8` (giữ nguyên khung ảnh) |
 | Grok `mode=t2i` | Text → Image (1K) | `9:16, 16:9, 1:1, 2:3, 3:2, 4:3, 21:9, 5:2` |
 | Grok `mode=i2i` | Image → Image (1K) | `9:16, 16:9, 1:1, 2:3, 3:2, 4:3, 21:9, 5:2` |
@@ -915,7 +993,7 @@ webhook đi qua chính các hàm xử lý đó nên payload gửi Flow API khớ
   thứ tự trong `reference_images` thắng.
 - **Tác dụng**: gắn đúng ảnh đó vào đúng vị trí danh từ trong câu (Flow structured prompt
   "Mode-2"), thay vì truyền tất cả ảnh như tham chiếu chung vô danh.
-- **Phạm vi**: dùng cho **image (Flow)**, **video (Veo)** và **Google Vids `components`** (`omni_vids`, ở đó tên nhân vật trong thư viện cũng là tag hợp lệ); **Grok**, **OpenAI (GPT Image 2)**, **Google Pics** và **Meta Muse** (`meta_muse`) **không hỗ trợ** `@tag` (ref đi theo vị trí).
+- **Phạm vi**: dùng cho **image (Flow)**, **video (Veo)** và **Google Vids `components`** (`omni_vids`, ở đó tên nhân vật trong thư viện cũng là tag hợp lệ), **Dreamina** (`dreamina`: ảnh tham chiếu và Omni - tag trỏ được tới ảnh, video, âm thanh theo `name`, và nhân vật thư viện theo tên); **Grok**, **OpenAI (GPT Image 2)**, **Google Pics** và **Meta Muse** (`meta_muse`) **không hỗ trợ** `@tag` (ref đi theo vị trí).
 - Tên file được làm sạch (bỏ thành phần thư mục và ký tự không hợp lệ) trước khi dùng.
 - **Tag không khớp** được giữ nguyên là văn bản — không gây lỗi.
 - **Không gửi `name`**: ảnh vẫn dùng như tham chiếu theo vị trí như trước (tương thích ngược).
@@ -936,7 +1014,7 @@ webhook đi qua chính các hàm xử lý đó nên payload gửi Flow API khớ
 ```json
 {
   "prompt": "the @character walks through the @forest at dawn",
-  "model": "veo_31_fast",
+  "model": "veo_31_lite",
   "mode": "components",
   "aspect_ratio": "16:9",
   "reference_images": [
@@ -1100,6 +1178,8 @@ Lưu ý riêng của app này:
   loại yêu cầu → `error_code 0` (`No enabled Meta account for image/video`); không
   tạo ra gì → `Meta produced no output`.
 - **Task bất kỳ** bị dừng qua `POST /api/stop` → `failed` với `499` / `STOPPED_BY_CLIENT`.
+- **Flow Video** (Veo / Omni Flash): thiếu `model` → `400 MISSING_MODEL`; model Google đã tắt →
+  `400 MODEL_RETIRED` (`error` nêu id thay thế, vd `use 'veo_31_lite'`).
 - **Google Vids** (`omni_vids`): request bị từ chối → `400` `INVALID_MODE` / `INVALID_RESOLUTION` /
   `INVALID_VIDEO_LENGTH` / `INVALID_ASPECT_RATIO` / `INVALID_FIELD` / `MISSING_REFERENCE` /
   `UNKNOWN_CLIP` / `ALREADY_UPSCALED`; gói thấp → `403 PLAN_REQUIRED`; thiếu config máy chủ →
@@ -1129,6 +1209,15 @@ Lưu ý riêng của app này:
   `504 MUSE_TIMEOUT` (đã gửi yêu cầu mà không nhận được kết quả - có thể đã tốn token nên KHÔNG tự
   thử lại), `400 CONTENT_POLICY` (Muse trả lời mà không có ảnh / video), `502 DOWNLOAD_FAILED`,
   `502 UPSTREAM`, `502 NO_OUTPUT`; máy chủ webhook bị tắt → `503 SERVER_STOPPED`.
+- **Dreamina** (`dreamina`, cả ảnh lẫn video): request bị từ chối → `400` `INVALID_MODE` /
+  `INVALID_MODEL` / `INVALID_FIELD` / `MISSING_REFERENCE` / `TOO_MANY_REFERENCES` /
+  `INVALID_ASPECT_RATIO` / `INVALID_RESOLUTION` / `INVALID_VIDEO_LENGTH` / `INVALID_COUNT` /
+  `INVALID_QUALITY`; gói thấp → `403 PLAN_REQUIRED`; không có tài khoản Dreamina dùng được →
+  `503 NO_DREAMINA_ACCOUNT`; máy chủ chưa cấp trần luồng → `503 RUNTIME_CONFIG`; mọi tài khoản bận
+  suốt 15 phút → `503 NO_FREE_SLOT`; mọi tài khoản đã thử đều lỗi → `502 ALL_ACCOUNTS_FAILED`; việc tự
+  lỗi → `401 DREAMINA_COOKIE_EXPIRED`, `429 DREAMINA_CREDIT` (không đủ credit), `503 DREAMINA_CONFIG`,
+  `502 DREAMINA_FAILED` (Dreamina tạo hỏng - không tự gửi lại); máy chủ webhook bị tắt →
+  `503 SERVER_STOPPED`.
 
 ---
 
@@ -1143,6 +1232,8 @@ Lưu ý riêng của app này:
   - Ảnh/Video cần tài khoản Google đã đăng nhập và **đang bật** trong app.
   - Upscale ảnh `4K`, video **`4K`**, và `veo_31_lite_relaxed` cần tài khoản
     **ULTRA** (video `1080p` không cần ULTRA). Không có tài khoản hợp lệ thì task `failed`.
+  - `video_length` Veo `4`/`6` cần **ULTRA**; Omni Flash 1.2 `11`–`15` cần tài khoản **không phải FREE**.
+    Không có tài khoản như vậy thì dùng độ dài mặc định 8s (task vẫn chạy).
   - Tài khoản đã **TẮT** trong app sẽ không được dùng.
 - **Grok** cần ít nhất một tài khoản Grok đang bật ở Cài đặt → Grok (cách chạy **Tài khoản**,
   mặc định), hoặc extension đang kết nối với tab grok.com đã đăng nhập (cách chạy **Extension**,
@@ -1166,6 +1257,9 @@ Lưu ý riêng của app này:
 - **Meta Muse** (`meta_muse`) cần gói **PLUS/MAX** và ít nhất một tài khoản Muse đang bật ở
   Cài đặt → Tài khoản Muse còn hạn mức. Hạn mức = token Muse của tài khoản (gói theo tuần trước,
   sau đó tới token mua thêm). Mỗi tài khoản chạy tối đa số việc máy chủ cấp (hiện là 5).
+- **Dreamina** (`dreamina`) cần gói **PLUS/MAX** và ít nhất một tài khoản Dreamina đang bật ở
+  Cài đặt → Tài khoản Dreamina (cột Ảnh / Video tương ứng bật) còn credit. Lệnh tạo được gửi từ
+  Chrome ngầm của tài khoản (mở khi cần, tự đóng sau 90 giây rảnh).
 - **Upscale** không cần tài khoản, không cần hạng nào — engine Real-ESRGAN chạy trên
   GPU máy bạn nên không tốn credit, không đụng quota. Chỉ cần có sẵn engine + model
   trong `bin/realesrgan/` (thiếu thì `503 ENGINE_MISSING`) và một GPU hỗ trợ Vulkan.
@@ -1203,12 +1297,12 @@ curl -X POST http://127.0.0.1:8765/api/image/generate \
 # --- Video (ảnh đầu) ---
 curl -X POST http://127.0.0.1:8765/api/video/generate \
   -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
-  -d '{"prompt":"flowing water","mode":"start_image","reference_images":["data:image/png;base64,..."],"resolution":["1080p"]}'
+  -d '{"prompt":"flowing water","model":"veo_31_lite","mode":"start_image","reference_images":["data:image/png;base64,..."],"resolution":["1080p"]}'
 
 # --- Video (mode components + voice) ---
 curl -X POST http://127.0.0.1:8765/api/video/generate \
   -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
-  -d '{"prompt":"she says hello","mode":"components","reference_images":["data:image/png;base64,..."],"voice":"aoede"}'
+  -d '{"prompt":"she says hello","model":"veo_31_lite","mode":"components","reference_images":["data:image/png;base64,..."],"voice":"aoede"}'
 
 # --- Grok: văn bản → ảnh ---
 curl -X POST http://127.0.0.1:8765/api/grok/generate \
@@ -1282,6 +1376,14 @@ curl -X POST http://127.0.0.1:8765/api/image/generate -H "Content-Type: applicat
 # --- Meta Muse: ảnh → video (khung hình đầu, 8 giây, 9:16) ---
 curl -X POST http://127.0.0.1:8765/api/video/generate -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
   -d '{"prompt":"slow push in, steam rising","model":"meta_muse","mode":"image_to_video","aspect_ratio":"9:16","video_length":8,"reference_images":["data:image/png;base64,..."]}'
+
+# --- Dreamina: văn bản → ảnh (Seedream 5.0 Lite, 2 ảnh 16:9) ---
+curl -X POST http://127.0.0.1:8765/api/image/generate -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"prompt":"a red fox in the snow","model":"dreamina","dreamina_model":"high_aes_general_v50","aspect_ratio":"16:9","count":2}'
+
+# --- Dreamina: Omni (ảnh + video + âm thanh tham chiếu, @tag) ---
+curl -X POST http://127.0.0.1:8765/api/video/generate -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"prompt":"@luna dances to @beat, camera like @move","model":"dreamina","mode":"omni","video_length":5,"reference_images":[{"path":"D:/refs/luna.png"}],"reference_videos":[{"path":"D:/clips/move.mp4"}],"reference_audios":[{"path":"D:/audio/beat.mp3"}]}'
 
 # --- Dừng một task / dừng tất cả ---
 curl -X POST http://127.0.0.1:8765/api/stop/abc12345 -H "X-API-Key: YOUR_API_KEY"
@@ -1393,7 +1495,7 @@ async function generate(endpoint, body, { poll = 4000, timeout = 900000 } = {}) 
 // Video, văn bản→video
 const urls = await generate("video", {
   prompt: "neon city at night, drone shot",
-  model: "veo_31_fast",
+  model: "veo_31_lite",
   aspect_ratio: "16:9",
   resolution: ["720p"],
 });
@@ -1414,7 +1516,7 @@ console.log(urls);
 6. Khi `completed`: `GET` từng URL trong `results` để tải file.
 7. Khi `failed`: xem `error_code` (vd `429` = hết quota) và `error` / `error_detail`.
 8. Tôn trọng tỉ lệ theo từng model, số ảnh tham chiếu theo từng mode, và các tính
-   năng chỉ dành cho ULTRA. Google Vids, Google Pics và Meta Muse từ chối giá trị sai bằng mã `400` có
+   năng chỉ dành cho ULTRA. Google Vids, Google Pics, Meta Muse và Dreamina từ chối giá trị sai bằng mã `400` có
    tên lỗi, không tự đổi về mặc định.
 9. Muốn huỷ: `POST /api/stop/{task_id}` (hoặc `/api/stop` cho tất cả) — task chuyển ngay sang
    `failed` với `499 STOPPED_BY_CLIENT`.
