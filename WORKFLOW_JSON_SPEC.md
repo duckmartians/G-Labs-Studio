@@ -1,7 +1,7 @@
-# G-Labs Automation - Workflow JSON Specification
+# G-Labs Studio - Workflow JSON Specification
 
 > Audience: developers and AI agents that need to **generate a `.json` workflow file**
-> the G-Labs Automation **Workflow** page can load (toolbar → **Open Flow**, or drop the
+> the G-Labs Studio **Workflow** page can load (toolbar → **Open Flow**, or drop the
 > file into `.../workflow/sample/`).
 > Goal: everything needed to emit a valid, loadable node graph - the file schema, every
 > node type with its sockets and settings, how to wire nodes, and a complete example.
@@ -72,7 +72,7 @@ it by data first, then by visible text.
 
 ### 3.1 Node types
 
-There are **12** node types. Each block below lists the output type (**→ type**), the input
+There are **16** node types. Each block below lists the output type (**→ type**), the input
 sockets, and a **values** table with every setting key, its accepted values, and how it
 serializes. Two labels are used throughout:
 
@@ -179,18 +179,21 @@ no data value - omit the key to keep its default rather than hardcoding localize
 
 ---
 
-#### `video_generate` - Veo / Omni Flash video generator (Google)  → `video`
+#### `video_generate` - Flow Video: Veo / Omni video generator (Google)  → `video`
 - **inputs (by `mode`):**
+  - `text` → `["Prompt"]` (text to video, no image)
   - `image` → `["Prompt", "Start Image", "End Image (optional)"]` (fixed 3 sockets)
-  - `components` → `["Prompt", "Ref 1", ...]` (auto-grow refs)
+  - `components` → `["Prompt", "Ref 1", ...]` (auto-grow refs; cap per model from the server,
+    e.g. Omni 1.2 = 10, Veo = 3)
 - **outputs:** `["Video"]`.
 
 | key | values | notes |
 |-----|--------|-------|
-| `mode` | `"image"` \| `"components"` | **stable** |
-| `model` | `"fast"` (Veo Fast) \| `"fast_lite"` (Veo Lite) \| `"lite_relaxed"` (Veo Lower) \| `"quality"` (Veo Quality) \| `"omni_flash"` (Omni Flash) | **server default**; default `"fast"` |
-| `ratio` | `"VIDEO_ASPECT_RATIO_LANDSCAPE"` (16:9) \| `"VIDEO_ASPECT_RATIO_PORTRAIT"` (9:16) | **stable** |
-| `resolution` | `"720p"` \| `"1080p"` \| `"4K"` | **stable** |
+| `mode` | `"text"` \| `"image"` \| `"components"` | **stable**; default `"image"` |
+| `model` | `"fast"` (Veo Fast) \| `"fast_lite"` (Veo Lite) \| `"lite_relaxed"` (Veo Lower) \| `"quality"` (Veo Quality) \| `"omni_flash"` (Omni 1.1) \| `"omni_flash_12"` (Omni 1.2) | **server**; omit ⇒ server default |
+| `ratio` | `"VIDEO_ASPECT_RATIO_LANDSCAPE"` (16:9) \| `"VIDEO_ASPECT_RATIO_PORTRAIT"` (9:16) | **stable**, every mode |
+| `resolution` | `"720p"` \| `"1080p"` \| `"4K"`; `"360p"` only on models the server lists (Omni) | default `"720p"` |
+| `duration` | seconds (integer) the model runs in this mode: Veo `4` / `6` / `8`, Omni 1.1 `4` / `6` / `8` / `10`, Omni 1.2 `3`..`15` (start+end frames up to 10), or `"tag"` (take the length from a duration tag in the prompt, see section 5) | **server**; omit ⇒ default length (8). An unsupported value is ignored. Veo 4/6 s need an ULTRA Google account and Omni 1.2 11–15 s a paid one; without such an account the node falls back to the default length |
 | `seed_mode` | index/text: Random \| Fixed | omit ⇒ Random |
 | `seed` | number string | only when `seed_mode` = Fixed |
 
@@ -230,11 +233,13 @@ no data value - omit the key to keep its default rather than hardcoding localize
 
 ---
 
-#### `openai` - OpenAI GPT Image 2  → `image`
-- **inputs:** `["Prompt", "Ref 1"]` - index 0 prompt; 1+ optional image refs, **up to 5** (auto-grow).  **outputs:** `["Image"]`.
+#### `openai` - GPT Image (ChatGPT accounts)  → `image`
+- **inputs:** `["Prompt", "Ref 1"]` - index 0 prompt; 1+ optional image refs (auto-grow, cap per
+  model from the server, up to 15).  **outputs:** `["Image"]`.
 
 | key | values | notes |
 |-----|--------|-------|
+| `model` | a model key of the server's GPT Image list (e.g. `"GPT_IMAGE"`, `"GPT6_SOL"`, `"GPT6_ASTRA"`) | **server**; omit ⇒ server default model. An unknown key runs the default |
 | `ratio` | `"square"` \| `"landscape_3_2"` \| `"landscape_4_3"` \| `"landscape_16_9"` \| `"landscape_21_9"` \| `"portrait_2_3"` \| `"portrait_3_4"` \| `"portrait_4_5"` \| `"portrait_9_16"` \| `"custom"` (ratio written in the prompt) | **stable** |
 | `quality` | `"low"` \| `"medium"` \| `"high"` | **stable** |
 | `prompt_mode` | `"auto"` \| `"direct"` | **stable** |
@@ -243,11 +248,71 @@ no data value - omit the key to keep its default rather than hardcoding localize
 
 ---
 
+#### `vids` - Google Vids video generator  → `video`
+- **inputs (by `mode`):** `t2v` → `["Prompt"]`; `i2v` → `["Prompt", "Start Image"]`;
+  `r2v` → `["Prompt", "Ref 1", ...]` (components, auto-grow, up to 3).
+- **outputs:** `["Video"]`.
+
+| key | values | notes |
+|-----|--------|-------|
+| `mode` | `"t2v"` \| `"i2v"` \| `"r2v"` | **stable** |
+| `ratio` | `"landscape"` (16:9) \| `"portrait"` (9:16) | **server** |
+| `resolution` | `"720p"` \| `"1080p"` | **server** |
+| `duration` | seconds, `3`..`15` | **server**; omit ⇒ 5 |
+
+#### `pics` - Google Pics image generator  → `image`
+- **inputs (by `mode`):** `t2i` → `["Prompt"]`; `i2i` → `["Prompt", "Ref 1", ...]` (auto-grow,
+  cap from the server).
+- **outputs:** `["Image"]`.
+
+| key | values | notes |
+|-----|--------|-------|
+| `mode` | `"t2i"` \| `"i2i"` | **stable** |
+| `ratio` | `"16:9"` \| `"9:16"` \| `"1:1"` \| `"4:3"` \| `"3:4"` \| `"3:2"` \| `"2:3"` \| `"5:4"` \| `"4:5"` \| `"21:9"` | **server**; omit ⇒ `"1:1"` |
+| `count` | images kept from the run: `1`..`4`, `0` = all | **server**; the node outputs the first image |
+
+#### `dreamina` - Dreamina image/video generator  → `any`
+- **inputs (by `mode`):** `img_t2i` / `vid_t2v` → `["Prompt"]`; `img_ref` / `vid_omni` →
+  `["Prompt", "Ref 1", ...]` (auto-grow, cap per model); `vid_frames` →
+  `["Prompt", "Start Image", "End Image (optional)"]`.
+- **outputs:** `["Output"]` (image in `img_*`, video in `vid_*`).
+
+| key | values | notes |
+|-----|--------|-------|
+| `mode` | `"img_t2i"` \| `"img_ref"` \| `"vid_t2v"` \| `"vid_frames"` \| `"vid_omni"` | **stable** |
+| `model` | a Dreamina model key for that mode (live list of the account) | **server**; omit ⇒ first model of the mode |
+| `ratio` | the model's ratios, e.g. `"16:9"`, `"9:16"`, `"1:1"`; `"adaptive"` on some models in `vid_frames` | **server** |
+| `resolution` | the model's resolutions, e.g. image `"1k"` / `"2k"` / `"4k"`, video `"720p"` / `"1080p"` | **server** |
+| `duration` | seconds within the model's range (video modes) | **server** |
+| `count` | images per run on models that offer it (image modes) | **server** |
+
+#### `muse` - Meta Muse image/video generator  → `any`
+- **inputs (by `mode`):** `t2i` / `t2v` → `["Prompt"]`; `i2i` / `i2v` → `["Prompt", "Ref 1", ...]`
+  (auto-grow, cap from the server).
+- **outputs:** `["Output"]` (image in `t2i`/`i2i`, video in `t2v`/`i2v`).
+
+| key | values | notes |
+|-----|--------|-------|
+| `mode` | `"t2i"` \| `"i2i"` \| `"t2v"` \| `"i2v"` | **stable** |
+| `ratio` | image: `"1:1"`, `"16:9"`, `"9:16"`, `"4:3"`, `"3:4"`, …; video: `"16:9"`, `"9:16"`, `"1:1"`, … | **server** |
+| `count` | image `1`..`4`, video `1`..`2` | **server**; the node outputs the first file |
+
+> **Length tag in the prompt.** On the video nodes `video_generate`, `vids` and `dreamina` a tag
+> `[6s]` / `{6s}` / `<6s>` anywhere in the prompt sets the length of that prompt (it overrides the
+> node's `duration`, and is stripped before sending). A length the model cannot run is ignored.
+> Handy with `batch_prompt`: one line per clip, each with its own length.
+>
+> For `vids` / `pics` / `dreamina` / `muse` every option list comes from the server config (or
+> the service's live model list). A value the server no longer offers is replaced by the
+> service default at run time, so a hand-written `.json` may simply omit these keys.
+
+---
+
 ## 4. Connection rules - what connects to what
 
 Wiring is governed by **socket data types**. An edge is valid only when the source's output
 type matches the target input socket's type. There are four types: `string`, `image`,
-`video`, and `any`. `any` matches everything (it's the mode-dependent output of `grok`/`meta`).
+`video`, and `any`. `any` matches everything (it's the mode-dependent output of `grok`/`meta`/`dreamina`/`muse`).
 
 ### 4.1 Output type of each node (what it PRODUCES)
 
@@ -260,6 +325,9 @@ type matches the target input socket's type. There are four types: `string`, `im
 | `batch_loader` | `image` | an image (loops per file) |
 | `frame_extract` | `image` | a still frame |
 | `generate` | `image` | a generated image |
+| `pics` | `image` | a generated image |
+| `vids` | `video` | a generated video |
+| `dreamina` / `muse` | `any` | image or video, by mode |
 | `openai` | `image` | a generated image |
 | `video_generate` | `video` | a generated video |
 | `render` | `video` | two videos merged into one |
@@ -281,32 +349,35 @@ Socket **index** is the value you put in an edge's `end_socket`.
 | `generate` | 0 | Prompt | `string` | `prompt` / `batch_prompt` / `prompt_writer` |
 | `generate` | 1+ | Ref image | `image` | `reference` / `batch_loader` / `frame_extract` / image generator |
 | `openai` | 0 | Prompt | `string` | `prompt` / `batch_prompt` / `prompt_writer` |
-| `openai` | 1+ | Ref image (≤5) | `image` | image producer (above) |
+| `openai` | 1+ | Ref image (≤15) | `image` | image producer (above) |
 | `video_generate` | 0 | Prompt | `string` | `prompt` / `batch_prompt` / `prompt_writer` |
-| `video_generate` | 1 | Start Image | `image` | image producer |
-| `video_generate` | 2 | End Image (opt.) | `image` | image producer |
+| `video_generate` | 1 | Start Image (`image`) / Ref 1 (`components`) | `image` | image producer |
+| `video_generate` | 2 | End Image (`image`, opt.) / Ref 2 (`components`) | `image` | image producer |
+| `vids` / `pics` / `dreamina` / `muse` | 0 | Prompt | `string` | `prompt` / `batch_prompt` / `prompt_writer` |
+| `vids` / `pics` / `dreamina` / `muse` | 1+ | image sockets of the mode (see 3.1) | `image` | image producer |
 | `grok` | 0 | Prompt | `string` | `prompt` / `batch_prompt` / `prompt_writer` |
 | `grok` | 1 | Ref image (`i2i`/`i2v`) | `image` | image producer |
 | `meta` | 0 | Prompt | `string` | `prompt` / `batch_prompt` / `prompt_writer` |
 | `meta` | 1 | Character (`i2i`) / Start (`i2v`) | `image` | image producer |
 | `meta` | 2 | Scene (`i2i`) / End (`i2v`, opt.) | `image` | image producer |
 | `meta` | 3 | Style (`i2i`) | `image` | image producer |
-| `frame_extract` | 0 | Video | `video` | `video_generate` / `grok`(video) / `meta`(video) / `render` |
+| `frame_extract` | 0 | Video | `video` | `video_generate` / `vids` / `grok`(video) / `meta`(video) / `dreamina`(video) / `muse`(video) / `render` |
 | `render` | 0 | Video A | `video` | any video producer |
 | `render` | 1 | Video B | `video` | any video producer |
 
 ### 4.3 Compatibility summary (source output → target socket)
 
 - **`string`** (prompt / batch_prompt / prompt_writer) → **only the Prompt socket** (index 0) of
-  `generate` / `video_generate` / `grok` / `meta` / `openai` / `prompt_writer`.
+  `generate` / `video_generate` / `vids` / `pics` / `dreamina` / `muse` / `grok` / `meta` /
+  `openai` / `prompt_writer`.
   Never wire a string into a Ref/image socket, and never wire an image/video into a Prompt
   socket. (The prompt socket accepts **one** connection.)
-- **`image`** (reference / batch_loader / frame_extract / generate / openai / grok-image /
-  meta-image) → any **Ref / Start / End / Character / Scene / Style** image socket. An image
+- **`image`** (reference / batch_loader / frame_extract / generate / openai / pics / grok-image /
+  meta-image / dreamina-image / muse-image) → any **Ref / Start / End / Character / Scene / Style** image socket. An image
   never feeds a Prompt socket or a Video socket.
-- **`video`** (video_generate / grok-video / meta-video / render) → the `Video` socket of
+- **`video`** (video_generate / vids / grok-video / meta-video / dreamina-video / muse-video / render) → the `Video` socket of
   `frame_extract`, or the `Video A` / `Video B` sockets of `render`.
-- **`any`** output (`grok` / `meta`): choose the target by the node's **mode** - in an image
+- **`any`** output (`grok` / `meta` / `dreamina` / `muse`): choose the target by the node's **mode** - in an image
   mode wire it like an `image`; in a video mode wire it like a `video`. (The type check
   permits `any`↔anything, so the app won't stop a wrong wiring at edit time - it just fails
   at run. Follow the mode.)
@@ -347,6 +418,20 @@ most one incoming edge.
    (PLUS+), a `generate` / `video_generate` node whose prompt Google blocks for content (celebrity,
    sensitive content, minors, copyright...) is rewritten by the LLM and run again, at most 2 times.
    Blocked reference / input images are not rewritten.
+
+### 5.1 Duration tags in the prompt (video nodes)
+
+A prompt that reaches a video node (`video_generate`, `vids`, `dreamina`) may carry a duration tag:
+`[6s]`, `{6s}` or `<6s>`. The tag is a directive, not content:
+
+- it is always removed from the prompt before the prompt is sent;
+- when the node's model can run that length in the current mode, the tag wins over the node's `duration` value;
+- when the model cannot run it, the tag is ignored (a warning is logged) and the node's `duration` is used;
+- a prompt that contains nothing but the tag is an error (missing prompt).
+
+`video_generate` also accepts `"duration": "tag"`: the length comes from the tag, and a prompt without a valid
+tag runs at the default length. With `batch_prompt`, each line can carry its own tag, so one node can produce
+clips of different lengths in a single run.
 
 ---
 
