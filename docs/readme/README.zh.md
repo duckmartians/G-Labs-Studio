@@ -21,9 +21,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe"><img alt="下载 - Windows" src="https://img.shields.io/badge/%E4%B8%8B%E8%BD%BD-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="下载 - macOS (Apple Silicon)" src="https://img.shields.io/badge/%E4%B8%8B%E8%BD%BD-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="下载 - macOS (Intel)" src="https://img.shields.io/badge/%E4%B8%8B%E8%BD%BD-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
+  <a href="https://glab.duckmartians.info/download/studio/win"><img alt="下载 - Windows" src="https://img.shields.io/badge/%E4%B8%8B%E8%BD%BD-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://glab.duckmartians.info/download/studio/mac-arm64"><img alt="下载 - macOS (Apple Silicon)" src="https://img.shields.io/badge/%E4%B8%8B%E8%BD%BD-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
+  <a href="https://glab.duckmartians.info/download/studio/mac-intel"><img alt="下载 - macOS (Intel)" src="https://img.shields.io/badge/%E4%B8%8B%E8%BD%BD-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
 
 ---
@@ -32,13 +32,13 @@
 
 ### 第 1 步 - 为你的电脑选择正确的版本
 
-从 **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)** 下载最新版本，然后选择与你电脑匹配的文件：
+从 **[duckspace.net](https://duckspace.net/g-labs-studio/)** 下载最新版本，然后选择与你电脑匹配的文件：
 
 | 你的电脑 | 下载 | Google Drive | 说明 |
 |---|---|---|---|
-| 🪟 **Windows 10/11（64 位）** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | 适用于所有 Windows 电脑 |
-| 🍎 **搭载 Apple 芯片的 Mac（M1/M2/M3/M4）** | [macOS ARM](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | 约 2020 年底及以后的 Mac |
-| 🍎 **搭载 Intel 芯片的 Mac** | [macOS Intel](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | 较旧的 Mac（2020 年前） |
+| 🪟 **Windows 10/11（64 位）** | [Windows](https://glab.duckmartians.info/download/studio/win) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | 适用于所有 Windows 电脑 |
+| 🍎 **搭载 Apple 芯片的 Mac（M1/M2/M3/M4）** | [macOS ARM](https://glab.duckmartians.info/download/studio/mac-arm64) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | 约 2020 年底及以后的 Mac |
+| 🍎 **搭载 Intel 芯片的 Mac** | [macOS Intel](https://glab.duckmartians.info/download/studio/mac-intel) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | 较旧的 Mac（2020 年前） |
 
 **不确定你的 Mac 是什么芯片？** 点击左上角  菜单 → **About This Mac**：
 - 有 **Chip**（芯片）一行显示 “Apple M1 / M2 / M3…” → 下载 **arm64** 版本。
@@ -236,4 +236,4 @@
 
 **macOS 提示应用已损坏 / 无法打开** -- 它尚未经过 Apple 签名。首次请右键 → **Open**，或运行 `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"`。
 
-**更新没有安装成功** -- 从 [Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest) 手动下载最新版本。
+**更新没有安装成功** -- 从 [duckspace.net](https://duckspace.net/g-labs-studio/) 手动下载最新版本。

@@ -21,9 +21,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe"><img alt="다운로드 - Windows" src="https://img.shields.io/badge/%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="다운로드 - macOS (Apple Silicon)" src="https://img.shields.io/badge/%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="다운로드 - macOS (Intel)" src="https://img.shields.io/badge/%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
+  <a href="https://glab.duckmartians.info/download/studio/win"><img alt="다운로드 - Windows" src="https://img.shields.io/badge/%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://glab.duckmartians.info/download/studio/mac-arm64"><img alt="다운로드 - macOS (Apple Silicon)" src="https://img.shields.io/badge/%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
+  <a href="https://glab.duckmartians.info/download/studio/mac-intel"><img alt="다운로드 - macOS (Intel)" src="https://img.shields.io/badge/%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
 
 ---
@@ -32,13 +32,13 @@
 
 ### 1단계 - 내 컴퓨터에 맞는 버전 선택
 
-**[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)** 에서 최신 버전을 내려받은 뒤, 내 컴퓨터에 맞는 파일을 선택하세요:
+**[duckspace.net](https://duckspace.net/g-labs-studio/)** 에서 최신 버전을 내려받은 뒤, 내 컴퓨터에 맞는 파일을 선택하세요:
 
 | 내 컴퓨터 | 다운로드 | Google Drive | 비고 |
 |---|---|---|---|
-| 🪟 **Windows 10/11 (64비트)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | 모든 Windows PC용 |
-| 🍎 **Apple 칩 Mac (M1/M2/M3/M4)** | [macOS ARM](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | 2020년 말 이후 출시된 Mac |
-| 🍎 **Intel 칩 Mac** | [macOS Intel](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | 구형 Mac (2020년 이전) |
+| 🪟 **Windows 10/11 (64비트)** | [Windows](https://glab.duckmartians.info/download/studio/win) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | 모든 Windows PC용 |
+| 🍎 **Apple 칩 Mac (M1/M2/M3/M4)** | [macOS ARM](https://glab.duckmartians.info/download/studio/mac-arm64) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | 2020년 말 이후 출시된 Mac |
+| 🍎 **Intel 칩 Mac** | [macOS Intel](https://glab.duckmartians.info/download/studio/mac-intel) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | 구형 Mac (2020년 이전) |
 
 **Mac 칩이 무엇인지 잘 모르겠나요?** 왼쪽 위  메뉴 → **About This Mac** 클릭:
 - **Chip** 줄에 “Apple M1 / M2 / M3…” 표시 → **arm64** 버전 다운로드.
@@ -236,4 +236,4 @@ Grok Imagine을 통한 텍스트 → 이미지, 이미지 → 이미지, 텍스�
 
 **macOS가 앱이 손상되었다 / 열 수 없다고 함** - 아직 Apple 서명이 없어서입니다. 처음에는 마우스 오른쪽 클릭 → **Open** 으로 열거나, `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"` 를 실행하세요.
 
-**업데이트가 설치되지 않음** - [Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest) 에서 최신 빌드를 수동으로 다운로드하세요.
+**업데이트가 설치되지 않음** - [duckspace.net](https://duckspace.net/g-labs-studio/) 에서 최신 빌드를 수동으로 다운로드하세요.

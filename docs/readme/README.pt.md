@@ -21,9 +21,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe"><img alt="Baixar - Windows" src="https://img.shields.io/badge/Baixar-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="Baixar - macOS (Apple Silicon)" src="https://img.shields.io/badge/Baixar-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="Baixar - macOS (Intel)" src="https://img.shields.io/badge/Baixar-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
+  <a href="https://glab.duckmartians.info/download/studio/win"><img alt="Baixar - Windows" src="https://img.shields.io/badge/Baixar-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://glab.duckmartians.info/download/studio/mac-arm64"><img alt="Baixar - macOS (Apple Silicon)" src="https://img.shields.io/badge/Baixar-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
+  <a href="https://glab.duckmartians.info/download/studio/mac-intel"><img alt="Baixar - macOS (Intel)" src="https://img.shields.io/badge/Baixar-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
 
 ---
@@ -32,13 +32,13 @@
 
 ### Passo 1 - Escolha a versão certa para a sua máquina
 
-Baixe a versão mais recente em **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)** e escolha o arquivo que corresponde à sua máquina:
+Baixe a versão mais recente em **[duckspace.net](https://duckspace.net/g-labs-studio/)** e escolha o arquivo que corresponde à sua máquina:
 
 | Sua máquina | Baixar | Google Drive | Observações |
 |---|---|---|---|
-| 🪟 **Windows 10/11 (64 bits)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | Para qualquer PC com Windows |
-| 🍎 **Mac com chip Apple (M1/M2/M3/M4)** | [macOS ARM](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | Macs a partir do fim de 2020 |
-| 🍎 **Mac com chip Intel** | [macOS Intel](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | Macs mais antigos (antes de 2020) |
+| 🪟 **Windows 10/11 (64 bits)** | [Windows](https://glab.duckmartians.info/download/studio/win) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | Para qualquer PC com Windows |
+| 🍎 **Mac com chip Apple (M1/M2/M3/M4)** | [macOS ARM](https://glab.duckmartians.info/download/studio/mac-arm64) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | Macs a partir do fim de 2020 |
+| 🍎 **Mac com chip Intel** | [macOS Intel](https://glab.duckmartians.info/download/studio/mac-intel) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | Macs mais antigos (antes de 2020) |
 
 **Não sabe qual chip o seu Mac tem?** Clique no menu  (canto superior esquerdo) → **About This Mac**:
 - Uma linha **Chip** com “Apple M1 / M2 / M3…” → baixe a versão **arm64**.
@@ -236,4 +236,4 @@ Cada página tem sua própria subpasta dentro de `output` (uma pasta menor por e
 
 **O macOS diz que o app está danificado / não pode ser aberto** - ele ainda não é assinado pela Apple. Clique com o botão direito → **Open** na primeira vez, ou execute `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"`.
 
-**Uma atualização não instalou** - baixe a versão mais recente manualmente em [Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest).
+**Uma atualização não instalou** - baixe a versão mais recente manualmente em [duckspace.net](https://duckspace.net/g-labs-studio/).

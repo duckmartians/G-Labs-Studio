@@ -21,9 +21,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe"><img alt="İndir - Windows" src="https://img.shields.io/badge/%C4%B0ndir-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="İndir - macOS (Apple Silicon)" src="https://img.shields.io/badge/%C4%B0ndir-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="İndir - macOS (Intel)" src="https://img.shields.io/badge/%C4%B0ndir-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
+  <a href="https://glab.duckmartians.info/download/studio/win"><img alt="İndir - Windows" src="https://img.shields.io/badge/%C4%B0ndir-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://glab.duckmartians.info/download/studio/mac-arm64"><img alt="İndir - macOS (Apple Silicon)" src="https://img.shields.io/badge/%C4%B0ndir-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
+  <a href="https://glab.duckmartians.info/download/studio/mac-intel"><img alt="İndir - macOS (Intel)" src="https://img.shields.io/badge/%C4%B0ndir-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
 
 ---
@@ -32,13 +32,13 @@
 
 ### Adım 1 - Makinen için doğru sürümü seç
 
-En son sürümü **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)** üzerinden indir, sonra makinene uygun dosyayı seç:
+En son sürümü **[duckspace.net](https://duckspace.net/g-labs-studio/)** üzerinden indir, sonra makinene uygun dosyayı seç:
 
 | Makinen | İndir | Google Drive | Notlar |
 |---|---|---|---|
-| 🪟 **Windows 10/11 (64 bit)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | Her Windows PC için |
-| 🍎 **Apple çipli Mac (M1/M2/M3/M4)** | [macOS ARM](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | Yaklaşık 2020 sonundan itibaren Mac'ler |
-| 🍎 **Intel çipli Mac** | [macOS Intel](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | Daha eski Mac'ler (2020 öncesi) |
+| 🪟 **Windows 10/11 (64 bit)** | [Windows](https://glab.duckmartians.info/download/studio/win) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | Her Windows PC için |
+| 🍎 **Apple çipli Mac (M1/M2/M3/M4)** | [macOS ARM](https://glab.duckmartians.info/download/studio/mac-arm64) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | Yaklaşık 2020 sonundan itibaren Mac'ler |
+| 🍎 **Intel çipli Mac** | [macOS Intel](https://glab.duckmartians.info/download/studio/mac-intel) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | Daha eski Mac'ler (2020 öncesi) |
 
 **Mac'inin hangi çipe sahip olduğundan emin değil misin?**  menüsü (sol üst) → **About This Mac**:
 - “Apple M1 / M2 / M3…” yazan bir **Chip** satırı → **arm64** sürümünü indir.
@@ -236,4 +236,4 @@ Her sayfanın `output` içinde kendi alt klasörü vardır (her çalıştırma i
 
 **macOS uygulamanın hasarlı olduğunu / açılamadığını söylüyor** - henüz Apple tarafından imzalanmamıştır. İlk seferinde sağ tıkla → **Open** yapın veya `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"` çalıştırın.
 
-**Bir güncelleme kurulmadı** - en son sürümü [Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest) sayfasından manuel olarak indirin.
+**Bir güncelleme kurulmadı** - en son sürümü [duckspace.net](https://duckspace.net/g-labs-studio/) sayfasından manuel olarak indirin.

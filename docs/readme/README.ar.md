@@ -21,9 +21,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe"><img alt="تنزيل - Windows" src="https://img.shields.io/badge/%D8%AA%D9%86%D8%B2%D9%8A%D9%84-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="تنزيل - macOS (Apple Silicon)" src="https://img.shields.io/badge/%D8%AA%D9%86%D8%B2%D9%8A%D9%84-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="تنزيل - macOS (Intel)" src="https://img.shields.io/badge/%D8%AA%D9%86%D8%B2%D9%8A%D9%84-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
+  <a href="https://glab.duckmartians.info/download/studio/win"><img alt="تنزيل - Windows" src="https://img.shields.io/badge/%D8%AA%D9%86%D8%B2%D9%8A%D9%84-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://glab.duckmartians.info/download/studio/mac-arm64"><img alt="تنزيل - macOS (Apple Silicon)" src="https://img.shields.io/badge/%D8%AA%D9%86%D8%B2%D9%8A%D9%84-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
+  <a href="https://glab.duckmartians.info/download/studio/mac-intel"><img alt="تنزيل - macOS (Intel)" src="https://img.shields.io/badge/%D8%AA%D9%86%D8%B2%D9%8A%D9%84-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
 
 ---
@@ -32,13 +32,13 @@
 
 ### الخطوة 1 - اختر النسخة المناسبة لجهازك
 
-نزّل أحدث نسخة من **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)** ثم اختر الملف المناسب لجهازك:
+نزّل أحدث نسخة من **[duckspace.net](https://duckspace.net/g-labs-studio/)** ثم اختر الملف المناسب لجهازك:
 
 | جهازك | تنزيل | Google Drive | ملاحظات |
 |---|---|---|---|
-| 🪟 **Windows 10/11 (64-بت)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | لأي جهاز كمبيوتر يعمل بنظام Windows |
-| 🍎 **Mac بمعالج Apple (M1/M2/M3/M4)** | [macOS ARM](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | أجهزة Mac من أواخر 2020 فصاعدًا |
-| 🍎 **Mac بمعالج Intel** | [macOS Intel](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | أجهزة Mac الأقدم (قبل 2020) |
+| 🪟 **Windows 10/11 (64-بت)** | [Windows](https://glab.duckmartians.info/download/studio/win) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | لأي جهاز كمبيوتر يعمل بنظام Windows |
+| 🍎 **Mac بمعالج Apple (M1/M2/M3/M4)** | [macOS ARM](https://glab.duckmartians.info/download/studio/mac-arm64) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | أجهزة Mac من أواخر 2020 فصاعدًا |
+| 🍎 **Mac بمعالج Intel** | [macOS Intel](https://glab.duckmartians.info/download/studio/mac-intel) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | أجهزة Mac الأقدم (قبل 2020) |
 
 **لست متأكدًا من معالج جهاز Mac لديك؟** انقر على قائمة  (أعلى اليسار) → **About This Mac**:
 - سطر **Chip** يذكر «Apple M1 / M2 / M3…» → نزّل نسخة **arm64**.
@@ -236,4 +236,4 @@
 
 **يقول macOS إن التطبيق تالف / يتعذر فتحه** - إنه غير موقّع من Apple بعد. انقر بالزر الأيمن → **Open** في المرة الأولى، أو شغّل `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"`.
 
-**لم يُثبَّت التحديث** - نزّل أحدث إصدار يدويًا من [Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest).
+**لم يُثبَّت التحديث** - نزّل أحدث إصدار يدويًا من [duckspace.net](https://duckspace.net/g-labs-studio/).

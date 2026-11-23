@@ -21,9 +21,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe"><img alt="ڈاؤن لوڈ - Windows" src="https://img.shields.io/badge/%DA%88%D8%A7%D8%A4%D9%86%20%D9%84%D9%88%DA%88-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="ڈاؤن لوڈ - macOS (Apple Silicon)" src="https://img.shields.io/badge/%DA%88%D8%A7%D8%A4%D9%86%20%D9%84%D9%88%DA%88-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="ڈاؤن لوڈ - macOS (Intel)" src="https://img.shields.io/badge/%DA%88%D8%A7%D8%A4%D9%86%20%D9%84%D9%88%DA%88-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
+  <a href="https://glab.duckmartians.info/download/studio/win"><img alt="ڈاؤن لوڈ - Windows" src="https://img.shields.io/badge/%DA%88%D8%A7%D8%A4%D9%86%20%D9%84%D9%88%DA%88-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://glab.duckmartians.info/download/studio/mac-arm64"><img alt="ڈاؤن لوڈ - macOS (Apple Silicon)" src="https://img.shields.io/badge/%DA%88%D8%A7%D8%A4%D9%86%20%D9%84%D9%88%DA%88-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
+  <a href="https://glab.duckmartians.info/download/studio/mac-intel"><img alt="ڈاؤن لوڈ - macOS (Intel)" src="https://img.shields.io/badge/%DA%88%D8%A7%D8%A4%D9%86%20%D9%84%D9%88%DA%88-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
 
 ---
@@ -32,13 +32,13 @@
 
 ### مرحلہ 1 - اپنی مشین کے لیے درست ورژن منتخب کریں
 
-تازہ ترین ورژن **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)** سے ڈاؤن لوڈ کریں، پھر اپنی مشین سے مطابقت رکھنے والی فائل منتخب کریں:
+تازہ ترین ورژن **[duckspace.net](https://duckspace.net/g-labs-studio/)** سے ڈاؤن لوڈ کریں، پھر اپنی مشین سے مطابقت رکھنے والی فائل منتخب کریں:
 
 | آپ کی مشین | ڈاؤن لوڈ | Google Drive | نوٹس |
 |---|---|---|---|
-| 🪟 **Windows 10/11 (64-bit)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | کسی بھی Windows PC کے لیے |
-| 🍎 **Apple چپ والا Mac (M1/M2/M3/M4)** | [macOS ARM](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | تقریباً 2020 کے آخر سے آگے کے Mac |
-| 🍎 **Intel چپ والا Mac** | [macOS Intel](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | پرانے Mac (2020 سے پہلے) |
+| 🪟 **Windows 10/11 (64-bit)** | [Windows](https://glab.duckmartians.info/download/studio/win) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | کسی بھی Windows PC کے لیے |
+| 🍎 **Apple چپ والا Mac (M1/M2/M3/M4)** | [macOS ARM](https://glab.duckmartians.info/download/studio/mac-arm64) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | تقریباً 2020 کے آخر سے آگے کے Mac |
+| 🍎 **Intel چپ والا Mac** | [macOS Intel](https://glab.duckmartians.info/download/studio/mac-intel) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | پرانے Mac (2020 سے پہلے) |
 
 **یقین نہیں کہ آپ کے Mac میں کون سی چپ ہے؟** اوپر بائیں  مینو → **About This Mac** پر کلک کریں:
 - **Chip** والی سطر میں “Apple M1 / M2 / M3…” ہو → **arm64** ورژن ڈاؤن لوڈ کریں۔
@@ -236,4 +236,4 @@ Grok Imagine کے ذریعے متن → تصویر، تصویر → تصویر،
 
 **macOS کہتا ہے ایپ خراب ہے / کھولی نہیں جا سکتی** - یہ ابھی Apple کی طرف سے دستخط شدہ نہیں ہے۔ پہلی بار رائٹ کلک → **Open** کریں، یا `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"` چلائیں۔
 
-**اپ ڈیٹ انسٹال نہیں ہوئی** - تازہ ترین بلڈ دستی طور پر [Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest) سے ڈاؤن لوڈ کریں۔
+**اپ ڈیٹ انسٹال نہیں ہوئی** - تازہ ترین بلڈ دستی طور پر [duckspace.net](https://duckspace.net/g-labs-studio/) سے ڈاؤن لوڈ کریں۔

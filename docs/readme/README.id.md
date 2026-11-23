@@ -21,9 +21,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe"><img alt="Unduh - Windows" src="https://img.shields.io/badge/Unduh-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg"><img alt="Unduh - macOS (Apple Silicon)" src="https://img.shields.io/badge/Unduh-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
-  <a href="https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg"><img alt="Unduh - macOS (Intel)" src="https://img.shields.io/badge/Unduh-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
+  <a href="https://glab.duckmartians.info/download/studio/win"><img alt="Unduh - Windows" src="https://img.shields.io/badge/Unduh-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"></a>&nbsp;
+  <a href="https://glab.duckmartians.info/download/studio/mac-arm64"><img alt="Unduh - macOS (Apple Silicon)" src="https://img.shields.io/badge/Unduh-macOS%20Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white"></a>&nbsp;
+  <a href="https://glab.duckmartians.info/download/studio/mac-intel"><img alt="Unduh - macOS (Intel)" src="https://img.shields.io/badge/Unduh-macOS%20Intel-555555?style=for-the-badge&logo=apple&logoColor=white"></a>
 </p>
 
 ---
@@ -32,13 +32,13 @@
 
 ### Langkah 1 - Pilih versi yang tepat untuk perangkatmu
 
-Unduh versi terbaru dari **[Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest)**, lalu pilih berkas yang cocok dengan perangkatmu:
+Unduh versi terbaru dari **[duckspace.net](https://duckspace.net/g-labs-studio/)**, lalu pilih berkas yang cocok dengan perangkatmu:
 
 | Perangkatmu | Unduh | Google Drive | Catatan |
 |---|---|---|---|
-| 🪟 **Windows 10/11 (64-bit)** | [Windows](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-setup.exe) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | Untuk PC Windows apa pun |
-| 🍎 **Mac dengan chip Apple (M1/M2/M3/M4)** | [macOS ARM](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-arm64.dmg) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | Mac dari sekitar akhir 2020 ke atas |
-| 🍎 **Mac dengan chip Intel** | [macOS Intel](https://github.com/duckmartians/G-Labs-Studio/releases/latest/download/G-Labs-Studio-mac-intel.dmg) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | Mac lama (sebelum 2020) |
+| 🪟 **Windows 10/11 (64-bit)** | [Windows](https://glab.duckmartians.info/download/studio/win) | [Windows](https://drive.google.com/drive/u/0/folders/1ovx97E2UJ4qeIoiHg-_0dinDQC1rjR46) | Untuk PC Windows apa pun |
+| 🍎 **Mac dengan chip Apple (M1/M2/M3/M4)** | [macOS ARM](https://glab.duckmartians.info/download/studio/mac-arm64) | [macOS ARM](https://drive.google.com/drive/u/0/folders/1kfENU5CPWq_Djo641XvWiZERdKNun26Q) | Mac dari sekitar akhir 2020 ke atas |
+| 🍎 **Mac dengan chip Intel** | [macOS Intel](https://glab.duckmartians.info/download/studio/mac-intel) | [macOS Intel](https://drive.google.com/drive/u/0/folders/1qvFV8P5k6FpHfGfnwbL8CccrwXgGoYg0) | Mac lama (sebelum 2020) |
 
 **Tidak yakin chip Mac-mu apa?** Klik menu  (kiri atas) → **About This Mac**:
 - Baris **Chip** bertuliskan “Apple M1 / M2 / M3…” → unduh versi **arm64**.
@@ -236,4 +236,4 @@ Setiap halaman memiliki subfolder sendiri di dalam `output` (satu folder lebih k
 
 **macOS mengatakan aplikasi rusak / tidak dapat dibuka** - aplikasi belum ditandatangani oleh Apple. Klik kanan → **Open** pertama kali, atau jalankan `xattr -dr com.apple.quarantine "/Applications/G-Labs Studio.app"`.
 
-**Pembaruan tidak terpasang** - unduh build terbaru secara manual dari [Releases](https://github.com/duckmartians/G-Labs-Studio/releases/latest).
+**Pembaruan tidak terpasang** - unduh build terbaru secara manual dari [duckspace.net](https://duckspace.net/g-labs-studio/).
