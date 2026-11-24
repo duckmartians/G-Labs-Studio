@@ -1,4 +1,4 @@
-# G-Labs Automation — Webhook API Integration Guide
+# G-Labs Studio — Webhook API Integration Guide
 
 > Audience: developers, technical integrators, and AI agents.
 > Goal: everything needed to integrate the local Webhook REST API correctly —
@@ -6,9 +6,38 @@
 > and the async (submit → poll → download) workflow.
 
 This document describes the API exposed by the **Webhook** tab of the G-Labs
-Automation desktop app (v5.0.3+). It lets external tools (n8n, Make.com, custom
+Studio desktop app (v5.0.3+; the model catalogue `/api/models` and the OpenAI-compatible
+`/v1/*` API need a build newer than 5.0.6). It lets external tools (n8n, Make.com, custom
 scripts, AI agents) drive image (Flow, Google Pics, Meta Muse, Dreamina) / video (Veo, Omni Flash, Google Vids, Meta Muse, Dreamina) / Grok /
 Meta AI / OpenAI generation — and local image upscaling — over a simple REST API.
+
+---
+
+## Quick start
+
+1. In the app: **Webhook** tab → **Start**. Copy the **port** (default `8765`) and the **API key**.
+2. Check that the server answers (no key needed):
+   ```bash
+   curl http://127.0.0.1:8765/api/health
+   ```
+3. See the models you can use, with their limits:
+   ```bash
+   curl http://127.0.0.1:8765/api/models -H "X-API-Key: YOUR_API_KEY"
+   ```
+4. Ask for an image. The answer is a `task_id`, not the image itself:
+   ```bash
+   curl -X POST http://127.0.0.1:8765/api/image/generate -H "Content-Type: application/json" \
+     -H "X-API-Key: YOUR_API_KEY" -d '{"prompt": "a cat wearing sunglasses", "model": "nano_banana_2"}'
+   ```
+5. Ask for the status every few seconds until `"status": "completed"`, then download each link in `results`:
+   ```bash
+   curl http://127.0.0.1:8765/api/status/<task_id> -H "X-API-Key: YOUR_API_KEY"
+   curl -o cat.png "<a link from results>"
+   ```
+
+Already using an OpenAI library or tool? Point it at `http://127.0.0.1:8765/v1` and go to §12.
+Read next: the request fields of each page (§5), reference images and `@tag` (§6), errors (§8),
+complete cURL / Python / JavaScript examples (§10).
 
 ---
 
@@ -31,17 +60,40 @@ Meta AI / OpenAI generation — and local image upscaling — over a simple REST
   1. `POST` a generate request → get a `task_id` immediately (HTTP `202`).
   2. `GET /api/status/{task_id}` repeatedly until `status` is `completed` or `failed`.
   3. On `completed`, download the files from the returned `results` URLs.
+- **Two API styles, same engine.** Besides `/api/*` (submit → poll → download, above), the server
+  speaks the **OpenAI format** on `/v1/*` (§12) - like Gemini or DeepSeek's "OpenAI-compatible" APIs, an
+  OpenAI client library or tool only changes its base URL. Both share the queue, accounts and limits.
 - **Concurrency.** The server accepts many requests at once. Up to **10 tasks are
   parsed concurrently**; how many then *generate* at once follows your account count: every
   account-based endpoint (Image/Video, Meta AI, OpenAI, Grok, Google Vids, Google Pics, Meta Muse, Dreamina)
   runs at most **usable accounts × the server's per-account job count** (today 5, MAX plan only).
   Grok in extension mode counts as 1 account. Google Vids, Google Pics, Meta Muse and Dreamina wait for a
   free slot (Meta Muse and Dreamina up to 900 s), and Upscale runs **one at a time** (a single GPU — see §5.6).
+- **Per-account limit (since 6.0.0).** On every account-based endpoint, one account never runs more than the
+  server's per-account job count (today 5; Grok 4), including when a task moves to another account to retry.
+  A full account is skipped for one with room; when every usable account is full the task **waits** for a
+  free slot. Meta AI and OpenAI wait up to 15 minutes, then fail with `503 NO_FREE_SLOT` (like Vids / Pics);
+  Image/Video (Flow) wait until a slot frees. Before 6.0.0, Image/Video, Meta AI and OpenAI only capped the
+  total and handed jobs out round-robin, so one account could carry more than its share.
+- **Delay between requests (since 6.0.0).** The Webhook tab has a **Delay between requests** box: the pause
+  between two consecutive job *starts* on the same platform. Options: **Immediately** (2-3 s, the default),
+  `5-10s`, `10-20s`, `20-30s`, `30-60s`, `60-90s`, `90-120s`; each pause is picked at random inside the range.
+  - It applies **per platform** (Flow Image, Flow Video, Meta AI, OpenAI, Grok, Google Vids, Google Pics,
+    Meta Muse and Dreamina each have their own line), and not to Upscale.
+  - It is an app setting, **not** a request field: no API parameter changes it. The choice is saved and
+    reused the next time the app opens.
+  - A task waiting for its turn stays `pending`; a long delay with a burst of requests means a long queue
+    (for example `90-120s` with 10 requests is about 15-20 minutes before the last one starts). Size your
+    client-side timeout accordingly.
+  - A change made mid-run applies to requests that arrive afterwards; requests already scheduled keep their
+    time. Flow Image picks up the new delay once the current run finishes and a new one starts.
+  - If you hit Google's too-fast errors (`USER_REQUESTS_THROTTLED` / `TOO_MUCH_TRAFFIC`), raise the delay.
+  - Before 6.0.0 this pause was a fixed 1-3 s and could not be changed.
 - **Generation runs on the app's logged-in accounts.** Image/Video use the
   Google (Flow/Veo) accounts configured in the app; Grok uses the Grok accounts of
   Settings → Grok (or the grok.com tab through the extension when the Extension run mode is
   chosen, see §5.3); **Meta AI** uses a logged-in Meta (vibes.ai) account;
-  **OpenAI (GPT Image 2)** uses a logged-in ChatGPT/OpenAI account; **Google Vids**
+  **OpenAI (GPT Image)** uses a logged-in ChatGPT/OpenAI account; **Google Vids**
   (`omni_vids`) and **Google Pics** (`nano_pics`) use the Google accounts of Settings →
   Google Accounts; **Meta Muse** (`meta_muse`) uses the Muse accounts of Settings → Muse
   accounts (muse.ai, Meta account login); **Dreamina** (`dreamina`) uses the Dreamina accounts of
@@ -63,6 +115,9 @@ X-API-Key: <your-api-key>
 - The key is generated by the app (32-byte URL-safe token) and shown in the
   **Webhook** tab. You can regenerate it there.
 - Missing/invalid key → `401 {"error": "Invalid or missing API key"}`.
+- The OpenAI-compatible routes (`/v1/*`, §12) also take `Authorization: Bearer <your-api-key>` - what
+  OpenAI clients send - and answer errors in the OpenAI shape:
+  `401 {"error": {"message": "Invalid or missing API key", "type": "authentication_error", "code": "invalid_api_key"}}`.
 
 CORS is enabled (`Access-Control-Allow-Origin: *`), and `OPTIONS` preflight is
 handled, so browser-based clients work.
@@ -78,13 +133,19 @@ handled, so browser-based clients work.
 | `POST` | `/api/video/generate` | ✅ | Queue a **video** generation task (Veo / Omni Flash / Google Vids, Meta Muse with `model: "meta_muse"`, or Dreamina with `model: "dreamina"`) |
 | `POST` | `/api/grok/generate`  | ✅ | Queue a **Grok** image/video task |
 | `POST` | `/api/meta/generate`  | ✅ | Queue a **Meta AI** image/video task |
-| `POST` | `/api/openai/generate` | ✅ | Queue an **OpenAI GPT Image 2** task |
+| `POST` | `/api/openai/generate` | ✅ | Queue an **OpenAI GPT Image** task (the server's default model, today GPT-6 Luna) |
 | `POST` | `/api/upscale/generate` | ✅ | Upscale an image with the **local Real-ESRGAN** engine |
 | `GET`  | `/api/status/{task_id}` | ✅ | Poll task status; returns result or error |
 | `GET`  | `/api/result/{task_id}` | ✅ | Get result (only once `completed`) |
 | `GET`  | `/api/files/{filename}` | ❌ | Download a generated output file |
 | `GET`  | `/api/tasks` | ✅ | List the 50 most recent tasks |
+| `GET`  | `/api/models` | ✅ | **Model catalogue of every page** in the OpenAI format (also `/v1/models`, `/v1/models/{id}`) - see §7 |
 | `POST` | `/api/stop` | ✅ | **Stop** every pending / running task — or one: `/api/stop/{task_id}` or body `{"task_id": "..."}`. Needs the API key only (no MAX check), so a client can always cancel. |
+| `POST` | `/v1/images/generations` | ✅ | **OpenAI-compatible** image generation (waits, returns `url` / `b64_json`) - see §12 |
+| `POST` | `/v1/images/edits` | ✅ | **OpenAI-compatible** image edit from reference images (JSON or multipart) - §12 |
+| `POST` | `/v1/videos` | ✅ | **OpenAI-compatible** video creation (returns a video object) - §12 |
+| `GET`  | `/v1/videos`, `/v1/videos/{id}`, `/v1/videos/{id}/content` | ✅ | **OpenAI-compatible** video list / status / download - §12 |
+| `DELETE` | `/v1/videos/{id}` | ✅ | **OpenAI-compatible**: stop a video and remove it from the list - §12 |
 | `GET`  | `/api/characters` | ✅ | List the **character library** (§5.8) |
 | `GET`  | `/api/characters/{name}` | ✅ | One character (name is case-insensitive, URL-encoded) |
 | `GET`  | `/api/characters/{name}/image` | ✅ | The character's picture (needs the API key too) |
@@ -185,11 +246,13 @@ raw bytes. `Content-Type` is set by file extension (`image/png`, `image/jpeg`,
   up to 2 files.
 - **Grok** → always exactly 1 file.
 - **Meta AI** → `count` files (1–4): `count` images (one batch) or `count` video clips.
-- **OpenAI (GPT Image 2)** → always exactly 1 file.
+- **OpenAI** (GPT Image) → always exactly 1 file.
 - **Google Vids** (`omni_vids`) → exactly 1 file at the requested resolution; an
   `omni_vids` `upscale` task → 1 file (the 1080p clip).
 - **Meta Muse** (`meta_muse`) → `count` files: images (JPG, 1–4) or videos (MP4, 1–2); fewer only
   when the run stopped / failed after some files were saved (`meta.partial`).
+- **Dreamina** (`dreamina`) → `count` files (images or videos, default 1); fewer only when the run
+  stopped / failed after some files were saved (`meta.partial`).
 - **Upscale** → always exactly 1 file (one image in, one image out).
 
 (So `len(results)` and their order match the resolutions you asked for.)
@@ -212,7 +275,7 @@ request is the usual way to hit it.
 | Field | Type | Required | Default | Notes |
 |-------|------|:--------:|---------|-------|
 | `prompt` | string | ✅ | — | Image description. |
-| `model` | string | ❌ | `nano_banana_2` | One of `nano_banana_pro`, `nano_banana_2`, `nano_banana_2_lite`, `nano_pics`, `meta_muse`, `dreamina`. Unknown → `nano_banana_2`. **`nano_pics`** = Google Pics, with its own fields (`mode`, `keep`, `remove_logo`) and strict validation — see the Google Pics note below. **`meta_muse`** = Meta Muse, with its own fields (`mode`, `count`) and strict validation - see the Meta Muse note below. **`dreamina`** = Dreamina (CapCut), with its own fields (`dreamina_model`, `mode`, `resolution`, `count`, `quality`) - see the Dreamina note below. |
+| `model` | string | ❌ | `nano_banana_2` | One of `nano_banana_pro`, `nano_banana_2`, `nano_banana_2_lite`, `nano_pics`, `meta_muse`, `dreamina`. Unknown → `nano_banana_2`. **`nano_pics`** = Google Pics, with its own fields (`mode`, `keep`, `remove_logo`) and strict validation — see the Google Pics note below. **`meta_muse`** = Meta Muse, with its own fields (`mode`, `count`) and strict validation - see the Meta Muse note below. **`dreamina`** = Dreamina (CapCut), with its own fields (`dreamina_model`, `mode`, `resolution`, `count`, `quality`) - see the Dreamina note below. Live list with each model's limits: `GET /v1/models` (§5.7). |
 | `aspect_ratio` | string | ❌ | `1:1` | One of `1:1`, `3:4`, `4:3`, `9:16`, `16:9`. Unknown → `1:1`. |
 | `reference_images` | array | ❌ | `[]` | Up to **10** base64 images (see §6). Each image may include a `name` to bind it via `@name` in the prompt (§6.1). |
 | `upscale` | array | ❌ | `[]` | Any of `"2K"`, `"4K"`. **4K requires an ULTRA account** and a model that supports upscaling. Invalid values are dropped. |
@@ -232,6 +295,14 @@ request is the usual way to hit it.
 > If `upscale` is requested and the requested resolution cannot be produced (e.g.
 > 4K quota exhausted), the task is reported **failed** with the reason — it does
 > **not** silently return the lower-resolution base image.
+
+> **Automatic model switch when the limit is reached (Flow: `nano_banana_pro`, `nano_banana_2`,
+> `nano_banana_2_lite`)** - with the "Switch model when the limit is reached" switch on (Flow Image page → Advanced
+> settings; it also applies to the Webhook): if the request's model has used up its daily limit on every account,
+> the app generates with a model from another limit (Nano Banana Pro ⇄ Nano Banana 2.1; Nano Banana 2 Lite → Nano
+> Banana Pro) instead of returning `429`. The status response then carries `meta`:
+> `{"model": "<model actually used>", "model_requested": "<model you sent>", "model_fallback": true}`. No switch,
+> no `meta`. Every limit used up → `429` as before. Switch off → the request's model is always used.
 
 > **Google Pics (`model: "nano_pics"`)** — Google's image generator (docs.google.com/images), run
 > on the **Google accounts** of Settings → Google Accounts (the same accounts as Google Vids;
@@ -351,9 +422,11 @@ Meta Muse example - image to image, 16:9, 2 images:
 > - `mode`: `text_to_image` or `image_to_image` (aliases `t2i` / `i2i` / `reference`). Omitted →
 >   `image_to_image` when reference images are sent (or the prompt `@`-names a library character),
 >   else `text_to_image`. `text_to_image` ignores images sent along.
-> - `reference_images`: up to the model's cap (GPT Image 16, Nano Banana 14, Seedream 5.0 10 ...).
->   `@tag` works: `@luna` in the prompt points to the image with `"name": "luna"` (§6.1). Over the cap
->   → `400 TOO_MANY_REFERENCES`.
+> - `reference_images`: up to the model's cap (GPT Image 16, Nano Banana 14, Seedream 5.0 Pro / Flash 10,
+>   Seedream 5.0 Lite 6 ...).
+>   `@tag` works: `@luna` in the prompt points to the image with `"name": "luna"` (§6.1). With
+>   `{"path": ...}` the `@` name is the file's own name and `name` is ignored; `name` only applies to
+>   base64 / `data` entries. Over the cap → `400 TOO_MANY_REFERENCES`.
 > - `aspect_ratio` (default `1:1`), `resolution` (e.g. `1k` / `2k` / `4k`, default `2k`), `count`
 >   (images, from the model's list, default `1`), `quality` (GPT Image models only: `low` / `medium` /
 >   `high` ...). Invalid → `400 INVALID_ASPECT_RATIO` / `INVALID_RESOLUTION` / `INVALID_COUNT` /
@@ -382,7 +455,7 @@ Dreamina example - reference image with `@tag`:
 | Field | Type | Required | Default | Notes |
 |-------|------|:--------:|---------|-------|
 | `prompt` | string | ✅ | — | Motion / scene description. Optional only for an `omni_vids` `upscale` request. |
-| `model` | string | ✅ | — | One of `veo_31_lite`, `veo_31_lite_relaxed`, `omni_flash_12`, `veo_31_fast`, `veo_31_quality`, `omni_flash`, `omni_vids`, `meta_muse`, `dreamina`. Missing → `400 MISSING_MODEL`; an unknown Veo name → the server's default model (`veo_31_fast`; `veo_31_lite` from 2026-12-05). **A model Google retired** (from 2026-12-05: `veo_31_fast`, `veo_31_quality` → use `veo_31_lite`; `omni_flash` → use `omni_flash_12`) returns `400 MODEL_RETIRED` naming the replacement id. **`omni_vids`** = Google Vids (see the Google Vids note below). **`meta_muse`** = Meta Muse (see the Meta Muse note below). **`dreamina`** = Dreamina, also takes `reference_videos` / `reference_audios` on mode `omni` (see the Dreamina note below). `veo_31_lite_relaxed` requires **ULTRA** accounts. **`omni_flash`** / **`omni_flash_12`**: see the `mode` note. |
+| `model` | string | ✅ | — | One of `veo_31_lite`, `veo_31_lite_relaxed`, `omni_flash_12`, `veo_31_fast`, `veo_31_quality`, `omni_flash`, `omni_vids`, `meta_muse`, `dreamina`. Missing → `400 MISSING_MODEL`; an unknown Veo name → the server's default model (`veo_31_fast`; `veo_31_lite` from 2026-12-05). **A model Google retired** (from 2026-12-05: `veo_31_fast`, `veo_31_quality` → use `veo_31_lite`; `omni_flash` → use `omni_flash_12`) returns `400 MODEL_RETIRED` naming the replacement id. **`omni_vids`** = Google Vids (see the Google Vids note below). **`meta_muse`** = Meta Muse (see the Meta Muse note below). **`dreamina`** = Dreamina, also takes `reference_videos` / `reference_audios` on mode `omni` (see the Dreamina note below). `veo_31_lite_relaxed` requires **ULTRA** accounts. **`omni_flash`** / **`omni_flash_12`**: see the `mode` note. Live list with each model's limits: `GET /v1/models` (§5.7). |
 | `aspect_ratio` | string | ❌ | `16:9` | `16:9` or `9:16`. |
 | `mode` | string | ❌ | `text_to_video` | `text_to_video` (0 refs) · `start_image` (1 ref) · `start_end_image` (2 refs: start + end frame) · `components` (Veo up to 3 refs, Omni Flash up to 7; supports `voice` and `reference_video`). **Every mode works on both Veo and Omni Flash** (Omni Flash `start_end_image` needs the server config's `i2v_end` mapping — without it the request is rejected with a clear reason). |
 | `reference_images` | array | ❌ | `[]` | Up to **3** base64 images (Veo); **Omni Flash `components` up to 7** (up to **5** when a `reference_video` is present). **Required when `mode != text_to_video`** — except `components`, which may use `reference_video` instead, or only `@Name` of a library character when characters are in use (§6.3). Each image may include a `name` to bind it via `@name` in the prompt — Veo (§6.1). |
@@ -391,7 +464,7 @@ Dreamina example - reference image with `@tag`:
 | `voice` | string | ❌ | `""` | Lowercase voice name. Only used in `components` mode. |
 | `video_length` | int | ❌ | (model default) | Clip length in seconds. Veo: `4`/`6`/`8`; Omni Flash: `4`/`6`/`8`/`10`; Omni Flash 1.2: `3`–`15` (`11`–`15` need a paid Google AI plan; `start_end_image` over 10s uses the start frame only, like the Flow web). Veo `components` mode runs `8` only (other values → 8s). Unsupported values → default (8s). **Veo `4`/`6` require an ULTRA account** (Omni Flash doesn't); with no ULTRA account (Veo `4`/`6`) or no paid account (Omni Flash 1.2 `11`–`15`) the default 8s is used. The edit flow (`reference_video`) ignores this — length follows the source clip. |
 | `remove_logo` | bool | ❌ | (Flow Video page switch) | Remove the logo from videos made on **Pro/Free** accounts: the "Veo" text (Veo) or the ✦ mark (Omni Flash), at 720p and 1080p (360p / 4K are left as is). `true` removes, `false` keeps; omitted → follows the Flow Video page's "Show Veo / Gemini logo" switch (off = remove) **and** the master "Auto-remove logo on download" switch (Remove video logo tab; off = keep). An explicit `true` removes even when the master switch is off. **ULTRA** accounts: when omitted, Google turns the logo off at the source per that switch (no extra processing); with `true` the app still checks and removes the logo if the video has one. Wrong type → `400 INVALID_FIELD`. Logo removal runs one video at a time (adds ~1–4 s per video). |
-| `use_characters` | bool | ❌ | (app switch) | Use / ignore the **character library** for this task only (Veo, Omni Flash, `omni_vids`, `meta_muse`) - see §5.1 and §6.3. Not a boolean → `400 INVALID_FIELD`. |
+| `use_characters` | bool | ❌ | (app switch) | Use / ignore the **character library** for this task only (Veo, Omni Flash, `omni_vids`, `meta_muse`, `dreamina`) - see §5.1 and §6.3. Dreamina follows the app switch when the field is omitted (no explicit `true` needed, unlike `meta_muse`); `false` turns it off for the task. Not a boolean → `400 INVALID_FIELD`. |
 | `auto_fix_prompt` | bool | ❌ | `true` | When the server blocks the request because of the **prompt** (celebrity, sensitive content, minor, copyright...), the app asks an LLM to rewrite it and runs again, at most 2 times, while the task stays `running` (Flow models only; needs PLUS+ and Settings → LLM assistant turned on). Blocked **reference / input images** are never rewritten. `false` → fail right away with the original 400 (for clients that rewrite prompts themselves). A rewritten task adds `prompt_rewrites`, `original_prompt`, `final_prompt` to `/api/status` and `/api/result` (`prompt` stays what you sent). Not a boolean → `400 INVALID_FIELD`. |
 
 ```json
@@ -411,7 +484,8 @@ Dreamina example - reference image with `@tag`:
 > `reference_images[0]` is used.
 >
 > **Mode is not strictly validated** (Veo / Omni Flash): an unrecognized `mode` behaves like
-> `text_to_video` (references are ignored). Only `components` reads the `voice`
+> `text_to_video` (references are ignored). Values are case-sensitive: `"Components"` or
+> `"START_IMAGE"` is unknown and runs as `text_to_video` - send them in lowercase. Only `components` reads the `voice`
 > field (Veo up to 3 reference images, Omni Flash up to 7). **`omni_vids` is the exception:**
 > it validates `mode`, `resolution`, `video_length` and `aspect_ratio` strictly and answers
 > `400` with a named reason (see the Google Vids note).
@@ -450,8 +524,8 @@ Omni Flash 1.2 example — edit video (restyle a ≤15s clip per the prompt):
 > **Google Vids (`model: "omni_vids"`)** runs on the Google accounts added in Settings → Google Accounts
 > (PLUS/MAX). Same request shape as Veo, with these rules:
 > - `mode` (case-insensitive): `text_to_video` (no refs, the default), `start_image` (1 ref =
->   the first frame; extra refs are ignored), `components` (1–3 refs used as ingredients) or
->   `upscale` (see below). Aliases `t2v` / `i2v` / `r2v` are accepted. Anything else — including
+>   the first frame; extra refs are ignored), `components` (1–3 refs used as ingredients),
+>   `video_to_video` (see below) or `upscale` (see below). Aliases `t2v` / `i2v` / `r2v` / `v2v` are accepted. Anything else — including
 >   `start_end_image` → `400 INVALID_MODE`.
 > - `resolution`: **one** of the server list (today `720p` / `1080p`), as a string or a one-item
 >   list — generated directly, no upscale step. Omitted → the first value of the server list.
@@ -460,7 +534,16 @@ Omni Flash 1.2 example — edit video (restyle a ≤15s clip per the prompt):
 >   quota. Out of range → `400 INVALID_VIDEO_LENGTH`.
 > - `orientation` (`landscape` / `portrait`) or `aspect_ratio` (`16:9` / `9:16`); when both are
 >   sent, `orientation` wins. Default `16:9`. Anything else → `400 INVALID_ASPECT_RATIO`.
-> - `reference_video` → `400 INVALID_FIELD`. `voice` and `category` are ignored.
+> - `reference_video` is taken only with mode `video_to_video`; any other mode → `400 INVALID_FIELD`. `voice` and `category` are ignored.
+> - **Video to video** (`"mode": "video_to_video"`): changes an existing video with the prompt (new style, add a
+>   character, change the scene) while keeping its motion. **Runs on Google Vids paid-plan seconds only** - free
+>   accounts don't have this mode and are skipped; no paid account with enough seconds → `503 NO_VIDS_PAID_ACCOUNT`.
+>   - `reference_video` (required): 1 video `mp4` / `m4v` / `mov` / `webm`, base64 / data URI or
+>     `{"path": "..."}` on the app's machine; up to **10 seconds** (server limit) - longer → `400 VIDEO_TOO_LONG`,
+>     missing → `400 MISSING_REFERENCE`, other extension → `400 INVALID_VIDEO_FORMAT`, unreadable → `400 BAD_VIDEO`.
+>   - The clip is **as long as the source video**, in the source's orientation, and costs exactly that many
+>     seconds (`video_length` / `aspect_ratio` are not used). `resolution` works like the other modes.
+>   - `reference_images` (optional): up to 3 component images called by `@name` like `components` (library characters too).
 > - In `components` mode give each image a `"name"` and write `@name` in the prompt to place that
 >   image at that spot (`"@luna meets @grandpa"`); images without an `@` are still sent, in front.
 >   **Characters of the library** (Settings → Characters) can be named the same way — `@Anna`
@@ -481,7 +564,7 @@ Omni Flash 1.2 example — edit video (restyle a ≤15s clip per the prompt):
 >   free slot (up to 15 min) instead of failing.
 > - **Result:** a completed task also carries `meta` in `GET /api/status/{task_id}` and
 >   `GET /api/result/{task_id}`:
->   `mode` (`t2v` / `i2v` / `r2v` / `upscale`), `resolution` (`720p` / `1080p`), `orientation`
+>   `mode` (`t2v` / `i2v` / `r2v` / `v2v` / `upscale`), `resolution` (`720p` / `1080p`), `orientation`
 >   (`landscape` / `portrait`), `duration` (seconds), `account` (the Google Vids account email
 >   that made the clip), `clip_temp_id` (the id an upscale request needs) and
 >   `upscale_available` (`true` when the clip can still be upscaled — it is not 1080p yet) and
@@ -519,6 +602,19 @@ Google Vids example — components with @names:
 }
 ```
 
+Google Vids example - video to video (paid-plan account, source video up to 10 s):
+
+```json
+{
+  "prompt": "@luna walks next to the dog, watercolor style",
+  "model": "omni_vids",
+  "mode": "video_to_video",
+  "resolution": ["720p"],
+  "reference_video": {"path": "D:/clips/dog.mp4"},
+  "reference_images": [{"data": "data:image/png;base64,...", "name": "luna"}]
+}
+```
+
 Google Vids example — upscale the clip of a completed task:
 
 ```json
@@ -537,9 +633,9 @@ Google Vids example — upscale the clip of a completed task:
 >   `reference_images` are sent, else `text_to_video`. Anything else → `400 INVALID_MODE`;
 >   `image_to_video` without an image → `400 MISSING_REFERENCE`; `text_to_video` ignores any image
 >   sent.
-> - `reference_images` (`image_to_video`): **1** image = the first frame; **2–3** images =
->   references (characters / objects / setting). Positional, no `@tag`. More than 3 →
->   `400 TOO_MANY_REFERENCES`.
+> - `reference_images` (`image_to_video`): **1** image = the first frame; **2 or more** images =
+>   references (characters / objects / setting), up to the server cap (today **7**). Positional, no
+>   `@tag`. Over the cap → `400 TOO_MANY_REFERENCES`.
 > - `aspect_ratio`: one of the server list - today `16:9, 9:16, 1:1, 4:3, 3:4, 21:9`. Default
 >   `16:9`. Anything else → `400 INVALID_ASPECT_RATIO`.
 > - `count`: videos per prompt, `1` or `2` (default `1`). Anything else → `400 INVALID_COUNT`.
@@ -570,7 +666,7 @@ Meta Muse example - image to video (first frame, 8 s, 9:16):
 
 > **Dreamina (`model: "dreamina"`)** runs on the Dreamina accounts (Video column on; PLUS/MAX plan) -
 > the same `dreamina` model as on `/api/image/generate`, same `dreamina_model` field.
-> - `mode`: `text_to_video` (alias `t2v`), `image_to_video` (aliases `i2v` / `frames` / `start_image`:
+> - `mode`: `text_to_video` (alias `t2v`), `image_to_video` (aliases `i2v` / `frames` / `start_image` / `first_last_frames`:
 >   1 image = first frame, 2 images = first + last frame when the model has a last frame), `omni`
 >   (aliases `omni_reference` / `reference`: image + video + audio references, named with `@tag`).
 >   Omitted → `omni` when videos / audios or 3+ images are sent, `image_to_video` for 1-2 images,
@@ -579,12 +675,16 @@ Meta Muse example - image to video (first frame, 8 s, 9:16):
 >   `reference_images` - a base64 / data-URI string, `{"data": "...", "name": "beat"}`, or
 >   `{"path": "D:/..."}` (a file on the machine running the app). Video: mp4 / mov / webm / m4v;
 >   audio: mp3 / wav / m4a / aac / ogg. `"name"` is the `@` name in the prompt (`@beat`); without it
->   the file name is used. Sent on another mode → `400 INVALID_FIELD`; bad base64 / wrong file type → `400`.
+>   the file name is used. With `{"path": ...}` (images too) the `@` name is always the file's own
+>   name and `name` is ignored - `name` only applies to base64 / `data` entries.
+>   Sent on another mode → `400 INVALID_FIELD`; bad base64 / wrong file type → `400`.
 > - Omni reference caps per model, **per kind and in total** (e.g. Seedance 2.5: 30 images, 10 videos,
 >   10 audios, 50 in total; Seedance 2.0: 9 / 3 / 3, 12 in total, needs at least one image or video).
 >   Over a cap → `400 TOO_MANY_REFERENCES`; a required kind missing → `400 MISSING_REFERENCE`.
-> - `aspect_ratio` (default `16:9`; `image_to_video` takes `auto` = the image's ratio when the model
->   offers it), `resolution` (default `720p`), `video_length` (seconds within the model's range,
+> - `aspect_ratio` (default `16:9`, or the model's first ratio when it has no `16:9`; `image_to_video`
+>   takes `auto` = the image's ratio when the model offers it, and on such a model the default for
+>   `image_to_video` is `adaptive`, the same as `auto`), `resolution` (default `720p` when the model offers it, else the
+>   model's first resolution), `video_length` (seconds within the model's range,
 >   default = the model's default), `count` (videos 1-4, default 1 - each video is one generation,
 >   charged apart).
 > - Alternative field names are accepted too: `model_key` = `dreamina_model`, `duration` = `video_length`,
@@ -700,9 +800,11 @@ other endpoints, reference images are passed as **named fields** (not a
 > Meta AI has **no `@tag` name-binding** (that is Flow/Veo only); components are
 > bound by the named fields above.
 
-### 5.5 OpenAI (GPT Image 2) — `POST /api/openai/generate`
+### 5.5 OpenAI (GPT Image) — `POST /api/openai/generate`
 
-Generates on **OpenAI GPT Image 2** using a logged-in ChatGPT/OpenAI account.
+Generates with the **server's default OpenAI image model** (today **GPT-6 Luna**; older app
+builds: GPT Image 2) using a logged-in ChatGPT/OpenAI account. `GET /api/models` shows the
+model in use (`openai/...`).
 Always produces **exactly one image** per request (like Grok/Meta return the first
 result). Reference images are **positional** (no `@tag`).
 
@@ -714,7 +816,7 @@ result). Reference images are **positional** (no `@tag`).
 | `prompt_mode` | string | ❌ | `auto` | `auto` (model refines the prompt) or `direct` (use the prompt verbatim). Unknown → `auto`. |
 | `reasoning` | string | ❌ | `none` | Reasoning effort: `none`, `low`, `medium`, `high`, `xhigh`, `max`. Unknown → `none`. |
 | `web_search` | bool | ❌ | `false` | Allow web-search grounding before generating. |
-| `reference_images` | array | ❌ | `[]` | Up to the server's default model cap (currently **15** images), base64 or `path` (see §6); more than that → `400 TOO_MANY_REFERENCES`. Passed **positionally** — GPT Image 2 does **not** support `@tag` name-binding. |
+| `reference_images` | array | ❌ | `[]` | Up to the server's default model cap (currently **15** images), base64 or `path` (see §6); more than that → `400 TOO_MANY_REFERENCES`. Passed **positionally** — GPT Image does **not** support `@tag` name-binding. |
 
 ```json
 {
@@ -728,7 +830,7 @@ result). Reference images are **positional** (no `@tag`).
 }
 ```
 
-> **No `model` field needed** — the endpoint has a single model (GPT Image 2). A
+> **No `model` field needed** — the endpoint runs the server's default model. A
 > `model` value, if sent, is ignored.
 > **Native resolution is capped ~1.57 MP** by the OpenAI backend (aspect ratio is
 > honored, absolute 2K/4K pixel sizes are not). There is no `upscale` option on this
@@ -836,36 +938,33 @@ via the URL rather than guessing the path on disk.
 | 400 | `UNREADABLE_IMAGE` | Source file is corrupt or an unsupported format. |
 | 500 | `RESIZE_FAILED` | Engine succeeded but resizing to the requested `scale` failed. |
 | 500 | `OUTPUT_DIR_UNWRITABLE` | Output folder cannot be created (drive unplugged?). |
+| 500 | `WRITE_FAILED` | The upscale finished but the result could not be copied into the output folder (disk full, file locked, no write permission). |
+| 499 | `CANCELLED` | The upscale was stopped before it finished (e.g. stopped from the app or the app was closing). |
 
-### 5.7 Model reference table
+`name` is accepted as an alias of `filename`.
 
-| API value (`model` / `mode`) | Display | Output / Ratios |
-|------|---------|--------|
-| `nano_banana_pro` | Nano Banana Pro | `1:1, 3:4, 4:3, 9:16, 16:9` |
-| `nano_banana_2` | Nano Banana 2 | `1:1, 3:4, 4:3, 9:16, 16:9` |
-| `nano_banana_2_lite` | Nano Banana 2 Lite | `1:1, 3:4, 4:3, 9:16, 16:9` |
-| `nano_pics` | Google Pics (image; `text_to_image` / `image_to_image` (1–14 refs, positional); 3–9 images per run, `keep` 1–4 or all; Gemini logo removed by default; runs on the Google accounts in Settings → Google Accounts, PLUS/MAX) | `16:9, 9:16, 1:1, 4:3, 3:4, 3:2, 2:3, 5:4, 4:5, 21:9` |
-| `meta_muse` | Meta Muse (image; `text_to_image` / `image_to_image` (1–14 refs, positional); 1–4 images per prompt (`count`); JPG, no logo; runs on the Muse accounts in Settings → Muse accounts, PLUS/MAX) | `1:1, 16:9, 9:16, 4:3, 3:4, 3:2, 2:3, 21:9, 5:4, 4:5` |
-| `dreamina` | Dreamina (image; `text_to_image` / `image_to_image` with `@tag`; pick the model with `dreamina_model`; references, ratios, resolutions and counts per model; runs on the Dreamina accounts, PLUS/MAX) | per model (table in the Webhook tab) |
-| `veo_31_fast` | Veo 3.1 Fast — **retires on 2026-12-05**, use `veo_31_lite` | `16:9, 9:16` |
-| `veo_31_lite` | Veo 3.1 Lite | `16:9, 9:16` |
-| `veo_31_quality` | Veo 3.1 Quality — **retires on 2026-12-05**, use `veo_31_lite` | `16:9, 9:16` |
-| `veo_31_lite_relaxed` | Veo 3.1 Lite Lower Priority [0 Credit] (ULTRA only) | `16:9, 9:16` |
-| `omni_flash` | Omni Flash (video; 4/6/8/10s; up to 7 refs; 360p or 720p; edit video ≤10s via `reference_video`; no ULTRA) — **retires on 2026-12-05**, use `omni_flash_12` | `16:9, 9:16` |
-| `omni_flash_12` | Omni Flash 1.2 (video; 3–15s, 11–15s need a paid plan; start + end frames up to 10s (11–15s: start frame only); up to 7 refs, characters share the image slots (max 3); 360p or 720p; edit video ≤15s via `reference_video`; no ULTRA) | `16:9, 9:16` |
-| `omni_vids` | Google Vids Omni (video; 3–15 s; 720p or 1080p generated directly; `text_to_video` / `start_image` (1 ref) / `components` (1–3 refs, `@name`); runs on the Google accounts in Settings → Google Accounts, PLUS/MAX) | `16:9, 9:16` |
-| `meta_muse` | Meta Muse (video; `text_to_video` / `image_to_video` (1 ref = first frame, 2–3 refs = references); 1–2 videos per prompt (`count`); optional `video_length` 1–60 s; MP4 with sound; runs on the Muse accounts in Settings → Muse accounts, PLUS/MAX) | `16:9, 9:16, 1:1, 4:3, 3:4, 21:9` |
-| `dreamina` | Dreamina (video; `text_to_video` / `image_to_video` (first, last frame) / `omni` (image + video + audio references, `@tag`); pick the model with `dreamina_model`; 1-4 videos; runs on the Dreamina accounts, PLUS/MAX) | per model (table in the Webhook tab) |
-| *upscale* `model` | Whatever is installed in `bin/realesrgan/models/` — the Webhook tab's model table lists your actual set. Stock build: `upscayl-standard-4x`, `upscayl-lite-4x`, `digital-art-4x`, `high-fidelity-4x`, `remacri-4x`, `ultramix-balanced-4x`, `ultrasharp-4x` | scale `2`–`8` (aspect ratio unchanged) |
-| Grok `mode=t2i` | Text → Image (1K) | `9:16, 16:9, 1:1, 2:3, 3:2, 4:3, 21:9, 5:2` |
-| Grok `mode=i2i` | Image → Image (1K) | `9:16, 16:9, 1:1, 2:3, 3:2, 4:3, 21:9, 5:2` |
-| Grok `mode=t2v` | Text → Video (480p/720p/1080p) | `9:16, 16:9, 1:1, 2:3, 3:2` |
-| Grok `mode=i2v` | Image → Video (480p/720p/1080p) | `9:16, 16:9, 1:1, 2:3, 3:2` |
-| Meta `mode=t2i` | Meta AI Text → Image | `9:16, 16:9, 1:1` |
-| Meta `mode=t2v` | Meta AI Text → Video (480p/720p) | `9:16, 16:9, 1:1` |
-| Meta `mode=i2i` | Meta AI Image → Image (components) | `9:16, 16:9, 1:1` |
-| Meta `mode=i2v` | Meta AI Image → Video (start/end) | `9:16, 16:9, 1:1` |
-| OpenAI `GPT_IMAGE` | GPT Image 2 (~1.57 MP, no upscale) | `1:1, 3:2, 4:3, 16:9, 21:9, 2:3, 3:4, 4:5, 9:16, custom` |
+### 5.7 Model reference
+
+The **list of models and their limits is not fixed in this document**: Google, Dreamina and the other
+providers add, rename and retire models, and G-Labs follows from its server config. Read the live list from
+**`GET /v1/models`** (= `/api/models`, OpenAI format, §7) - the Webhook tab's model table shows exactly the
+same data. Each entry says which `endpoint` to call and which fields (`params`) to put in the body.
+
+| Catalogue `id` | Provider | `endpoint` · `params` | Notes |
+|------|---------|--------|--------|
+| `flow/<model>` (e.g. `flow/nano_banana_2`, `flow/veo_31_lite`, `flow/omni_flash_12`) | Google Flow - Nano Banana images, Veo / Omni Flash video | `/api/image/generate` or `/api/video/generate` · `model` | `@tag` references (§6.1); upscale 2K/4K (4K needs ULTRA); Veo `components` 8 s only |
+| `pics/nano_pics` | Google Pics | `/api/image/generate` · `model: nano_pics` | positional references; Google accounts in Settings |
+| `vids/omni_vids` | Google Vids Omni | `/api/video/generate` · `model: omni_vids` | 720p / 1080p generated directly; Google accounts in Settings |
+| `muse/image`, `muse/video` | Meta Muse | `/api/image/generate`, `/api/video/generate` · `model: meta_muse` | positional references; Muse accounts in Settings |
+| `grok/image`, `grok/video` | Grok Imagine | `/api/grok/generate` · `mode` | `t2i` / `i2i` / `t2v` / `i2v` (§5.3) |
+| `meta/image`, `meta/video` | Meta AI (Vibes) | `/api/meta/generate` · `mode` | named reference fields (§6.2) |
+| `openai/<model>` | GPT Image (ChatGPT accounts) | `/api/openai/generate` | runs the server's default GPT Image model; positional references |
+| `dreamina/image/<key>`, `dreamina/video/<key>` | Dreamina (CapCut) | image / video endpoint · `model: dreamina`, `dreamina_model` | the live list of your Dreamina accounts; `@tag`; Omni image + video + audio references |
+| `upscale/<model>` | Local Real-ESRGAN | `/api/upscale/generate` · `model` | models installed in `bin/realesrgan/models/`; scale 2-8 |
+
+Models Google retired are listed in the catalogue's `retired` map with their replacement and answer
+`400 MODEL_RETIRED`. From **2026-12-05**: `veo_31_fast`, `veo_31_quality` → `veo_31_lite`; `omni_flash` →
+`omni_flash_12`.
 
 ### 5.8 Character library - `/api/characters`
 
@@ -914,6 +1013,23 @@ Flow entities so they are re-created with the new name / picture on the next run
 **Delete - `DELETE /api/characters/{name}` → `200`** `{"deleted": "Luna", "character_id": "..."}`
 (the picture copy goes too).
 
+Examples:
+
+```bash
+# Add a character from a picture sent as base64 (client on another machine)
+curl -X POST http://127.0.0.1:8765/api/characters -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"name": "Luna", "image": {"data": "data:image/png;base64,...", "name": "luna.png"}, "voice_preset_id": "kore", "personality_notes": "brave, curious"}'
+# → 201 {"name": "Luna", "character_id": "3f2b...", "voice_preset_id": "kore", "has_image": true, "image_url": "...", ...}
+
+# Read one character, then download its picture (the picture link needs the key too)
+curl http://127.0.0.1:8765/api/characters/luna -H "X-API-Key: YOUR_API_KEY"
+curl -o luna.png "http://127.0.0.1:8765/api/characters/Luna/image" -H "X-API-Key: YOUR_API_KEY"
+
+# Give her a new picture and notes (send only what changes)
+curl -X PATCH http://127.0.0.1:8765/api/characters/Luna -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"image": {"path": "E:/chars/luna_v2.png"}, "personality_notes": "brave, curious, loves the sea"}'
+```
+
 Errors: `{"error": "...", "error_code": "..."}` with `400` (`INVALID_NAME`, `INVALID_IMAGE`,
 `MISSING_IMAGE`, `INVALID_VOICE`, `INVALID_FIELD`, `UNKNOWN_FIELD`, `CUSTOM_VOICE_UNSUPPORTED`,
 `NOTHING_TO_UPDATE`), `404 NOT_FOUND`, `409` (`NAME_TAKEN`, `CUSTOM_VOICE_LOCKED`). Creates are safe
@@ -942,6 +1058,19 @@ Answer `202`: `{"task_id", "status": "running", "type": "preupload", "files", "p
 file, error}], accounts, seconds}, ...}}` (+ `characters` / `skipped`). `POST /api/stop/{task_id}`
 stops it between files.
 
+Example - upload two references to Flow and Grok now, use them later by the same path:
+
+```bash
+curl -X POST http://127.0.0.1:8765/api/preupload -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"images": [{"path": "E:/refs/car.png"}, {"path": "E:/refs/house.png"}], "providers": ["flow", "grok"]}'
+# → 202 {"task_id": "p1q2r3s4", "status": "running", "type": "preupload", "files": 2,
+#        "providers": ["flow", "grok"], "raw_network": false, "poll_url": "/api/status/p1q2r3s4"}
+curl http://127.0.0.1:8765/api/status/p1q2r3s4 -H "X-API-Key: YOUR_API_KEY"   # progress, then meta
+# later: the same paths in reference_images hit the cache
+curl -X POST http://127.0.0.1:8765/api/image/generate -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"prompt": "the @car in front of the @house", "reference_images": [{"path": "E:/refs/car.png"}, {"path": "E:/refs/house.png"}]}'
+```
+
 > Note: a Flow pre-upload is reused by webhook image and Veo video tasks whenever the reference is a
 > stable file: a library character, or a `{"path": ...}` reference. Base64 references are written
 > to a new temp file per request, so they cannot reuse a pre-upload (Veo still dedupes them by
@@ -952,8 +1081,9 @@ stops it between files.
 ## 6. Reference image format
 
 Every endpoint that takes images accepts them **two ways** — inline base64, or a
-path to a file already on the machine running G-Labs. This is uniform across
-`/api/image`, `/api/video`, `/api/grok`, `/api/meta` and `/api/upscale`.
+path to a file already on the machine running G-Labs. The `{"path": ...}` form below is uniform across
+`/api/image`, `/api/video`, `/api/grok` and `/api/meta`. `/api/upscale` is different: it takes the path
+as the `image_path` field (or base64 in `image`), not `{"path": ...}` (§5.6).
 
 > ⚠️ **`path` only works when the caller and the app are on the same machine.** The
 > app opens that path on its own filesystem — it never fetches it from you. A client
@@ -989,10 +1119,11 @@ Constraints:
 - Decoded base64 under ~100 bytes is skipped (treated as invalid). A missing `path`,
   by contrast, **fails the task** — a typo shouldn't silently produce a render with
   one reference missing.
-- Per-endpoint maximum count: **image = 10** (**Google Pics = 14**, **Meta Muse = 14**), **grok = 5**, **openai = 5**,
-  **video = 3** (**Omni Flash = 7** — only `components` uses more than 2; **Google Vids = 3**; **Meta Muse = 3**: 1 = first frame, 2-3 = references).
-  Extra entries beyond the max are ignored — except Google Pics and Meta Muse, which reject them
-  (`400 TOO_MANY_REFERENCES`).
+- Per-endpoint maximum count: **image = 10** (**Google Pics = 14**, **Meta Muse = 14**), **grok** = `i2i` 5 /
+  `i2v` 14 / `i2v` with `first_frame: true` 3, **openai = 15** (the server model's cap), **Dreamina** = the model's cap,
+  **video = 3** (**Omni Flash = 7** - only `components` uses more than 2; **Google Vids = 3**; **Meta Muse = 7** (server cap): 1 = first frame, 2+ = references).
+  Extra entries beyond the max are dropped silently **only** for Flow image / video and Google Vids.
+  Google Pics, Meta Muse, Grok, OpenAI and Dreamina reject them with `400 TOO_MANY_REFERENCES`.
 - **Why `path` is worth using:** base64 inflates the payload by ~4/3 and every request
   is capped at 50 MB (§5). A local path has no size limit and skips the encode/decode
   on both sides.
@@ -1009,7 +1140,7 @@ API matches what you'd get creating directly in the app).
   image in `reference_images` order wins.
 - **Effect**: binds that specific image to that noun's position in the sentence (Flow
   "Mode-2" structured prompt) instead of passing all images as anonymous generic refs.
-- **Scope**: works for **image (Flow)**, **video (Veo)** and **Google Vids `components`** (`omni_vids`, where a library character's name is a valid tag too), **Dreamina** (`dreamina`: reference images and Omni - a tag points to an image, video or audio by its `name`, or a library character by name); **Grok**, **OpenAI (GPT Image 2)**, **Google Pics** and **Meta Muse** (`meta_muse`) do **not** support `@tag` (their refs are positional).
+- **Scope**: works for **image (Flow)**, **video (Veo)** and **Google Vids `components`** (`omni_vids`, where a library character's name is a valid tag too), **Dreamina** (`dreamina`: reference images and Omni - a tag points to an image, video or audio by its `name`, or a library character by name); **Grok**, **OpenAI (GPT Image)**, **Google Pics** and **Meta Muse** (`meta_muse`) do **not** support `@tag` (their refs are positional).
 - Filenames are sanitized (directory components and illegal characters stripped) first.
 - **Unmatched tags** stay as literal text — they never cause an error.
 - **No `name`**: the image is still used as a positional reference as before (backward compatible).
@@ -1076,6 +1207,11 @@ the switch is on. The choice applies to that task only.
   `components` with only `@Name` (no `reference_images`) is accepted when the prompt tags at least
   one library character.
 - **Google Vids `components`**: `@Name` adds the picture as an ingredient (§5.2).
+- **Dreamina** (image reference mode and Omni): `@Name` adds the character's picture as a reference
+  after your images whenever characters are in use - the app switch alone is enough, an explicit
+  `use_characters: true` is not required (unlike Pics / Muse). `use_characters: false` turns it off
+  for the task. When `mode` is omitted, a prompt that names a library character turns
+  `text_to_image` into `image_to_image`.
 - **Google Pics / Meta Muse**: only with `use_characters: true` in the request (the app switch alone
   does not apply here, so existing integrations keep their behaviour). No `@tag` needed - every
   character the prompt names (Pics / Muse page rule, global match mode) is added after your images,
@@ -1122,6 +1258,48 @@ the switch is on. The choice applies to that task only.
 { "tasks": [ { "task_id": "...", "type": "image", "status": "completed", "prompt": "first 50 chars...", "created_at": 1707782400.0 } ] }
 ```
 (Newest first, max 50.)
+
+### GET `/api/models` (= `/v1/models`) → `200`
+Every model the webhook runs - Flow image / video, Google Pics, Google Vids, Meta Muse, Grok, Meta AI,
+GPT Image, Dreamina, local upscalers - in the **OpenAI "list models" format**, so an OpenAI client reads it
+as is and a client builds its pickers and limits from it instead of hard-coding a list. Values come from
+the same config the pages use (mostly sent by the G-Labs server), so new, renamed or retired models show
+up without a new client build. A provider whose config has not arrived (or is not in your plan) is
+absent rather than guessed. Auth: `X-API-Key`, or `Authorization: Bearer <key>` like OpenAI.
+```json
+{ "object": "list",
+  "data": [
+    { "id": "flow/veo_31_lite", "object": "model", "created": 0, "owned_by": "google-flow",
+      "name": "Veo 3.1 Lite", "type": "video",
+      "endpoint": "/api/video/generate", "params": { "model": "veo_31_lite" },
+      "modes": ["text_to_video", "start_image", "start_end_image", "components"],
+      "aspect_ratios": ["16:9", "9:16"], "resolutions": ["720p", "1080p", "4K"],
+      "durations": [4, 6, 8], "component_durations": [8], "max_reference_images": 3,
+      "reference_binding": "tag", "end_frame": true,
+      "requires": { "4K": "ULTRA", "durations": { "ULTRA": [4, 6] } } },
+    { "id": "dreamina/video/dreamina_seedance_40", "object": "model", "created": 0, "owned_by": "dreamina",
+      "name": "Dreamina Seedance 2.0 Fast", "type": "video",
+      "endpoint": "/api/video/generate", "params": { "model": "dreamina", "dreamina_model": "dreamina_seedance_40" },
+      "modes": ["text_to_video", "image_to_video", "omni"], "duration_range": [4, 15], "...": "..." }
+  ],
+  "retired": { "flow/veo_31_fast": "flow/veo_31_lite" } }
+```
+- `id` = `<provider>/<model>`. To run a model, POST to `endpoint` with the fields in `params` added to your body.
+- `type`: `image`, `video` or `upscale`. `owned_by`: `google-flow`, `google-pics`, `google-vids`, `meta-muse`,
+  `grok`, `meta-ai`, `openai`, `dreamina`, `local`.
+- Limits (present only when they apply): `modes`, `aspect_ratios`, `resolutions`, `durations` (allowed
+  `video_length` values) or `duration_range` ([shortest, longest]), `component_durations` (Flow `components`),
+  `max_reference_images`, `max_frames`, `end_frame` (takes an end frame), `counts`, `qualities`, `upscale`,
+  `keep`, `scale_range`, `reference_video_max_seconds`.
+- `reference_binding`: `tag` = images bind by `@name` (§6.1), `position` = in the order sent, `named` = the
+  Meta AI named fields (§6.2).
+- `requires`: plan needs, e.g. `{"model": "ULTRA"}`, `{"4K": "ULTRA"}`, `{"durations": {"ULTRA": [4, 6], "paid": [11, 12]}}`.
+- `dreamina`: the raw Dreamina entry (`modes`, `secs`, `omni` caps per kind, `accounts`, `live` - `false` = the
+  page's built-in list because the live one could not be loaded).
+- `openai_endpoints`: the OpenAI-compatible endpoints (§12) that take this `id` as `model`.
+- `retired`: ids Google retired → their replacement (`null` = none); those ids return `400 MODEL_RETIRED`.
+- `GET /v1/models/{id}` (id URL-encoded) → one entry; unknown → `404`
+  `{"error": {"message": "...", "type": "invalid_request_error", "param": "model", "code": "model_not_found"}}`.
 
 ### POST `/api/stop` (or `/api/stop/{task_id}`) → `200`
 ```json
@@ -1207,8 +1385,14 @@ Notes specific to this app:
   all accounts busy for 15 min → `503 NO_FREE_SLOT`; after a failure no other account could take the task → `502 ALL_ACCOUNTS_FAILED` (otherwise the last account's own error below);
   a job's own failure → `401 VIDS_COOKIE_EXPIRED`, `429 VIDS_QUOTA_EXHAUSTED`, `429 RATE_LIMITED`,
   `400 CONTENT_POLICY`, `400 BAD_REQUEST`, `400 CLIP_GONE` (upscale), `409 CLIP_ACCOUNT_UNAVAILABLE`
-  (upscale), `502 UPSTREAM`, `502 NO_OUTPUT`; the webhook server stopped while the task waited or
-  ran → `503 SERVER_STOPPED`.
+  (upscale), `504 VIDS_TIMEOUT` (no answer after the request was sent - seconds may have been
+  charged, so it is NOT retried), `502 UPSTREAM`, `502 NO_OUTPUT`; the webhook server stopped while
+  the task waited or ran → `503 SERVER_STOPPED`.
+  `video_to_video` adds: `400 MISSING_REFERENCE` (no `reference_video`), `400 INVALID_VIDEO_FORMAT`
+  (not mp4 / m4v / mov / webm), `400 BAD_VIDEO` (length / frame size cannot be read),
+  `400 VIDEO_TOO_LONG` (longer than the server limit), `503 NO_VIDS_PAID_ACCOUNT` (no enabled account
+  with enough paid-plan seconds) and `429 VIDS_PAID_SECONDS_REQUIRED` (the job needs paid-plan
+  seconds and no account has enough).
 - **Google Pics** (`nano_pics`): request rejected → `400` `INVALID_MODE` / `MISSING_REFERENCE` /
   `TOO_MANY_REFERENCES` / `INVALID_ASPECT_RATIO` / `INVALID_KEEP` / `INVALID_FIELD`; plan too low →
   `403 PLAN_REQUIRED`; server config missing → `503 PICS_CONFIG` / `503 RUNTIME_CONFIG`; no usable
@@ -1221,12 +1405,13 @@ Notes specific to this app:
   `429 PICS_QUOTA_EXHAUSTED`, `429 RATE_LIMITED`, `400 CONTENT_POLICY`, `400 BAD_REQUEST`,
   `502 UPSTREAM`, `502 NO_OUTPUT`; the webhook server stopped → `503 SERVER_STOPPED`.
 - **Meta Muse** (`meta_muse`, image and video): request rejected → `400` `INVALID_MODE` /
-  `MISSING_REFERENCE` / `TOO_MANY_REFERENCES` (more than 14 for images, 3 for video) /
+  `MISSING_REFERENCE` / `TOO_MANY_REFERENCES` (over the server caps - today 14 for images, 7 for video) /
   `INVALID_ASPECT_RATIO` / `INVALID_COUNT` / `INVALID_VIDEO_LENGTH`; server config not received →
   `503 MUSE_CONFIG`; plan too low → `403 PLAN_REQUIRED`; no enabled Muse account with quota left →
   `503 NO_MUSE_ACCOUNT`; all accounts busy for 15 min → `503 NO_FREE_SLOT`; every account tried
   failed → `502 ALL_ACCOUNTS_FAILED`; a job's own failure → `401 MUSE_COOKIE_EXPIRED`,
-  `403 MUSE_DISCONNECTED` (Meta disconnected Muse on the account), `429 MUSE_QUOTA_EXHAUSTED`,
+  `403 MUSE_DISCONNECTED` (Meta disconnected Muse on the account), `403 MUSE_REGION_BLOCKED` (Muse
+  blocks this generation for the account's country / region), `429 MUSE_QUOTA_EXHAUSTED`,
   `504 MUSE_TIMEOUT` (no result after the request was sent - the tokens may have been spent, so it
   is NOT retried), `400 CONTENT_POLICY` (Muse answered without an image / video),
   `502 DOWNLOAD_FAILED`, `502 UPSTREAM`, `502 NO_OUTPUT`; the webhook server stopped →
@@ -1239,7 +1424,9 @@ Notes specific to this app:
   account busy for 15 minutes → `503 NO_FREE_SLOT`; every account tried failed →
   `502 ALL_ACCOUNTS_FAILED`; the job itself failed → `401 DREAMINA_COOKIE_EXPIRED`,
   `429 DREAMINA_CREDIT` (not enough credit), `503 DREAMINA_CONFIG`, `502 DREAMINA_FAILED` (Dreamina's
-  generation failed - not re-sent); webhook server stopped → `503 SERVER_STOPPED`.
+  generation failed - not re-sent), `400 CONTENT_REJECTED` (Dreamina refused the content - reference
+  images or prompt - often a real person's face or banned content; not retried); webhook server
+  stopped → `503 SERVER_STOPPED`.
 
 ---
 
@@ -1264,14 +1451,17 @@ Notes specific to this app:
 - **One result per Grok request** (the first generated image/video).
 - **Meta AI** needs a logged-in, **enabled** Meta (vibes.ai) account in the app
   (Meta AI tab) — `image_enabled` for `t2i`/`i2i`, `video_enabled` for `t2v`/`i2v`.
-  The first eligible account is used (no rotation); an expired first account fails
-  the task.
-- **OpenAI (GPT Image 2)** needs a logged-in, **enabled** ChatGPT/OpenAI account in
-  the app (GPT Image 2 → ChatGPT Account). Accounts are used **round-robin** with
+  Accounts are used **round-robin**, with failover to the next untried account on an
+  account-level failure (expired cookie / quota); concurrency = enabled accounts × the
+  server's per-account job count. Since 6.0.0 no account runs more than that count; when every account
+  is full the task waits up to 15 minutes, then fails with `503 NO_FREE_SLOT`.
+- **OpenAI (GPT Image)** needs a logged-in, **enabled** ChatGPT/OpenAI account in
+  the app (GPT Image page → ChatGPT account). Accounts are used **round-robin** with
   failover to the next account on an account-level error (auth/quota/5xx). Access
   tokens are refreshed automatically before each run. Concurrency is capped at
-  enabled accounts × the server's per-account job count (today 5), like every endpoint. Output is
-  capped at ~1.57 MP (no 2K/4K, no upscale).
+  enabled accounts × the server's per-account job count (today 5), like every endpoint. Since 6.0.0 no
+  account runs more than that count; when every account is full the task waits up to 15 minutes, then
+  fails with `503 NO_FREE_SLOT`. Output is capped at ~1.57 MP (no 2K/4K, no upscale).
 - **Google Vids** (`omni_vids`) needs a **PLUS/MAX** plan and at least one Google
   account in Settings → Google Accounts that is ON (Video box ticked) and has seconds left. Seconds are the account's own
   quota (1 s of video = 1 s). An upscale runs only on the account that made the clip.
@@ -1359,24 +1549,24 @@ curl -X POST http://127.0.0.1:8765/api/meta/generate \
   -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
   -d '{"prompt":"pan across the scene","mode":"i2v","aspect_ratio":"16:9","resolution":"720p","start_image":"data:image/png;base64,...","end_image":"data:image/png;base64,..."}'
 
-# --- OpenAI GPT Image 2: text → image ---
+# --- OpenAI GPT Image: text → image ---
 curl -X POST http://127.0.0.1:8765/api/openai/generate \
   -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
   -d '{"prompt":"a modern minimalist house, golden hour","aspect_ratio":"16:9","quality":"high"}'
 
-# --- OpenAI GPT Image 2: with reference images (positional, no @tag) ---
+# --- OpenAI GPT Image: with reference images (positional, no @tag) ---
 curl -X POST http://127.0.0.1:8765/api/openai/generate \
   -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
   -d '{"prompt":"same subject on a beach","aspect_ratio":"1:1","reference_images":["data:image/png;base64,..."]}'
 
 # --- Image with a reference read from disk (same machine, no base64) ---
-curl -X POST http://127.0.0.1:8765/api/image/generate   -H "Content-Type: application/json" -H "X-API-Key: $KEY"   -d '{"prompt":"the @car on a mountain road","reference_images":[{"path":"E:/photos/car.png"}]}'
+curl -X POST http://127.0.0.1:8765/api/image/generate   -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY"   -d '{"prompt":"the @car on a mountain road","reference_images":[{"path":"E:/photos/car.png"}]}'
 
 # --- Upscale: source already on this machine (no size limit, nothing to encode) ---
-curl -X POST http://127.0.0.1:8765/api/upscale/generate   -H "Content-Type: application/json" -H "X-API-Key: $KEY"   -d '{"image_path":"E:/photos/cat.png","scale":4,"model":"upscayl-standard-4x"}'
+curl -X POST http://127.0.0.1:8765/api/upscale/generate   -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY"   -d '{"image_path":"E:/photos/cat.png","scale":4,"model":"upscayl-standard-4x"}'
 
 # --- Upscale: source sent as base64 (client on another machine) ---
-curl -X POST http://127.0.0.1:8765/api/upscale/generate   -H "Content-Type: application/json" -H "X-API-Key: $KEY"   -d '{"image":"data:image/png;base64,...","filename":"cat.png","scale":2,"format":"png"}'
+curl -X POST http://127.0.0.1:8765/api/upscale/generate   -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY"   -d '{"image":"data:image/png;base64,...","filename":"cat.png","scale":2,"format":"png"}'
 
 # --- Google Pics: text → image (16:9, keep 2 images, Gemini logo removed) ---
 curl -X POST http://127.0.0.1:8765/api/image/generate -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
@@ -1409,6 +1599,17 @@ curl -X POST http://127.0.0.1:8765/api/image/generate -H "Content-Type: applicat
 # --- Dreamina: Omni (image + video + audio references, @tag) ---
 curl -X POST http://127.0.0.1:8765/api/video/generate -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
   -d '{"prompt":"@luna dances to @beat, camera like @move","model":"dreamina","mode":"omni","video_length":5,"reference_images":[{"path":"D:/refs/luna.png"}],"reference_videos":[{"path":"D:/clips/move.mp4"}],"reference_audios":[{"path":"D:/audio/beat.mp3"}]}'
+
+# --- Models you can use (with their limits) ---
+curl http://127.0.0.1:8765/api/models -H "X-API-Key: YOUR_API_KEY"
+
+# --- Omni Flash 1.2: start + end frame, 6 s ---
+curl -X POST http://127.0.0.1:8765/api/video/generate -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"prompt":"the door slowly opens","model":"omni_flash_12","mode":"start_end_image","video_length":6,"reference_images":["data:image/png;base64,...","data:image/png;base64,..."]}'
+
+# --- Dreamina: image → video (first frame, Seedance 2.0 Fast, 720p, 5 s) ---
+curl -X POST http://127.0.0.1:8765/api/video/generate -H "Content-Type: application/json" -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"prompt":"she turns and smiles","model":"dreamina","dreamina_model":"dreamina_seedance_40","mode":"image_to_video","resolution":"720p","video_length":5,"reference_images":[{"path":"D:/refs/luna.png"}]}'
 
 # --- Stop one task / stop everything ---
 curl -X POST http://127.0.0.1:8765/api/stop/abc12345 -H "X-API-Key: YOUR_API_KEY"
@@ -1546,3 +1747,173 @@ console.log(urls);
    `failed` with `499 STOPPED_BY_CLIENT` at once.
 10. Characters: manage them with `/api/characters` (§5.8), choose per task with `use_characters`
     (§6.3), and pre-upload their pictures with `/api/characters/preupload` (§5.9).
+11. Using an OpenAI client or an "OpenAI-compatible" tool instead? Set base URL `http://<host>:<port>/v1`,
+    API key = the webhook key, `model` = an id from `GET /v1/models` - then follow §12 (images come back
+    in the response, videos are polled with `GET /v1/videos/{id}`).
+
+---
+
+## 12. OpenAI-compatible API (`/v1/*`)
+
+A second, **parallel** API in the OpenAI format, so an OpenAI client library (Python / JS) or a tool that
+speaks "OpenAI-compatible" (n8n, LiteLLM, ...) works by changing only its base URL. It does **not** replace
+`/api/*`: both run through the same queue, accounts, limits and logs, and every `/v1` task is also visible in
+`/api/status/{id}`, `/api/tasks` and stoppable with `/api/stop/{id}`. Existing integrations need no change.
+
+```python
+from openai import OpenAI
+client = OpenAI(base_url="http://127.0.0.1:8765/v1", api_key="<your webhook API key>")
+img = client.images.generate(model="flow/nano_banana_2", prompt="a red car", size="1536x1024")
+print(img.data[0].url)
+video = client.videos.create(model="flow/veo_31_lite", prompt="waves at sunset", seconds="8", size="1280x720")
+```
+
+- **Auth**: `Authorization: Bearer <API key>` (or `X-API-Key`). MAX plan, like `/api/*`.
+- **`model`**: an `id` from `GET /v1/models` (§7) - e.g. `flow/nano_banana_2`, `flow/veo_31_lite`, `grok/video`,
+  `dreamina/image/high_aes_general_v50`. The old `/api/*` value also works (`nano_banana_2`, `veo_31_lite`).
+  Each catalogue entry lists the `/v1` endpoints it works with in `openai_endpoints`.
+- **Errors** use the OpenAI shape, with the HTTP status of the failure:
+  `{"error": {"message": "...", "type": "invalid_request_error", "param": "model", "code": "model_not_found"}}`.
+  A failed generation keeps its webhook code in lower case (`400 TOO_MANY_REFERENCES` → `"code": "too_many_references"`).
+- **Extensions**: any body field that is not an OpenAI field is passed unchanged to the `/api/*` request, so
+  every webhook option stays available: `reference_images` (with `name` for `@tag`), `upscale`, `mode`,
+  `use_characters`, `auto_fix_prompt`, `count`, `first_frame`, `reference_video`... (§5).
+
+### 12.1 `POST /v1/images/generations` and `/v1/images/edits`
+
+| Field | Meaning |
+|------|---------|
+| `model` | Catalogue id (required). A video model here → `400 model_type_mismatch`. |
+| `prompt` | Required. |
+| `n` | 1-10 (default 1). Each image is its own task on the queue. |
+| `size` | `WIDTHxHEIGHT` or `auto`. Turned into the **nearest aspect ratio the model offers** (`1792x1024` → `16:9`; `1536x1024` → `3:2` on a model that offers `3:2`, but `4:3` on `flow/nano_banana_2`, which has no `3:2`). The output resolution is the model's own (use the `upscale` extension for Flow 2K / 4K). |
+| `quality` | GPT Image (`low` / `medium` / `high`; `standard` → medium, `hd` / `auto` → high) and Dreamina. Ignored elsewhere. |
+| `response_format` | `url` (default - a link to `/api/files/...`) or `b64_json`. |
+| `image` / `images` (edits) | Multipart files (`image` or `image[]`, the **filename** becomes the `@tag` name) or JSON: data URI / base64 string, `{"image_url": "data:..."}`, or a `reference_images` entry. **http(s) URLs are refused** - G-Labs does not download images. Meta AI fills `character_image`, `scene_image`, `style_image` in that order. |
+| `wait` (extension) | Seconds to wait for the result, 10-3600 (default 600). Past it → `504 timeout`; the message names the task ids, which keep running (poll `/api/status/{id}`). |
+| `mask`, `stream` | Not supported → `400`. `background`, `style`, `output_format`, `moderation`, `user` are accepted and ignored. |
+
+Response `200` (OpenAI shape + `task_ids`; `errors` lists the failed images when `n` > 1 and some succeeded):
+```json
+{ "created": 1794890977, "data": [ { "url": "http://127.0.0.1:8765/api/files/....png" } ], "task_ids": ["a1b2c3d4"] }
+```
+
+### 12.2 `POST /v1/videos`, `GET /v1/videos[/{id}[/content]]`, `DELETE /v1/videos/{id}`
+
+| Field | Meaning |
+|------|---------|
+| `model`, `prompt` | Required (catalogue id; an image model → `400`). |
+| `seconds` | `"8"` or `8`. Must be one of the model's `durations` / within `duration_range`, else `400 invalid_seconds`. Omitted → the model's default. |
+| `size` | `WIDTHxHEIGHT` → nearest **aspect ratio** + the model's **resolution** closest to the short side (`1280x720` → 16:9, 720p). |
+| `input_reference` | One image = the **first frame** (multipart file, data URI, or `{"image_url": "data:..."}`). More images → the `reference_images` extension (with `mode`, e.g. `"components"` / `"omni"`). |
+
+`POST` returns the video object right away; request errors the webhook catches in the first seconds (bad
+model, mode, image...) come back as `4xx` at once:
+```json
+{ "id": "0043608a", "object": "video", "model": "flow/veo_31_lite", "status": "queued", "progress": 0,
+  "created_at": 1794890977, "completed_at": null, "expires_at": null, "prompt": "waves at sunset",
+  "seconds": "8", "size": "1280x720", "remixed_from_video_id": null, "error": null }
+```
+- `status`: `queued` → `in_progress` → `completed` | `failed` (`error: {code, message}`); `progress` 0 / 50 / 100.
+  A completed object also has `urls` (extension): the download links, as in `/api/status`.
+- `GET /v1/videos/{id}/content` streams the MP4 (`variant=video` only). `GET /v1/videos?limit=20&order=desc&after=<id>`
+  lists the videos created with `/v1/videos`.
+- `DELETE /v1/videos/{id}` stops it if still running (like `/api/stop`) and removes it from the list →
+  `{"id": "...", "object": "video.deleted", "deleted": true}`. Files already saved to the output folder stay.
+- `remix_video_id` is not supported. Note: OpenAI marks its own video (Sora) API as shutting down on
+  2026-09-24; the official SDK still has `client.videos` (with a deprecation warning) and this endpoint
+  keeps its shape, which other OpenAI-compatible gateways use too.
+
+### 12.3 How each provider reads the OpenAI fields
+
+| Model id | Image (`/v1/images/*`) | Video (`/v1/videos`) |
+|------|---------|--------|
+| `flow/*` | `size` → `aspect_ratio`; images → `reference_images` (`@tag`) | no image → `text_to_video`, `input_reference` → `start_image`; `size` → `aspect_ratio` + `resolution`; `seconds` → `video_length` |
+| `pics/nano_pics` | `text_to_image` / `image_to_image`, `keep: 1` | - |
+| `vids/omni_vids` | - | `text_to_video` / `start_image`, `resolution`, `video_length` |
+| `muse/*` | `text_to_image` / `image_to_image`, `count: 1` | `text_to_video` / `image_to_video`, `count: 1`, `video_length` |
+| `dreamina/*` | `text_to_image` / `image_to_image`, `count: 1`, `quality` passed on | `text_to_video` / `image_to_video`, `count: 1`, `resolution`, `video_length` |
+| `grok/*` | `t2i` / `i2i` | `t2v` / `i2v` (`input_reference` = first frame), `resolution`, `video_length` |
+| `meta/*` | `t2i` / `i2i`; images fill `character_image`, `scene_image`, `style_image` | `t2v` / `i2v` (`input_reference` = `start_image`); `seconds` is ignored (fixed length) |
+| `openai/*` | `size` → one of its ratios; `quality` low / medium / high | - |
+
+Anything else (end frame, components / Omni with several images, voice, edit video, upscale 2K / 4K,
+library characters) goes through the extension fields of §5 - e.g. `"mode": "components"` +
+`"reference_images": [...]` on `/v1/videos`.
+
+### 12.4 Error codes of `/v1/*`
+
+| HTTP | `code` | When |
+|------|------|--------|
+| 400 | `missing_model`, `missing_prompt`, `missing_image` | Required field missing (`image` on edits) |
+| 404 | `model_not_found` | `model` is not in `GET /v1/models` |
+| 400 | `model_type_mismatch` | A video model on `/v1/images/*`, or an image model on `/v1/videos` |
+| 400 | `invalid_size`, `invalid_seconds`, `invalid_n`, `invalid_wait`, `invalid_response_format` | Bad value (the message lists what the model takes) |
+| 400 | `image_url_not_supported`, `invalid_image`, `too_many_references` | http(s) image link, unreadable image, more than one `input_reference` |
+| 400 | `mask_not_supported`, `stream_not_supported`, `remix_not_supported` | OpenAI features G-Labs does not have |
+| 401 / 403 | `invalid_api_key` / `plan_required` | Wrong key / plan is not MAX |
+| 404 | `video_not_found`, `variant_not_available`, `file_not_found` | Unknown video id, `variant` other than `video`, file gone |
+| 400 | `video_not_ready` | `/content` before the video is `completed` |
+| 504 | `timeout` | Image still generating after `wait` seconds - the tasks keep running |
+| 4xx / 5xx | webhook code in lower case | The generation failed: `too_many_references`, `resource_exhausted` (429), `rate_limited`, `stopped_by_client` (499)... - same causes as §8 |
+
+### 12.5 Examples
+
+**cURL - generate, edit (multipart), video (create → poll → download)**
+```bash
+KEY=<your-api-key>; BASE=http://127.0.0.1:8765/v1
+curl $BASE/models -H "Authorization: Bearer $KEY"
+curl $BASE/images/generations -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
+  -d '{"model": "flow/nano_banana_2", "prompt": "a red car on a beach", "size": "1536x1024"}'
+curl $BASE/images/edits -H "Authorization: Bearer $KEY" \
+  -F model=flow/nano_banana_2 --form-string "prompt=@car parked in front of @house" \
+  -F "image[]=@car.png" -F "image[]=@house.png"
+curl $BASE/videos -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
+  -d '{"model": "flow/veo_31_lite", "prompt": "waves at sunset", "seconds": "8", "size": "1280x720"}'
+curl $BASE/videos/<id> -H "Authorization: Bearer $KEY"                      # until "status": "completed"
+curl $BASE/videos/<id>/content -H "Authorization: Bearer $KEY" -o waves.mp4
+```
+
+**Python (official `openai` package)**
+```python
+import time
+from openai import OpenAI
+client = OpenAI(base_url="http://127.0.0.1:8765/v1", api_key="<your-api-key>", timeout=700)
+
+img = client.images.edit(model="dreamina/image/high_aes_general_v50", prompt="@cat sleeping on @sofa",
+                         image=[open("cat.png", "rb"), open("sofa.png", "rb")])
+print(img.data[0].url)
+
+video = client.videos.create(model="flow/veo_31_lite", prompt="a cat jumps", seconds="8", size="720x1280",
+                             input_reference=open("cat.png", "rb"),
+                             extra_body={"use_characters": False})       # any webhook extension field
+while video.status in ("queued", "in_progress"):
+    time.sleep(5)
+    video = client.videos.retrieve(video.id)
+if video.status == "completed":
+    client.videos.download_content(video.id).write_to_file("cat.mp4")
+else:
+    print(video.error)
+```
+
+**JavaScript (official `openai` package)**
+```js
+import OpenAI from "openai";
+const client = new OpenAI({ baseURL: "http://127.0.0.1:8765/v1", apiKey: "<your-api-key>", timeout: 700_000 });
+const img = await client.images.generate({ model: "grok/image", prompt: "a lighthouse", size: "1024x1536" });
+console.log(img.data[0].url);
+```
+
+### 12.6 Tips
+
+- **`/api/*` or `/v1/*`?** Use `/v1/*` when a library or tool already speaks OpenAI. Use `/api/*` for
+  everything else and for fine control of each page (all fields of §5, `202` + your own polling, no
+  connection held open while an image generates).
+- **Timeouts.** `/v1/images/*` holds the connection until the image is done (up to `wait`, default 600 s):
+  give your HTTP client a longer timeout than `wait` (the Python example uses 700 s). Many images at once?
+  Use `n` (one request) rather than many parallel requests that each wait.
+- **Tools.** In a tool with an "OpenAI" credential (n8n, Make, LiteLLM, Open WebUI...), set its base URL to
+  `http://<host>:<port>/v1` and the API key to the webhook key; pick the model by its catalogue id.
+- **Another machine.** Use the host shown in the Webhook tab (LAN IP) in the base URL; result links use it too.
+- **Extensions in SDKs.** Fields outside the OpenAI schema go in `extra_body` (Python) or as extra keys of
+  the body (JS / cURL).
