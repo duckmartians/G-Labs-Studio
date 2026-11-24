@@ -71,7 +71,7 @@ Meta AI / OpenAI — và nâng cấp ảnh cục bộ — qua REST API đơn gi�
 - **Giới hạn theo từng tài khoản (từ bản 6.0.0).** Ở mọi endpoint có tài khoản, một tài khoản không bao giờ
   chạy quá số việc mỗi tài khoản do máy chủ cấp (hiện là 5; Grok là 4), kể cả khi chuyển tài khoản để thử lại.
   Tài khoản đã đủ việc thì task sang tài khoản khác còn chỗ; mọi tài khoản dùng được đều đủ việc thì task
-  **chờ** chỗ trống. Meta AI và OpenAI chờ tối đa 15 phút rồi báo `503 NO_FREE_SLOT` (như Vids / Pics);
+  **chờ** chỗ trống. Meta AI và OpenAI chờ tối đa 3 giờ rồi báo `503 NO_FREE_SLOT`;
   Ảnh/Video (Flow) chờ tới khi có chỗ. Trước bản 6.0.0, Ảnh/Video, Meta AI và OpenAI chỉ giới hạn tổng số việc
   rồi chia xoay vòng, nên một tài khoản có thể nhận nhiều hơn phần của nó.
 - **Độ trễ giữa các yêu cầu (từ bản 6.0.0).** Tab Webhook có ô **Độ trễ giữa các yêu cầu**: khoảng nghỉ giữa
@@ -86,6 +86,9 @@ Meta AI / OpenAI — và nâng cấp ảnh cục bộ — qua REST API đơn gi�
     phía client cho phù hợp.
   - Đổi lúc đang chạy có hiệu lực với các request đến sau; request đã được hẹn giờ giữ giờ cũ. Riêng Ảnh Flow
     nhận độ trễ mới khi hàng chạy hiện tại xong và hàng mới bắt đầu.
+  - **Thời gian chờ chỗ trống theo độ trễ:** các mốc "tối đa 15 phút" (900 giây) nêu ở từng endpoint áp dụng khi
+    để **Ngay lập tức**. Chọn độ trễ dài hơn thì task được chờ chỗ tới **3 giờ** trước khi báo
+    `503 NO_FREE_SLOT`, vì chỗ trên tài khoản được giữ cả trong lúc nghỉ theo độ trễ.
   - Khi gặp lỗi tạo quá nhanh của Google (`USER_REQUESTS_THROTTLED` / `TOO_MUCH_TRAFFIC`), hãy tăng độ trễ.
   - Trước bản 6.0.0 khoảng nghỉ này cố định 1-3 giây và không chỉnh được.
 - **Tạo nội dung dùng tài khoản đã đăng nhập trong app.** Ảnh/Video dùng tài khoản
@@ -1426,13 +1429,13 @@ Lưu ý riêng của app này:
   Tài khoản dùng **xoay vòng** (round-robin), lỗi ở mức tài khoản (cookie hết hạn / hết hạn mức) thì
   chuyển sang tài khoản chưa thử kế tiếp; trần luồng = số tài khoản đang bật × số việc mỗi tài khoản
   máy chủ cấp. Từ bản 6.0.0 mỗi tài khoản không chạy quá số việc đó; mọi tài khoản đủ việc thì task chờ
-  tối đa 15 phút rồi báo `503 NO_FREE_SLOT`.
+  tối đa 3 giờ rồi báo `503 NO_FREE_SLOT`.
 - **OpenAI (GPT Image)** cần tài khoản ChatGPT/OpenAI đã đăng nhập và **đang bật**
   trong app (trang GPT Image → tài khoản ChatGPT). Tài khoản dùng **xoay vòng** (round-robin)
   và **fail-over** sang tài khoản kế khi lỗi ở mức tài khoản (hết hạn/quota/5xx). Token
   được làm mới tự động trước mỗi lượt. Trần luồng = số tài khoản đang bật × số việc mỗi tài
   khoản máy chủ cấp (hiện là 5), như mọi endpoint. Từ bản 6.0.0 mỗi tài khoản không chạy quá số việc đó;
-  mọi tài khoản đủ việc thì task chờ tối đa 15 phút rồi báo `503 NO_FREE_SLOT`. Ảnh ra bị cap ~1.57 MP
+  mọi tài khoản đủ việc thì task chờ tối đa 3 giờ rồi báo `503 NO_FREE_SLOT`. Ảnh ra bị cap ~1.57 MP
   (không 2K/4K, không upscale).
 - **Google Vids** (`omni_vids`) cần gói **PLUS/MAX** và ít nhất một tài khoản Google ở
   Cài đặt → Tài khoản Google đang BẬT (tích ô Video) và còn giây. Số giây là hạn mức riêng của tài khoản (1 giây video =

@@ -72,7 +72,7 @@ complete cURL / Python / JavaScript examples (§10).
 - **Per-account limit (since 6.0.0).** On every account-based endpoint, one account never runs more than the
   server's per-account job count (today 5; Grok 4), including when a task moves to another account to retry.
   A full account is skipped for one with room; when every usable account is full the task **waits** for a
-  free slot. Meta AI and OpenAI wait up to 15 minutes, then fail with `503 NO_FREE_SLOT` (like Vids / Pics);
+  free slot. Meta AI and OpenAI wait up to 3 hours, then fail with `503 NO_FREE_SLOT`;
   Image/Video (Flow) wait until a slot frees. Before 6.0.0, Image/Video, Meta AI and OpenAI only capped the
   total and handed jobs out round-robin, so one account could carry more than its share.
 - **Delay between requests (since 6.0.0).** The Webhook tab has a **Delay between requests** box: the pause
@@ -87,6 +87,9 @@ complete cURL / Python / JavaScript examples (§10).
     client-side timeout accordingly.
   - A change made mid-run applies to requests that arrive afterwards; requests already scheduled keep their
     time. Flow Image picks up the new delay once the current run finishes and a new one starts.
+  - **Slot wait follows the delay:** the "up to 15 minutes" (900 s) limits quoted per endpoint apply with
+    **Immediately**. With a longer delay a task may wait for a slot for up to **3 hours** before
+    `503 NO_FREE_SLOT`, because an account slot stays held during the delay pause as well.
   - If you hit Google's too-fast errors (`USER_REQUESTS_THROTTLED` / `TOO_MUCH_TRAFFIC`), raise the delay.
   - Before 6.0.0 this pause was a fixed 1-3 s and could not be changed.
 - **Generation runs on the app's logged-in accounts.** Image/Video use the
@@ -1454,13 +1457,13 @@ Notes specific to this app:
   Accounts are used **round-robin**, with failover to the next untried account on an
   account-level failure (expired cookie / quota); concurrency = enabled accounts × the
   server's per-account job count. Since 6.0.0 no account runs more than that count; when every account
-  is full the task waits up to 15 minutes, then fails with `503 NO_FREE_SLOT`.
+  is full the task waits up to 3 hours, then fails with `503 NO_FREE_SLOT`.
 - **OpenAI (GPT Image)** needs a logged-in, **enabled** ChatGPT/OpenAI account in
   the app (GPT Image page → ChatGPT account). Accounts are used **round-robin** with
   failover to the next account on an account-level error (auth/quota/5xx). Access
   tokens are refreshed automatically before each run. Concurrency is capped at
   enabled accounts × the server's per-account job count (today 5), like every endpoint. Since 6.0.0 no
-  account runs more than that count; when every account is full the task waits up to 15 minutes, then
+  account runs more than that count; when every account is full the task waits up to 3 hours, then
   fails with `503 NO_FREE_SLOT`. Output is capped at ~1.57 MP (no 2K/4K, no upscale).
 - **Google Vids** (`omni_vids`) needs a **PLUS/MAX** plan and at least one Google
   account in Settings → Google Accounts that is ON (Video box ticked) and has seconds left. Seconds are the account's own
