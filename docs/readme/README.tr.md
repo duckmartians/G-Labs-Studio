@@ -75,7 +75,7 @@ En son sürümü **[duckspace.net](https://duckspace.net/g-labs-studio/)** üzer
 
 **Bir G-Labs hesabına ihtiyacın var.** Uygulamayı aç, Google ile giriş yap ve bir plan seç. Planlar (**BASIC / PLUS / MAX**) farklı araç ve modelleri açar; uygulama içinden satın alabilirsin (banka QR, PayPal veya USDT). Bir hesap **aynı anda tek makinede** çalışır - başka yerde giriş yapmak önceki makinenin oturumunu kapatır. Kenar çubuğunun sol alt köşesindeki rozet mevcut seviyeni gösterir. Aynı anda birden fazla cihaz mı gerekiyor? **Team** planı satın alabilirsin (fiyat, eklediğin ek cihaz sayısına göre artar).
 
-> **Az önce eski sürümden (G-Labs Automation) mi geçtin?** Yeni sürüm hesaplarını **taşımaz**. Yeni G-Labs Studio'da **tüm hesaplara yeniden giriş yapman** gerekir (Google/Flow, ChatGPT, Meta…).
+> **Az önce eski sürümden mi geçtin?** Yeni sürüm hesaplarını **taşımaz**. Yeni G-Labs Studio'da **tüm hesaplara yeniden giriş yapman** gerekir (Google/Flow, ChatGPT, Meta…).
 
 Uygulama **kendini günceller**: açılışta GitHub Releases'i kontrol eder ve yeni sürümü uygulama içinden indirip kurabilir.
 

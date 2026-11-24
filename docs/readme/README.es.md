@@ -75,7 +75,7 @@ Descarga la última versión desde **[duckspace.net](https://duckspace.net/g-lab
 
 **Necesitas una cuenta de G-Labs.** Abre la app, inicia sesión con Google y elige un plan. Los planes (**BASIC / PLUS / MAX**) desbloquean distintas herramientas y modelos; puedes comprar uno desde dentro de la app (QR bancario, PayPal o USDT). Una cuenta funciona en **una sola máquina a la vez** - iniciar sesión en otro lugar cierra la sesión de la máquina anterior. La insignia en la esquina inferior izquierda de la barra lateral muestra tu nivel actual. ¿Necesitas varios dispositivos a la vez? Puedes comprar un plan **Team** (el precio aumenta según la cantidad de dispositivos adicionales que elijas).
 
-> **¿Acabas de pasar de la versión antigua (G-Labs Automation)?** La nueva versión **no** traslada tus cuentas. Tendrás que **volver a iniciar sesión en todas tus cuentas** (Google/Flow, ChatGPT, Meta…) en la nueva G-Labs Studio.
+> **¿Acabas de pasar de la versión antigua?** La nueva versión **no** traslada tus cuentas. Tendrás que **volver a iniciar sesión en todas tus cuentas** (Google/Flow, ChatGPT, Meta…) en la nueva G-Labs Studio.
 
 La app **se actualiza sola**: comprueba GitHub Releases al iniciarse y puede descargar e instalar la nueva versión desde dentro de la app.
 

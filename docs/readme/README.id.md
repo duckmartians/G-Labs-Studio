@@ -75,7 +75,7 @@ Unduh versi terbaru dari **[duckspace.net](https://duckspace.net/g-labs-studio/)
 
 **Kamu butuh akun G-Labs.** Buka aplikasi, masuk dengan Google, dan pilih paket. Paket (**BASIC / PLUS / MAX**) membuka alat dan model yang berbeda; kamu bisa membeli dari dalam aplikasi (QR bank, PayPal, atau USDT). Satu akun berjalan di **satu mesin dalam satu waktu** - masuk di tempat lain akan mengeluarkan mesin sebelumnya. Lencana di kiri bawah bilah sisi menunjukkan tingkatmu saat ini. Butuh beberapa perangkat sekaligus? Kamu bisa membeli paket **Team** (harganya naik sesuai jumlah perangkat tambahan yang kamu pilih).
 
-> **Baru pindah dari versi lama (G-Labs Automation)?** Versi baru **tidak** membawa akunmu. Kamu perlu **masuk ke semua akun lagi** (Google/Flow, ChatGPT, Meta…) di G-Labs Studio yang baru.
+> **Baru pindah dari versi lama?** Versi baru **tidak** membawa akunmu. Kamu perlu **masuk ke semua akun lagi** (Google/Flow, ChatGPT, Meta…) di G-Labs Studio yang baru.
 
 Aplikasi **memperbarui dirinya sendiri**: memeriksa GitHub Releases saat dibuka dan bisa mengunduh serta memasang versi baru dari dalam aplikasi.
 
