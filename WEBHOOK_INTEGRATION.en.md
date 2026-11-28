@@ -21,9 +21,13 @@ enough to start; the numbered sections below are the detailed reference.
 - **Get the full text.** This document is long. If your web tool returns a summary or a truncated page, download
   the raw file into your working folder and read it from disk:
   `https://raw.githubusercontent.com/duckmartians/G-Labs-Studio/main/WEBHOOK_INTEGRATION.en.md`
-- **You need two things from the user:** the port (default `8765`) and the **API key** from the app's Webhook API
-  page. Ask if you do not have them; never guess. Keep the key in an environment variable or a file in the working
-  folder; do not print it back.
+- **You need two things: the port (default `8765`) and the API key** from the app's Webhook API page. When you run
+  **on the same machine as the app** and the user agrees, read both from the app's config file (fields `port` and
+  `api_key`) instead of copying by hand: Windows `%APPDATA%\G-Labs Studio\webhook_config.json`, macOS
+  `~/Library/Application Support/G-Labs Studio/webhook_config.json`. If you cannot read it, ask the user; never
+  guess. Use the key only to call the app on this machine; do not print it or send it anywhere else.
+- **Read from a file, not from the web page.** After downloading the raw file above, keep it in your working
+  folder and look things up there whenever you need a field or an error code.
 - **This document only explains how to call the app.** What to make, in which style, in which order is the user's
   direction. Do not generate anything until asked (every generation spends the user's account quota).
 

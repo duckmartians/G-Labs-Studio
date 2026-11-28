@@ -20,8 +20,13 @@ Bạn là AI agent (Antigravity, Claude Code, Cursor, Codex...) được ngườ
 - **Lấy bản đầy đủ.** Tài liệu dài. Nếu công cụ đọc web của bạn chỉ trả về bản tóm tắt hoặc bị cắt, hãy tải bản thô
   về thư mục làm việc rồi đọc từ file:
   `https://raw.githubusercontent.com/duckmartians/G-Labs-Studio/main/WEBHOOK_INTEGRATION.vi.md`
-- **Cần hai thứ từ người dùng:** cổng (mặc định `8765`) và **API key** ở trang Webhook API của app. Chưa có thì hỏi,
-  không đoán. Lưu key vào biến môi trường hoặc một file trong thư mục làm việc; không in lại key trong câu trả lời.
+- **Cần hai thứ: cổng (mặc định `8765`) và API key** ở trang Webhook API của app. Khi bạn chạy **cùng máy với app** và
+  người dùng đồng ý, đọc cả hai từ file cấu hình của app (trường `port` và `api_key`), khỏi phải chép tay:
+  Windows `%APPDATA%\G-Labs Studio\webhook_config.json`, macOS
+  `~/Library/Application Support/G-Labs Studio/webhook_config.json`. Không đọc được thì hỏi người dùng, không đoán.
+  Chỉ dùng key để gọi app trên máy này; không in key ra câu trả lời, không gửi key đi nơi khác.
+- **Đọc từ file, không đọc từ trang web.** Sau khi tải bản thô ở trên, lưu thành một file trong thư mục làm việc và
+  tra từ file đó mỗi khi cần một trường hay một mã lỗi.
 - **Tài liệu này chỉ nói cách gọi app.** Làm phim gì, phong cách nào, quy trình ra sao là do người dùng chỉ đạo.
   Chưa được yêu cầu thì chưa tạo gì (mỗi lần tạo tốn hạn mức tài khoản của người dùng).
 
