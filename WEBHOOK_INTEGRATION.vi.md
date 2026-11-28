@@ -12,6 +12,57 @@ Meta AI / OpenAI — và nâng cấp ảnh cục bộ — qua REST API đơn gi�
 
 ---
 
+## Dành cho AI agent - đọc phần này trước
+
+Bạn là AI agent (Antigravity, Claude Code, Cursor, Codex...) được người dùng gửi link tài liệu này? Phần này đủ
+để bắt đầu; các mục đánh số bên dưới là phần tra cứu chi tiết.
+
+- **Lấy bản đầy đủ.** Tài liệu dài. Nếu công cụ đọc web của bạn chỉ trả về bản tóm tắt hoặc bị cắt, hãy tải bản thô
+  về thư mục làm việc rồi đọc từ file:
+  `https://raw.githubusercontent.com/duckmartians/G-Labs-Studio/main/WEBHOOK_INTEGRATION.vi.md`
+- **Cần hai thứ từ người dùng:** cổng (mặc định `8765`) và **API key** ở trang Webhook API của app. Chưa có thì hỏi,
+  không đoán. Lưu key vào biến môi trường hoặc một file trong thư mục làm việc; không in lại key trong câu trả lời.
+- **Tài liệu này chỉ nói cách gọi app.** Làm phim gì, phong cách nào, quy trình ra sao là do người dùng chỉ đạo.
+  Chưa được yêu cầu thì chưa tạo gì (mỗi lần tạo tốn hạn mức tài khoản của người dùng).
+
+**Cách làm việc**
+
+1. `GET /api/health` (không cần key) để biết app đang mở và máy chủ Webhook đang bật. Không kết nối được → bảo người
+   dùng mở G-Labs Studio, vào trang Webhook API và bật server.
+2. `GET /api/models` để lấy danh sách model **đang dùng được trên máy này**, kèm giới hạn của từng model: số ảnh tham
+   chiếu tối đa và cách gắn (`reference_binding`: `tag` hoặc `position`), các `modes`, tỉ lệ, độ phân giải, thời
+   lượng, và thứ cần hạng tài khoản cao hơn (`requires`). Đọc trước khi chọn model; đừng giả định giới hạn (§5.7, §7).
+   Danh mục không có giá: đừng nêu giá hay số credit.
+3. Gửi `POST /api/<endpoint>/generate` → nhận `task_id` → hỏi `GET /api/status/<task_id>` mỗi 3-5 giây tới khi
+   `completed` hoặc `failed` → tải từng link trong `results` (§4). Video có thể mất nhiều phút: chờ bằng **một lệnh
+   chạy lâu**, đừng gọi lẻ từng lần hỏi trạng thái.
+4. Chỉ dùng các trường có trong §5. Google Vids, Google Pics, Meta Muse và Dreamina từ chối giá trị sai bằng `400`
+   kèm tên lỗi (§8), không tự đổi về mặc định.
+
+**Mẹo khi chạy cùng máy với app (trường hợp thường gặp)**
+
+- Ảnh / video tham chiếu: gửi `{"path": "D:/duong/dan/anh.png"}` thay vì base64 (§6). Đường dẫn tuyệt đối.
+- Viết body JSON ra **file UTF-8** rồi gửi file đó (`curl --data-binary @body.json`, hoặc đọc byte trong PowerShell).
+  Nhét JSON có tiếng Việt, dấu nháy vào thẳng dòng lệnh rất dễ hỏng.
+- Viết **một script nhỏ dùng lại** (gửi → chờ → tải về, mỗi ảnh / clip một file body) ngay từ đầu, thay vì gõ tay từng
+  lệnh. Windows không cần cài gì: mẫu PowerShell ở §10.4; có Python thì §10.2.
+- Kết quả đã tải thì đừng tạo lại. Một mục lỗi thì sửa và chạy lại riêng mục đó, không chạy lại cả lô.
+- `429` hoặc "No active accounts" = tài khoản của nền tảng đó trong app không chạy được lúc này: báo người dùng, không
+  thử lại liên tục. Mỗi nền tảng (Flow, Google, Dreamina, Grok, Meta, ChatGPT) dùng tài khoản riêng do người dùng thêm
+  trong app.
+
+**Giữ nhân vật đồng nhất (cơ chế của app, chi tiết ở §6)**
+
+- Ảnh tham chiếu có `name` được gọi trong prompt bằng `@tên`, đặt **trong câu, đúng chỗ của thứ nó vẽ**
+  (`"@lan đi qua @cho"`), với model gắn theo `tag` (§6.1). Model gắn theo `position` dùng ảnh theo thứ tự, `@tên`
+  không có tác dụng.
+- Thư viện nhân vật của app: thêm bằng `POST /api/characters` (§5.8), dùng bằng `@Tên` trong prompt kèm
+  `"use_characters": true` (§6.3). Tên trùng trả `409`: chọn tên khác, không ghi đè nhân vật người dùng đã có.
+- Video từ ảnh: `mode` `start_image` (ảnh đầu), `start_end_image` (ảnh đầu + ảnh cuối), `components` (ghép từ ảnh
+  thành phần). Mode nào có ở model nào xem trong `/api/models` và §5.2.
+
+---
+
 ## Bắt đầu nhanh
 
 1. Trong app: tab **Webhook** → **Bật**. Chép lại **cổng** (mặc định `8765`) và **API key**.
@@ -1700,6 +1751,48 @@ const urls = await generate("video", {
   resolution: ["720p"],
 });
 console.log(urls);
+```
+
+---
+
+### 10.4 PowerShell trên Windows (không cần cài gì: gửi → chờ → tải về)
+
+Body là một file JSON UTF-8 (đúng các trường ở §5). Key lấy từ biến môi trường `GLABS_API_KEY` hoặc tham số `-Key`.
+
+```powershell
+# glabs.ps1  -  powershell -ExecutionPolicy Bypass -File glabs.ps1 -Endpoint image -Body job.json -Out output -Name scene01
+param([string]$Endpoint, [string]$Body, [string]$Out = ".", [string]$Name = "result",
+      [string]$Base = "http://127.0.0.1:8765", [string]$Key = $env:GLABS_API_KEY, [int]$Timeout = 2400, [int]$Poll = 5)
+$ErrorActionPreference = "Stop"
+$utf8 = New-Object System.Text.UTF8Encoding($false)
+$h = @{ "X-API-Key" = $Key }
+function Call($method, $url, $bytes) {
+  $a = @{ Uri = $url; Method = $method; Headers = $h; UseBasicParsing = $true; TimeoutSec = 120 }
+  if ($bytes) { $a.Body = $bytes; $a.ContentType = "application/json; charset=utf-8" }
+  try { $r = Invoke-WebRequest @a; return $utf8.GetString($r.RawContentStream.ToArray()) | ConvertFrom-Json }
+  catch [System.Net.WebException] {
+    if (-not $_.Exception.Response) { throw "cannot reach $url - is G-Labs Studio open with the Webhook server on?" }
+    $ms = New-Object System.IO.MemoryStream; $_.Exception.Response.GetResponseStream().CopyTo($ms)
+    throw "HTTP $([int]$_.Exception.Response.StatusCode): $($utf8.GetString($ms.ToArray()))"
+  }
+}
+$job = Call "POST" "$Base/api/$Endpoint/generate" ([System.IO.File]::ReadAllBytes($Body))   # body = UTF-8 JSON file
+$t0 = Get-Date
+while ($true) {
+  Start-Sleep -Seconds $Poll
+  $s = Call "GET" "$Base/api/status/$($job.task_id)"
+  if ($s.status -eq "completed") { break }
+  if ($s.status -eq "failed") { throw "[$($s.error_code)] $($s.error)" }
+  if (((Get-Date) - $t0).TotalSeconds -gt $Timeout) { throw "task $($job.task_id) not finished after $Timeout s" }
+}
+New-Item -ItemType Directory -Force $Out | Out-Null
+$i = 0
+foreach ($u in @($s.results)) {
+  $i++; $ext = [System.IO.Path]::GetExtension(([uri]$u).AbsolutePath)
+  $file = Join-Path $Out ($(if (@($s.results).Count -gt 1) { "${Name}_$i" } else { $Name }) + $ext)
+  Invoke-WebRequest -Uri $u -OutFile $file -UseBasicParsing -TimeoutSec 600      # /api/files needs no key
+  Write-Host "saved $file"
+}
 ```
 
 ---

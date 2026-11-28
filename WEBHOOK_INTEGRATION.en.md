@@ -13,6 +13,59 @@ Meta AI / OpenAI generation — and local image upscaling — over a simple REST
 
 ---
 
+## For AI agents - read this first
+
+You are an AI agent (Antigravity, Claude Code, Cursor, Codex...) and the user sent you this link? This section is
+enough to start; the numbered sections below are the detailed reference.
+
+- **Get the full text.** This document is long. If your web tool returns a summary or a truncated page, download
+  the raw file into your working folder and read it from disk:
+  `https://raw.githubusercontent.com/duckmartians/G-Labs-Studio/main/WEBHOOK_INTEGRATION.en.md`
+- **You need two things from the user:** the port (default `8765`) and the **API key** from the app's Webhook API
+  page. Ask if you do not have them; never guess. Keep the key in an environment variable or a file in the working
+  folder; do not print it back.
+- **This document only explains how to call the app.** What to make, in which style, in which order is the user's
+  direction. Do not generate anything until asked (every generation spends the user's account quota).
+
+**How to work**
+
+1. `GET /api/health` (no key) tells you the app is open and the Webhook server is on. Cannot connect → ask the user
+   to open G-Labs Studio, go to the Webhook API page and start the server.
+2. `GET /api/models` lists the models **usable on this machine** with each one's limits: how many reference
+   pictures and how they are bound (`reference_binding`: `tag` or `position`), `modes`, ratios, resolutions,
+   lengths, and what needs a higher account tier (`requires`). Read it before choosing a model; never assume a
+   limit (§5.7, §7). The catalogue has no prices: do not state a price or a credit number.
+3. `POST /api/<endpoint>/generate` → `task_id` → `GET /api/status/<task_id>` every 3-5 s until `completed` or
+   `failed` → download each link in `results` (§4). Video can take many minutes: wait with **one long-running
+   command**, not one call per poll.
+4. Use only the fields in §5. Google Vids, Google Pics, Meta Muse and Dreamina reject wrong values with a named
+   `400` (§8); they do not fall back to defaults.
+
+**Tips when you run on the same machine as the app (the usual case)**
+
+- Reference pictures / videos: send `{"path": "D:/path/to/picture.png"}` instead of base64 (§6). Absolute path.
+- Write the JSON body to a **UTF-8 file** and send that file (`curl --data-binary @body.json`, or read the bytes in
+  PowerShell). JSON with quotes or non-ASCII text pasted into a command line breaks easily.
+- Write **one small reusable script** (submit → wait → download, one body file per picture or clip) at the start
+  instead of typing each call by hand. Windows needs nothing installed: PowerShell sample in §10.4; Python in §10.2.
+- Do not regenerate a result you already downloaded. Fix and rerun the one item that failed, never the whole batch.
+- `429` or "No active accounts" = the app's accounts for that provider cannot run it now: tell the user, do not
+  retry in a loop. Each provider (Flow, Google, Dreamina, Grok, Meta, ChatGPT) uses its own accounts, added by the
+  user inside the app.
+
+**Keeping characters consistent (the app's mechanisms, details in §6)**
+
+- A reference picture with a `name` is called in the prompt as `@name`, placed **inside the sentence, where the
+  thing it shows belongs** (`"@lan walks through @market"`), for models bound by `tag` (§6.1). Models bound by
+  `position` use pictures in order and `@name` does nothing.
+- The app's character library: add with `POST /api/characters` (§5.8), use with `@Name` in the prompt plus
+  `"use_characters": true` (§6.3). A taken name returns `409`: choose another name, never overwrite a character the
+  user already had.
+- Video from pictures: `mode` `start_image` (first frame), `start_end_image` (first + last frame), `components`
+  (built from reference pictures). Which model has which mode: `/api/models` and §5.2.
+
+---
+
 ## Quick start
 
 1. In the app: **Webhook** tab → **Start**. Copy the **port** (default `8765`) and the **API key**.
@@ -1729,6 +1782,49 @@ const urls = await generate("video", {
   resolution: ["720p"],
 });
 console.log(urls);
+```
+
+---
+
+### 10.4 PowerShell on Windows (nothing to install: submit → wait → download)
+
+The body is a UTF-8 JSON file (the fields of §5). The key comes from the `GLABS_API_KEY` environment variable or the
+`-Key` parameter.
+
+```powershell
+# glabs.ps1  -  powershell -ExecutionPolicy Bypass -File glabs.ps1 -Endpoint image -Body job.json -Out output -Name scene01
+param([string]$Endpoint, [string]$Body, [string]$Out = ".", [string]$Name = "result",
+      [string]$Base = "http://127.0.0.1:8765", [string]$Key = $env:GLABS_API_KEY, [int]$Timeout = 2400, [int]$Poll = 5)
+$ErrorActionPreference = "Stop"
+$utf8 = New-Object System.Text.UTF8Encoding($false)
+$h = @{ "X-API-Key" = $Key }
+function Call($method, $url, $bytes) {
+  $a = @{ Uri = $url; Method = $method; Headers = $h; UseBasicParsing = $true; TimeoutSec = 120 }
+  if ($bytes) { $a.Body = $bytes; $a.ContentType = "application/json; charset=utf-8" }
+  try { $r = Invoke-WebRequest @a; return $utf8.GetString($r.RawContentStream.ToArray()) | ConvertFrom-Json }
+  catch [System.Net.WebException] {
+    if (-not $_.Exception.Response) { throw "cannot reach $url - is G-Labs Studio open with the Webhook server on?" }
+    $ms = New-Object System.IO.MemoryStream; $_.Exception.Response.GetResponseStream().CopyTo($ms)
+    throw "HTTP $([int]$_.Exception.Response.StatusCode): $($utf8.GetString($ms.ToArray()))"
+  }
+}
+$job = Call "POST" "$Base/api/$Endpoint/generate" ([System.IO.File]::ReadAllBytes($Body))   # body = UTF-8 JSON file
+$t0 = Get-Date
+while ($true) {
+  Start-Sleep -Seconds $Poll
+  $s = Call "GET" "$Base/api/status/$($job.task_id)"
+  if ($s.status -eq "completed") { break }
+  if ($s.status -eq "failed") { throw "[$($s.error_code)] $($s.error)" }
+  if (((Get-Date) - $t0).TotalSeconds -gt $Timeout) { throw "task $($job.task_id) not finished after $Timeout s" }
+}
+New-Item -ItemType Directory -Force $Out | Out-Null
+$i = 0
+foreach ($u in @($s.results)) {
+  $i++; $ext = [System.IO.Path]::GetExtension(([uri]$u).AbsolutePath)
+  $file = Join-Path $Out ($(if (@($s.results).Count -gt 1) { "${Name}_$i" } else { $Name }) + $ext)
+  Invoke-WebRequest -Uri $u -OutFile $file -UseBasicParsing -TimeoutSec 600      # /api/files needs no key
+  Write-Host "saved $file"
+}
 ```
 
 ---
